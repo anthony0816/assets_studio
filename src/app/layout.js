@@ -3,7 +3,10 @@ import "./globals.css";
 
 import NavBar from "@/Components/NavBar";
 import Frame from "@/Components/Frame";
-import { SizeContextProvider } from "@/utils/resizeContext";
+import { SizeContextProvider } from "@/context/resizeContext";
+import { LoadingRouterProvider } from "@/Components/LoadingRouterProvider";
+import GlobalLoader from "@/Components/GlobalLoader";
+import { ThemeContextProvider } from "@/context/themeContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,8 +30,14 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-row `}
       >
         <SizeContextProvider>
-          <NavBar />
-          <Frame>{children}</Frame>
+          <LoadingRouterProvider>
+            <ThemeContextProvider>
+              <NavBar />
+              <GlobalLoader>
+                <Frame>{children}</Frame>
+              </GlobalLoader>
+            </ThemeContextProvider>
+          </LoadingRouterProvider>
         </SizeContextProvider>
       </body>
     </html>

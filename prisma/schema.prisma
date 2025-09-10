@@ -22,9 +22,35 @@ datasource db {
 
 
 
-model Asset {
-  id        Int      @id @default(autoincrement())
-  name      String
-  type      String
-  createdAt DateTime @default(now())
+enum USER_ROLL{
+  administrador
+  cliente
+}
+
+model user {
+  id Int @id @default(autoincrement()) 
+  longName String
+  username String @unique
+  password String
+  email String @unique
+  reports Report[]
+  assets Asset[]
+  roll USER_ROLL @default(cliente)
+}
+
+model Asset{
+  id Int @id @default(autoincrement())
+  likes Int 
+  reports Int
+  createdAt DateTime 
+  src String
+  user user @relation(references: [id],fields: [user_id], onDelete: Cascade)
+  user_id Int
+}
+
+model Report{
+id Int @id @default(autoincrement())
+user user @relation(fields: [user_id],references: [id], onDelete: Cascade)
+user_id Int
+description String 
 }

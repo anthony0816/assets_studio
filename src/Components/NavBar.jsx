@@ -1,34 +1,34 @@
 "use client";
 import { useState, useEffect } from "react";
 import { FiMenu, FiX } from "react-icons/fi";
-import { useSize } from "@/utils/resizeContext";
+
+import { useLoadingRouter } from "./LoadingRouterProvider";
+import { useSize } from "@/context/resizeContext";
 import UserCard from "./userCard";
+import { useTheme } from "@/context/themeContext";
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(true);
+  const { router } = useLoadingRouter();
   const [mobileStyle, setMobileStyle] = useState(true);
   const { isMobile } = useSize();
+  const { currentTheme } = useTheme();
 
   useEffect(() => {
     console.log("Estadi de si es mobile", isMobile);
     setMobileStyle(isMobile);
   }, [isMobile]);
 
-  const items = [
-    { name: "Aswegrwsets", fl: "A" },
-    { name: "Create Asset", fl: "C" },
-    { name: "dreate Asset", fl: "C" },
-    { name: "vr", fl: "C" },
-    { name: "vvreate Asset", fl: "C" },
-    { name: "sdvreate Asset", fl: "C" },
-  ];
-
+  const items = [{ name: "Create with IA", route: "ia", fl: "c" }];
+  if (!currentTheme) return;
   return (
     <aside
       className={
         mobileStyle
-          ? "fixed bottom-0 left-0 w-full  bg-red-200 flex flex-row overflow-x-auto"
-          : `h-[100vh] bg-gray-900 text-white shadow-lg transition-all duration-300 z-50 
+          ? `fixed bottom-0 left-0 w-full  ${currentTheme.colors.primary} flex flex-row overflow-x-auto`
+          : `h-[100vh] ${
+              currentTheme.colors.primary
+            } text-white shadow-lg transition-all duration-300 z-50 
     ${isOpen ? "w-64" : "w-16"} 
     relative`
       }
@@ -59,7 +59,7 @@ export default function NavBar() {
               key={`${item.name}-${idx}`} // clave única
               className={`${
                 mobileStyle
-                  ? "whitespace-nowrap bg-blue-300 text-center flex-shrink-0"
+                  ? `whitespace-nowrap bg-blue-300 text-center flex-shrink-0`
                   : ""
               } px-4 py-2 hover:bg-gray-800 rounded cursor-pointer`}
             >
