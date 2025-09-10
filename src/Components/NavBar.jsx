@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { FiMenu, FiX } from "react-icons/fi";
 import { useSize } from "@/utils/resizeContext";
+import UserCard from "./userCard";
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(true);
@@ -13,11 +14,20 @@ export default function NavBar() {
     setMobileStyle(isMobile);
   }, [isMobile]);
 
+  const items = [
+    { name: "Aswegrwsets", fl: "A" },
+    { name: "Create Asset", fl: "C" },
+    { name: "dreate Asset", fl: "C" },
+    { name: "vr", fl: "C" },
+    { name: "vvreate Asset", fl: "C" },
+    { name: "sdvreate Asset", fl: "C" },
+  ];
+
   return (
     <aside
       className={
         mobileStyle
-          ? "fixed bottom-0 left-0 w-full  bg-red-200 flex flex-row"
+          ? "fixed bottom-0 left-0 w-full  bg-red-200 flex flex-row overflow-x-auto"
           : `h-[100vh] bg-gray-900 text-white shadow-lg transition-all duration-300 z-50 
     ${isOpen ? "w-64" : "w-16"} 
     relative`
@@ -36,14 +46,28 @@ export default function NavBar() {
       )}
 
       {/* Menú */}
-      <nav className={`mt-4`}>
-        <div className={`space-y-2 ${mobileStyle && "flex flex-row"}`}>
-          <div className="px-4 py-2 hover:bg-gray-800 rounded cursor-pointer">
-            {isOpen ? "Assets" : "A"}
-          </div>
-          <div className="px-4 py-2 hover:bg-gray-800 rounded cursor-pointer">
-            {isOpen ? "Create Assets" : "C"}
-          </div>
+      <nav className={mobileStyle ? "mt-0 w-full" : "mt-4"}>
+        <div
+          className={
+            mobileStyle
+              ? "w-full flex  items-center gap-2 py-2 " // mobile: centrado horizontal/vertical
+              : "flex flex-col gap-2" // desktop: columna con gap vertical
+          }
+        >
+          {items.map((item, idx) => (
+            <div
+              key={`${item.name}-${idx}`} // clave única
+              className={`${
+                mobileStyle
+                  ? "whitespace-nowrap bg-blue-300 text-center flex-shrink-0"
+                  : ""
+              } px-4 py-2 hover:bg-gray-800 rounded cursor-pointer`}
+            >
+              {mobileStyle ? item.name : isOpen ? item.name : item.fl}
+            </div>
+          ))}
+
+          {!mobileStyle && <UserCard isOpen={isOpen} />}
         </div>
       </nav>
     </aside>
