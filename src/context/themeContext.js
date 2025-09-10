@@ -1,14 +1,12 @@
 "use client";
 import { createContext, useContext, useEffect, useState } from "react";
-import { Theme } from "@/themes/themes";
+import { CurrentTheme, Theme } from "@/themes/themes";
 
 const themeContext = createContext();
 
 export function ThemeContextProvider({ children }) {
   const [isBlackTheme, setIsBlackTheme] = useState(true);
-  const [currentTheme, setCurrentTheme] = useState({
-    colors: { primary: "bg-black", secondary: "bg-black", third: "bg-black" },
-  });
+  const [currentTheme, setCurrentTheme] = useState(CurrentTheme);
 
   useEffect(() => {
     if (isBlackTheme) {

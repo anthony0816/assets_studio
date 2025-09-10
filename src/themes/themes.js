@@ -14,3 +14,11 @@ export const Theme = {
     },
   },
 };
+
+export const CurrentTheme = {
+  colors: {
+    primary: "bg-black",
+    secondary: "bg-black",
+    third: "bg-black",
+  },
+};
