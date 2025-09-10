@@ -9,16 +9,16 @@ generator client {
   output   = "../src/generated/prisma"
 }
 
-// datasource db {
-//   provider  = "postgresql"
-//   url       = env("DATABASE_URL")
-//   directUrl = env("DIRECT_URL")
-// }
-
 datasource db {
-  provider  = "sqlite"
-  url       = env("sqlite_db")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
+
+// datasource db {
+//   provider  = "sqlite"
+//   url       = env("sqlite_db")
+// }
 
 
 
