@@ -7,6 +7,7 @@ import { useSize } from "@/context/resizeContext";
 import UserCard from "./userCard";
 import { useTheme } from "@/context/themeContext";
 import LogoAssetsStudio from "./LogoAssetsStudio";
+import MobileNavBar from "./MobileNavBar";
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(true);
@@ -20,32 +21,23 @@ export default function NavBar() {
     setMobileStyle(isMobile);
   }, [isMobile]);
 
-  const items = [
-    { name: "Create with IA", route: "/ia", fl: "c" },
-    { name: "Create with IA", route: "/ia", fl: "c" },
-    { name: "Create with IA", route: "/ia", fl: "c" },
-    { name: "Create with IA", route: "/ia", fl: "c" },
-    { name: "Create with IA", route: "/ia", fl: "c" },
-    { name: "Create with IA", route: "/ia", fl: "c" },
-    { name: "Create with IA", route: "/ia", fl: "c" },
-    { name: "Create with IA", route: "/ia", fl: "c" },
-  ];
+  const items = [{ name: "Create with IA", route: "/ia", fl: "c" }];
 
   if (!currentTheme) return;
   return (
-    <aside
-      className={
-        mobileStyle
-          ? `fixed bottom-0 left-0 w-full  ${currentTheme.colors.primary} flex flex-row overflow-x-auto`
-          : `h-[100vh] ${
-              currentTheme.colors.primary
-            } text-white shadow-lg transition-all duration-300 z-50  overflow-y-auto overflow-x-hidden
+    <>
+      <aside
+        className={
+          mobileStyle
+            ? `hidden`
+            : `h-[100vh] ${
+                currentTheme.colors.primary
+              } text-white shadow-lg transition-all duration-300 z-50  overflow-y-auto overflow-x-hidden
     ${isOpen ? "w-64" : "w-16"} 
     relative`
-      }
-    >
-      {/* Botón de expansión */}
-      {!mobileStyle && (
+        }
+      >
+        {/* Botón de expansión */}
         <div
           className={`flex justify-end p-4 sticky top-0 ${currentTheme.colors.primary}`}
         >
@@ -56,36 +48,31 @@ export default function NavBar() {
             {isOpen ? <FiX size={20} /> : <FiMenu size={20} />}
           </button>
         </div>
-      )}
-      {/*LOGO*/}
-      <LogoAssetsStudio isOpen={isOpen} onClick={() => router("/")} />
 
-      {/* Menú */}
-      <nav className={mobileStyle ? "mt-0 w-full" : "mt-4"}>
-        <div
-          className={
-            mobileStyle
-              ? "w-full flex  items-center gap-2 py-2 " // mobile: centrado horizontal/vertical
-              : "flex flex-col gap-2" // desktop: columna con gap vertical
-          }
-        >
-          {items.map((item, idx) => (
-            <div
-              key={`${item.name}-${idx}`} // clave única
-              onClick={() => router(item.route)}
-              className={`${
-                mobileStyle
-                  ? `whitespace-nowrap bg-blue-300 text-center flex-shrink-0`
-                  : ""
-              } whitespace-nowrap px-4 py-2 hover:bg-gray-800 rounded cursor-pointer`}
-            >
-              {mobileStyle ? item.name : isOpen ? item.name : item.fl}
+        {/*LOGO*/}
+        <LogoAssetsStudio isOpen={isOpen} onClick={() => router("/")} />
+
+        {/* Menú para escritorio*/}
+        {!mobileStyle && (
+          <nav className={"mt-4"}>
+            <div className={"flex flex-col gap-2"}>
+              {items.map((item, idx) => (
+                <div
+                  key={`${item.name}-${idx}`} // clave única
+                  onClick={() => router(item.route)}
+                  className={` whitespace-nowrap px-4 py-2 hover:bg-gray-800 rounded cursor-pointer`}
+                >
+                  {isOpen ? item.name : item.fl}
+                </div>
+              ))}
+
+              {<UserCard isOpen={isOpen} />}
             </div>
-          ))}
-
-          {!mobileStyle && <UserCard isOpen={isOpen} />}
-        </div>
-      </nav>
-    </aside>
+          </nav>
+        )}
+      </aside>
+      {/* Menu para Mobiles */}
+      {mobileStyle && <MobileNavBar items={items} router={router} />}
+    </>
   );
 }

@@ -1,13 +1,12 @@
-// components/LogoAssetsStudio.jsx
-export default function LogoAssetsStudio({
-  width = 260,
-  height = 72,
-  textPrimary = "#60A5FA", // azul (Assets)
-  textSecondary = "#FFFFFF", // blanco (Studio)
-  accent = "#10B981", // acento verde
+// components/LogoAS.jsx
+export default function LogoAS({
+  width = 132,
+  height = 132,
+  textPrimary = "#60A5FA", // gradiente del borde
+  textSecondary = "#FFFFFF", // color de la "A"
+  accent = "#10B981", // color de la "S"
   bg = "transparent",
-  title = "Assets Studio",
-  isOpen,
+  title = "AS",
   onClick,
 }) {
   const gradId = "as-grad";
@@ -16,7 +15,7 @@ export default function LogoAssetsStudio({
     <svg
       width={width}
       height={height}
-      viewBox="0 0 760 180"
+      viewBox="0 0 164 164"
       role="img"
       aria-label={title}
       style={{ display: "block", background: bg }}
@@ -39,7 +38,8 @@ export default function LogoAssetsStudio({
       </defs>
 
       {/* Isotipo “AS” */}
-      <g transform="translate(16, 24)" filter="url(#soft)">
+      <g transform="translate(16, 16)" filter="url(#soft)">
+        {/* Marco */}
         <rect
           x="0"
           y="0"
@@ -50,13 +50,13 @@ export default function LogoAssetsStudio({
           stroke={`url(#${gradId})`}
           strokeWidth="3"
         />
-        {/* A */}
+        {/* Letra A */}
         <path
           d="M26 108 L48 28 L70 108 L60 108 L54 90 L42 90 L36 108 Z M49 72 L51 64 L53 72 Z"
           fill={textSecondary}
           opacity="0.95"
         />
-        {/* S */}
+        {/* Letra S */}
         <path
           d="M80 46
              C80 36, 90 30, 104 30
@@ -72,61 +72,6 @@ export default function LogoAssetsStudio({
              C114 60, 120 56, 120 48
              C120 40, 112 36, 104 36
              C94 36, 86 40, 82 44 Z"
-          fill={accent}
-          opacity="0.9"
-        />
-      </g>
-
-      {/* Wordmark */}
-
-      <g
-        transform="translate(170, 56)"
-        className={`transition-all duration-300 ease-in-out
-    ${
-      isOpen
-        ? "opacity-100 translate-y-0"
-        : "opacity-0 -translate-y-4 pointer-events-none"
-    }`}
-      >
-        <text
-          x="0"
-          y="48"
-          fill={`url(#${gradId})`}
-          fontFamily="Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial"
-          fontSize="56"
-          fontWeight="800"
-          letterSpacing="0.5"
-        >
-          Assets
-        </text>
-        <text
-          x="230"
-          y="48"
-          fill={textSecondary}
-          opacity="0.95"
-          fontFamily="Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial"
-          fontSize="56"
-          fontWeight="600"
-          letterSpacing="0.5"
-        >
-          Studio
-        </text>
-
-        {/* Subrayados */}
-        <rect
-          x="2"
-          y="64"
-          width="200"
-          height="8"
-          rx="4"
-          fill={`url(#${gradId})`}
-        />
-        <rect
-          x="232"
-          y="64"
-          width="140"
-          height="8"
-          rx="4"
           fill={accent}
           opacity="0.9"
         />

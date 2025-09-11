@@ -7,6 +7,7 @@ import { SizeContextProvider } from "@/context/resizeContext";
 import { LoadingRouterProvider } from "@/Components/LoadingRouterProvider";
 import GlobalLoader from "@/Components/GlobalLoader";
 import { ThemeContextProvider } from "@/context/themeContext";
+import CustomBody from "@/Components/CustomBody";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,15 +28,17 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-row `}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <SizeContextProvider>
           <LoadingRouterProvider>
             <ThemeContextProvider>
-              <NavBar />
-              <GlobalLoader>
-                <Frame>{children}</Frame>
-              </GlobalLoader>
+              <CustomBody>
+                <NavBar />
+                <GlobalLoader>
+                  <Frame>{children}</Frame>
+                </GlobalLoader>
+              </CustomBody>
             </ThemeContextProvider>
           </LoadingRouterProvider>
         </SizeContextProvider>
