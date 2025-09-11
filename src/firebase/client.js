@@ -70,8 +70,20 @@ const mapUserFromFirebaseAuth = (user) => {
 };
 
 export const onAuthStateChange = (onChange) => {
-  auth.onAuthStateChanged((user) => {
+  auth.onAuthStateChanged(async (user) => {
     const nomrmalizedUser = mapUserFromFirebaseAuth(user);
+    if (user) {
+      const token = await user.getIdToken();
+      // Enviar token al backend para que lo convierta en cookie
+      await fetch("/api/session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token }),
+      });
+    } else {
+      // Usuario salió → pedir al backend que borre la cookie
+      await fetch("/api/session", { method: "DELETE" });
+    }
     onChange(nomrmalizedUser);
   });
 };

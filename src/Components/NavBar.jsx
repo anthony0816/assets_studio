@@ -21,7 +21,10 @@ export default function NavBar() {
     setMobileStyle(isMobile);
   }, [isMobile]);
 
-  const items = [{ name: "Create with IA", route: "/ia", fl: "c" }];
+  const items = [
+    { name: "Create with IA", route: "/IA-Creator", fl: "CR" },
+    { name: "Upload Asset", route: "/upload-asset", fl: "UP" },
+  ];
 
   if (!currentTheme) return;
   return (
@@ -55,25 +58,25 @@ export default function NavBar() {
         {/* Menú para escritorio*/}
         {!mobileStyle && (
           <nav className={"mt-4"}>
-            <div className={"flex flex-col gap-2"}>
+            <div className={"flex flex-col gap-3"}>
               {items.map((item, idx) => (
                 <div
                   key={`${item.name}-${idx}`} // clave única
                   onClick={() => router(item.route)}
-                  className={` whitespace-nowrap px-4 py-2 hover:bg-gray-800 rounded cursor-pointer`}
+                  className={`  ${currentTheme.colors.secondary} w-[90%] mx-auto whitespace-nowrap px-4 py-2 hover:bg-gray-800 rounded-xl cursor-pointer`}
                 >
                   {isOpen ? item.name : item.fl}
                 </div>
               ))}
 
-              {
+              <div className="mt-10">
                 <UserCard
                   isOpen={isOpen}
                   OpenNavFunction={() => {
                     setIsOpen(true);
                   }}
                 />
-              }
+              </div>
             </div>
           </nav>
         )}

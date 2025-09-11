@@ -4,6 +4,7 @@ export const Theme = {
       primary: "bg-gray-900",
       secondary: "bg-gray-700",
       third: "bg-gray-800",
+      fourth: "bg-gray-600",
     },
   },
   whiteTheme: {
@@ -11,6 +12,7 @@ export const Theme = {
       primary: "",
       secondary: "",
       third: "",
+      fourth: "",
     },
   },
 };
@@ -20,5 +22,6 @@ export const CurrentTheme = {
     primary: "bg-black",
     secondary: "bg-black",
     third: "bg-black",
+    fourth: "bg-black",
   },
 };

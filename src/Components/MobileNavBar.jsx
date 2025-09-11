@@ -6,11 +6,13 @@ import { useSize } from "@/context/resizeContext";
 import { useClickOutside } from "@/utils/hooks";
 import { useRef } from "react";
 import UserCard from "./userCard";
+import { useTheme } from "@/context/themeContext";
 
 export default function MobileNavBar({ items, router }) {
   const [isOpen, setIsOpen] = useState(false);
   const { isMobile } = useSize(null);
   const headerRef = useRef(null);
+  const { currentTheme } = useTheme();
 
   useClickOutside(headerRef, () => setIsOpen(false));
 
@@ -40,7 +42,9 @@ export default function MobileNavBar({ items, router }) {
 
       {/* Menú desplegable */}
       <nav
-        className={`flex flex-col bg-gray-800 overflow-hidden transition-all duration-300 ease-in-out ${
+        className={`flex flex-col ${isOpen ? "pb-5" : ""} space-y-2 ${
+          currentTheme.colors.primary
+        } overflow-hidden transition-all duration-300 ease-in-out ${
           isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
         }`}
       >
@@ -51,7 +55,7 @@ export default function MobileNavBar({ items, router }) {
               router(item.route);
               setIsOpen(false); // cerrar menú al navegar
             }}
-            className="px-4 py-3 hover:bg-gray-700 cursor-pointer whitespace-nowrap"
+            className={` ${currentTheme.colors.third} w-[90%] mx-auto rounded-xl px-4 py-3 hover:bg-gray-700 cursor-pointer whitespace-nowrap`}
           >
             {item.name}
           </div>
