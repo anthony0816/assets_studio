@@ -10,7 +10,7 @@ if (!admin.apps.length) {
     storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
   });
 }
-
+// const
 export const adminAuth = admin.auth();
 export const adminDb = admin.firestore();
 export const adminStorage = admin.storage();
