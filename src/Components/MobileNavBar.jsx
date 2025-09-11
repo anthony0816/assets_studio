@@ -22,7 +22,7 @@ export default function MobileNavBar({ items, router }) {
       <div className="flex items-center justify-between px-4 py-3">
         {/* Logo */}
         <div className="">
-          <LogoAS height={56} width={56} onClick={() => router("/")} />
+          <LogoAS height={49} width={49} onClick={() => router("/")} />
         </div>
 
         {/* Botón menú */}
@@ -33,9 +33,10 @@ export default function MobileNavBar({ items, router }) {
           {isOpen ? <FiX size={24} /> : <FiMenu size={24} />}
         </button>
 
-        {/* Usuario */}
-        <div className="p-2 rounded hover:bg-gray-800 transition">
+        {/* Usuario sin Autenticar */}
+        <div className="p-2 rounded hover:bg-gray-800 transition flex space-x-2 cursor-pointer">
           <FiUser size={24} />
+          <div>Sing up</div>
         </div>
       </div>
 
