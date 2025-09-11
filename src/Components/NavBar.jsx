@@ -66,7 +66,14 @@ export default function NavBar() {
                 </div>
               ))}
 
-              {<UserCard isOpen={isOpen} />}
+              {
+                <UserCard
+                  isOpen={isOpen}
+                  OpenNavFunction={() => {
+                    setIsOpen(true);
+                  }}
+                />
+              }
             </div>
           </nav>
         )}

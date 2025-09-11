@@ -4,6 +4,7 @@ import {
   GithubAuthProvider,
   signInWithPopup,
   GoogleAuthProvider,
+  signOut,
 } from "firebase/auth";
 
 const firebaseConfig = {
@@ -25,7 +26,6 @@ const googleProvider = new GoogleAuthProvider();
 export async function loginWithGitHub() {
   try {
     const result = await signInWithPopup(auth, githubProvider);
-    console.log("Usuario:", result.user);
   } catch (error) {
     console.error("Error en login con GitHub:", error);
   }
@@ -34,8 +34,53 @@ export async function loginWithGitHub() {
 export async function loginWithGoogle() {
   try {
     const result = await signInWithPopup(auth, googleProvider);
-    console.log("Usuario:", result.user);
+    return mapUserFromFirebaseAuth(result.user);
   } catch (error) {
     console.error("Error en login con Google:", error);
+  }
+}
+
+const mapUserFromFirebaseAuth = (user) => {
+  if (!user) return null;
+
+  const {
+    uid,
+    displayName,
+    email,
+    emailVerified,
+    photoURL,
+    phoneNumber,
+    providerData,
+    metadata,
+    stsTokenManager,
+  } = user;
+
+  return {
+    uid,
+    name: displayName || null,
+    email: email || null,
+    emailVerified: !!emailVerified,
+    avatar: photoURL || null,
+    phoneNumber: phoneNumber || null,
+    providerId: providerData?.[0]?.providerId || null,
+    createdAt: metadata?.creationTime || null,
+    lastLoginAt: metadata?.lastSignInTime || null,
+    accessToken: stsTokenManager?.accessToken || null, // úsalo solo si lo necesitas
+  };
+};
+
+export const onAuthStateChange = (onChange) => {
+  auth.onAuthStateChanged((user) => {
+    const nomrmalizedUser = mapUserFromFirebaseAuth(user);
+    onChange(nomrmalizedUser);
+  });
+};
+
+export async function logout() {
+  try {
+    await signOut(auth);
+    console.log("Sesión cerrada correctamente");
+  } catch (error) {
+    console.error("Error al cerrar sesión:", error);
   }
 }

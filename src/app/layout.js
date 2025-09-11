@@ -8,6 +8,7 @@ import { LoadingRouterProvider } from "@/Components/LoadingRouterProvider";
 import GlobalLoader from "@/Components/GlobalLoader";
 import { ThemeContextProvider } from "@/context/themeContext";
 import CustomBody from "@/Components/CustomBody";
+import AuthContextProvaider from "@/context/authContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,10 +35,12 @@ export default function RootLayout({ children }) {
           <LoadingRouterProvider>
             <ThemeContextProvider>
               <CustomBody>
-                <NavBar />
-                <GlobalLoader>
-                  <Frame>{children}</Frame>
-                </GlobalLoader>
+                <AuthContextProvaider>
+                  <NavBar />
+                  <GlobalLoader>
+                    <Frame>{children}</Frame>
+                  </GlobalLoader>
+                </AuthContextProvaider>
               </CustomBody>
             </ThemeContextProvider>
           </LoadingRouterProvider>

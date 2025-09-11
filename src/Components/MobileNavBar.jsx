@@ -5,6 +5,7 @@ import LogoAS from "./LogoAS";
 import { useSize } from "@/context/resizeContext";
 import { useClickOutside } from "@/utils/hooks";
 import { useRef } from "react";
+import UserCard from "./userCard";
 
 export default function MobileNavBar({ items, router }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -34,10 +35,7 @@ export default function MobileNavBar({ items, router }) {
         </button>
 
         {/* Usuario sin Autenticar */}
-        <div className="p-2 rounded hover:bg-gray-800 transition flex space-x-2 cursor-pointer">
-          <FiUser size={24} />
-          <div>Sing up</div>
-        </div>
+        <UserCard isOpen={true} />
       </div>
 
       {/* Menú desplegable */}

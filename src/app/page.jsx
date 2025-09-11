@@ -1,16 +1,23 @@
 "use client";
 import { loginWithGitHub } from "@/firebase/client";
 import { loginWithGoogle } from "@/firebase/client";
+import { useState } from "react";
+import { useAuth } from "@/context/authContext";
 
 export default function TestTailwind() {
+  const { user } = useAuth();
+
+  console.log("User del contexto", user);
+
   async function HandleClick() {
     const res = await loginWithGitHub();
     console.log("respuesta Firebase", res);
   }
 
   async function HandleClick2() {
-    const res = await loginWithGoogle();
+    const user = await loginWithGoogle();
     console.log("respuesta google", res);
+    setUser(user);
   }
 
   return (
@@ -34,6 +41,9 @@ export default function TestTailwind() {
       >
         Google
       </button>
+      {user == undefined && <p>Usuario indefinido</p>}
+      {user == null && <p>user null</p>}
+      {user && <p>logued</p>}
     </div>
   );
 }

@@ -2,8 +2,8 @@ export const Theme = {
   blackTheme: {
     colors: {
       primary: "bg-gray-900",
-      secondary: "",
-      third: "",
+      secondary: "bg-gray-700",
+      third: "bg-gray-800",
     },
   },
   whiteTheme: {
