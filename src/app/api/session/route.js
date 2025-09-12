@@ -9,7 +9,8 @@ export async function POST(request) {
     const decoded = await adminAuth.verifyIdToken(token);
 
     // Guardar cookie HTTP-Only
-    cookies().set({
+    const cookieStore = await cookies();
+    cookieStore.set({
       name: "session",
       value: token,
       httpOnly: true,
@@ -27,7 +28,8 @@ export async function POST(request) {
 
 export async function DELETE() {
   // Borrar cookie
-  cookies().set({
+  const cookieStore = await cookies();
+  cookieStore.set({
     name: "session",
     value: "",
     httpOnly: true,

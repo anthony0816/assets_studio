@@ -33,24 +33,22 @@ model user {
   username String @unique
   password String
   email String @unique
-  reports Report[]
-  assets Asset[]
   roll USER_ROLL @default(cliente)
+  providerId String @default("local")
 }
 
 model Asset{
   id Int @id @default(autoincrement())
-  likes Int 
-  reports Int
-  createdAt DateTime 
+  likes Int @default(0)
+  reports Int @default(0)
+  createdAt DateTime @default(now())
   src String
-  user user @relation(references: [id],fields: [user_id], onDelete: Cascade)
-  user_id Int
+  user_id String
+  user_providerId String
 }
 
 model Report{
 id Int @id @default(autoincrement())
-user user @relation(fields: [user_id],references: [id], onDelete: Cascade)
-user_id Int
+user_id String
 description String 
 }

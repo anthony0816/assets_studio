@@ -7,7 +7,9 @@ import { logout } from "@/firebase/client";
 const AuthContext = createContext();
 
 export default function AuthContextProvaider({ children }) {
-  const [user, setUser] = useState(undefined);
+  const [user, setUser] = useState("await");
+
+  console.log("current user:", user);
 
   useEffect(() => {
     onAuthStateChange(setUser);

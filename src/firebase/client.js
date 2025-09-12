@@ -75,11 +75,13 @@ export const onAuthStateChange = (onChange) => {
     if (user) {
       const token = await user.getIdToken();
       // Enviar token al backend para que lo convierta en cookie
-      await fetch("/api/session", {
+      const res = await fetch("/api/session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token }),
       });
+      const data = await res.json();
+      console.log("Respuesta de iniciar Secion", data);
     } else {
       // Usuario salió → pedir al backend que borre la cookie
       await fetch("/api/session", { method: "DELETE" });

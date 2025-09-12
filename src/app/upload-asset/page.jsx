@@ -1,17 +1,38 @@
 "use client";
 import { useTheme } from "@/context/themeContext";
 import { useState } from "react";
+import { CreateAsset } from "@/utils/functions";
+import { useAuth } from "@/context/authContext";
+import LoadingSpinner from "@/Components/LoadingSpiner";
+import { useLoadingRouter } from "@/Components/LoadingRouterProvider";
 
 import { fileToBase64 } from "@/utils/functions";
 
 export default function UploadAsset() {
   const { currentTheme } = useTheme();
   const [file, setFile] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const { user } = useAuth();
+  const { router } = useLoadingRouter();
 
   async function handleSubmit(e) {
+    setIsLoading(true);
     e.preventDefault();
     const base64file = await fileToBase64(file);
-    console.log(base64file);
+    if (!user) {
+      setIsLoading(false);
+      router("/login");
+      return;
+    }
+    const data = await CreateAsset(
+      base64file,
+      user?.id,
+      user?.uid,
+      user?.providerId
+    );
+    setFile(null);
+    setIsLoading(false);
+    console.log("BAckend Create Asset", data);
   }
 
   return (
@@ -40,12 +61,13 @@ export default function UploadAsset() {
           {/* Botón */}
           <div className="pt-4">
             <button
+              disabled={file == null}
               type="submit"
               className={`w-full bg-indigo-500 hover:bg-indigo-600 text-white font-medium py-2 px-4 rounded-lg transition ${
                 !file && "opacity-50"
               }`}
             >
-              Create Asset
+              {isLoading ? <LoadingSpinner color="white" /> : "Create Asset"}
             </button>
           </div>
         </form>

@@ -24,6 +24,7 @@ export default function NavBar() {
   const items = [
     { name: "Create with IA", route: "/IA-Creator", fl: "CR" },
     { name: "Upload Asset", route: "/upload-asset", fl: "UP" },
+    { name: "My Assets", route: "/my-assets", fl: "MA" },
   ];
 
   if (!currentTheme) return;
