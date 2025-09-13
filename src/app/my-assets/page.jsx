@@ -8,27 +8,32 @@ export default function MyAsets() {
   const { user } = useAuth();
   const { router } = useLoadingRouter();
   const [isLoading, setIsLoading] = useState(true);
-  const [assets, setAssets] = useState(null);
+  const [assets, setAssets] = useState([]);
 
   useEffect(() => {
-    async function loadAssets() {
-      if (user != "await") {
-        if (user) {
-          const data = await GetAssetsByUserId(
-            user?.uid,
-            user?.id,
-            user.providerId
-          );
-          console.log("Get all Assets", data);
-          if (data) setAssets(data);
+    async function execute() {
+      await LoadAssets();
+    }
+    execute();
+  }, [user]);
 
-          setIsLoading(false);
-        }
+  async function LoadAssets() {
+    setIsLoading(true);
+    if (user != "await") {
+      if (user) {
+        const data = await GetAssetsByUserId(
+          user?.uid,
+          user?.id,
+          user.providerId
+        );
+        console.log("Get all Assets", data);
+        if (data) setAssets(data);
+
         setIsLoading(false);
       }
+      setIsLoading(false);
     }
-    loadAssets();
-  }, [user]);
+  }
 
   if (isLoading) {
     return (
@@ -45,10 +50,26 @@ export default function MyAsets() {
       </div>
     );
   }
+  if (assets.length === 0) {
+    console.error("Database connection error");
+    return (
+      <div className="flex flex-col items-center justify-center gap-4 py-10">
+        <p className="text-red-600 font-semibold text-lg">
+          Could not connect to the database.
+        </p>
+        <button
+          onClick={() => LoadAssets()}
+          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+        >
+          Try Again
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-4">
-      {assets.map((asset) => (
+      {assets?.map((asset) => (
         <div
           key={asset.id}
           className="bg-white rounded-lg shadow hover:shadow-lg transition overflow-hidden"

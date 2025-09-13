@@ -2,7 +2,6 @@ import { VerifySesion } from "@/utils/functions";
 import { adminAuth } from "@/libs/firebase-admin";
 import { NextResponse } from "next/server";
 import { prisma } from "@/libs/prisma";
-import { use } from "react";
 
 export async function GET(params) {
   return NextResponse.json("hola mundo");

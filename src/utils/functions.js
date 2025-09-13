@@ -34,7 +34,7 @@ export async function CreateAsset(base64, id_local_provider, uid, providerId) {
     providerId = "local";
   }
 
-  const res = await fetch("api/assets/create", {
+  const res = await fetch("api/assets/upload", {
     method: "POST",
     headers: {
       "Content-Type": "Application/json",
