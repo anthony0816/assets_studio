@@ -67,13 +67,7 @@ export async function getUserByUid(uid, adminAuth) {
   }
 }
 
-export async function GetAssetsByUserId(
-  uid,
-  id,
-  providerId,
-  page = 0,
-  limit = 10
-) {
+export async function GetAssetsByUserId(uid, id, providerId, page, limit) {
   let user_id = id;
   if (providerId != "local") {
     user_id = uid;
@@ -95,7 +89,7 @@ export async function GetAssetsByUserId(
   return data;
 }
 
-export async function GetAssets(page = 0, limit = 10) {
+export async function GetAssets(page, limit) {
   const res = await fetch("api/assets/get", {
     method: "POST",
     headers: {
@@ -111,7 +105,7 @@ export async function GetAssets(page = 0, limit = 10) {
   return data;
 }
 
-export async function GetAssetsByCategoria(page = 0, limit = 10, categoria) {
+export async function GetAssetsByCategoria(page, limit, categoria) {
   const res = await fetch("api/assets/get", {
     method: "POST",
     headers: {

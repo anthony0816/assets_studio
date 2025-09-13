@@ -82,6 +82,12 @@ export const onAuthStateChange = (onChange) => {
           body: JSON.stringify({ token }),
         });
         const data = await res.json();
+        if (!res.ok) {
+          console.log("Iniciandi Sesion:", data);
+          return onChange(null);
+        }
+        const { uid } = data;
+        if (uid) onChange(nomrmalizedUser);
         console.log("Respuesta de iniciar Secion", data);
       } catch (error) {
         console.log("Error Iniciando sesion:", error.messaje);
@@ -90,8 +96,8 @@ export const onAuthStateChange = (onChange) => {
     } else {
       // Usuario salió → pedir al backend que borre la cookie
       await fetch("/api/session", { method: "DELETE" });
+      onChange(nomrmalizedUser);
     }
-    onChange(nomrmalizedUser);
   });
 };
 

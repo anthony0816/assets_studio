@@ -35,4 +35,9 @@ export const CurrentTheme = {
     third: "bg-black",
     fourth: "bg-black",
   },
+  textColor: {
+    primary: "text-gray-600",
+    secondary: "text-gray-400",
+    third: "",
+  },
 };

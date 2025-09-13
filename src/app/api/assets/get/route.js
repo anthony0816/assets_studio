@@ -9,7 +9,7 @@ export async function GET(params) {
 
 export async function POST(request) {
   try {
-    const session = VerifySesion(request, adminAuth);
+    const session = await VerifySesion(request, adminAuth);
 
     if (!session) {
       return NextResponse.json(
@@ -18,12 +18,7 @@ export async function POST(request) {
       );
     }
 
-    const {
-      user_id,
-      page = 0,
-      limit = 3,
-      categoria = null,
-    } = await request.json();
+    const { user_id, page, limit, categoria = null } = await request.json();
 
     if (categoria) {
       const assets = await prisma.asset.findMany({

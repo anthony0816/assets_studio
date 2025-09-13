@@ -21,11 +21,14 @@ export default function LazyLoadPage({
   const [limit, setLimit] = useState(10);
   const [error, setError] = useState(null);
   const [hasMore, setHasMore] = useState(true);
-
   const loaderRef = useRef(null);
+
+  console.log("assets", assets.length);
 
   useEffect(() => {
     async function execute() {
+      setAssets([]);
+      setPage(0);
       await LoadAssets();
     }
     execute();
@@ -49,13 +52,7 @@ export default function LazyLoadPage({
     setError(false);
     if (user != "await") {
       if (user) {
-        const data = await GetAssetsByUserId(
-          user?.uid,
-          user?.id,
-          user.providerId,
-          page,
-          limit
-        );
+        const data = await Get();
         console.log("Get all Assets", data);
 
         if (data) {
@@ -74,6 +71,7 @@ export default function LazyLoadPage({
             const nuevos = data.filter((a) => !ids.has(a.id));
             return [...prev, ...nuevos];
           });
+
           setPage((prev) => prev + 1);
 
           if (session != null || session != undefined) {

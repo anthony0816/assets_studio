@@ -28,6 +28,9 @@ export default function MobileNavBar({ items, router }) {
           <LogoAS height={49} width={49} onClick={() => router("/")} />
         </div>
 
+        {/* Usuario sin Autenticar */}
+        <UserCard isOpen={true} />
+
         {/* Botón menú */}
         <button
           onClick={() => setIsOpen(!isOpen)}
@@ -35,9 +38,6 @@ export default function MobileNavBar({ items, router }) {
         >
           {isOpen ? <FiX size={24} /> : <FiMenu size={24} />}
         </button>
-
-        {/* Usuario sin Autenticar */}
-        <UserCard isOpen={true} />
       </div>
 
       {/* Menú desplegable */}
