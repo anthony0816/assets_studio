@@ -6,13 +6,24 @@ export const Theme = {
       third: "bg-gray-800",
       fourth: "bg-gray-600",
     },
+    textColor: {
+      primary: "text-gray-100",
+      secondary: "text-gray-300",
+      third: "",
+    },
   },
+
   whiteTheme: {
     colors: {
       primary: "",
       secondary: "",
       third: "",
       fourth: "",
+    },
+    textColor: {
+      primary: "text-gray-600",
+      secondary: "text-gray-400",
+      third: "",
     },
   },
 };

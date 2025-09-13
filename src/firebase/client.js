@@ -73,15 +73,20 @@ export const onAuthStateChange = (onChange) => {
   auth.onAuthStateChanged(async (user) => {
     const nomrmalizedUser = mapUserFromFirebaseAuth(user);
     if (user) {
-      const token = await user.getIdToken();
-      // Enviar token al backend para que lo convierta en cookie
-      const res = await fetch("/api/session", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token }),
-      });
-      const data = await res.json();
-      console.log("Respuesta de iniciar Secion", data);
+      try {
+        const token = await user.getIdToken();
+        // Enviar token al backend para que lo convierta en cookie
+        const res = await fetch("/api/session", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token }),
+        });
+        const data = await res.json();
+        console.log("Respuesta de iniciar Secion", data);
+      } catch (error) {
+        console.log("Error Iniciando sesion:", error.messaje);
+        onChange(null);
+      }
     } else {
       // Usuario salió → pedir al backend que borre la cookie
       await fetch("/api/session", { method: "DELETE" });

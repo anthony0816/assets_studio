@@ -2,10 +2,17 @@
 import { useAuth } from "@/context/authContext";
 import { useLoadingRouter } from "@/Components/LoadingRouterProvider";
 import { useEffect, useState, useRef } from "react";
-import { GetAssetsByUserId } from "@/utils/functions";
+import {
+  GetAssetsByUserId,
+  GetAssets,
+  GetAssetsByCategoria,
+} from "@/utils/functions";
 import AssetsCard from "@/Components/AssetsCard";
 
-export default function MyAsets() {
+export default function LazyLoadPage({
+  ByCurrentUser = false,
+  category = false,
+}) {
   const { user } = useAuth();
   const { router } = useLoadingRouter();
   const [isLoading, setIsLoading] = useState(true);
@@ -84,23 +91,28 @@ export default function MyAsets() {
     }
   }
 
-  // if (isLoading) {
-  //   return (
-  //     <div className="flex flex-col items-center justify-center gap-3 py-10">
-  //       <div className="relative">
-  //         {/* Círculo base */}
-  //         <div className="h-12 w-12 rounded-full border-4 border-gray-200"></div>
-  //         {/* Spinner animado */}
-  //         <div className="absolute top-0 left-0 h-12 w-12 rounded-full border-4 border-t-transparent border-b-blue-500 animate-spin"></div>
-  //       </div>
-  //       <span className="text-sm text-gray-500 animate-pulse">
-  //         Cargando assets...
-  //       </span>
-  //     </div>
-  //   );
-  // }
-
-  // if (user == null) return;
+  async function Get() {
+    if (ByCurrentUser) {
+      const userAssets = await GetAssetsByUserId(
+        user?.uid,
+        user?.id,
+        user.providerId,
+        page,
+        limit
+      );
+      return userAssets;
+    }
+    if (category) {
+      const byCategoryAssets = await GetAssetsByCategoria(
+        page,
+        limit,
+        category
+      );
+      return byCategoryAssets;
+    }
+    const assets = await GetAssets(page, limit);
+    return assets;
+  }
 
   if (error) {
     return (

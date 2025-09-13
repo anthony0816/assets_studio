@@ -19,7 +19,7 @@ export default function MobileNavBar({ items, router }) {
   return (
     <header
       ref={headerRef}
-      className="w-full bg-gray-900 text-white shadow-md sticky top-0 left-0 z-50"
+      className="w-full bg-gray-900 text-white shadow-md fixed top-0 left-0 z-50"
     >
       {/* Barra superior */}
       <div className="flex items-center justify-between px-4 py-3">

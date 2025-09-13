@@ -37,7 +37,7 @@ export default function UploadAsset() {
 
   return (
     <div
-      className={`min-h-screen ${currentTheme.colors.primary} text-white flex items-center justify-center p-6`}
+      className={`min-h-screen ${currentTheme.colors.primary} ${currentTheme.textColor.primary} flex items-center justify-center p-6`}
     >
       <div
         className={`${currentTheme.colors.third} rounded-lg shadow-lg w-full max-w-lg p-8 space-y-6`}

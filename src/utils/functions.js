@@ -67,22 +67,63 @@ export async function getUserByUid(uid, adminAuth) {
   }
 }
 
-export async function GetAssetsByUserId(uid, id, providerId) {
+export async function GetAssetsByUserId(
+  uid,
+  id,
+  providerId,
+  page = 0,
+  limit = 10
+) {
   let user_id = id;
   if (providerId != "local") {
     user_id = uid;
   }
 
-  const res = await fetch("api/assets/getByUser", {
+  const res = await fetch("api/assets/get", {
     method: "POST",
     headers: {
       "Content-type": "Application/json",
     },
     body: JSON.stringify({
       user_id,
+      page,
+      limit,
     }),
   });
-  if (!res.ok) return null;
+
+  const data = await res.json();
+  return data;
+}
+
+export async function GetAssets(page = 0, limit = 10) {
+  const res = await fetch("api/assets/get", {
+    method: "POST",
+    headers: {
+      "Content-type": "Application/json",
+    },
+    body: JSON.stringify({
+      page,
+      limit,
+    }),
+  });
+
+  const data = await res.json();
+  return data;
+}
+
+export async function GetAssetsByCategoria(page = 0, limit = 10, categoria) {
+  const res = await fetch("api/assets/get", {
+    method: "POST",
+    headers: {
+      "Content-type": "Application/json",
+    },
+    body: JSON.stringify({
+      page,
+      limit,
+      categoria,
+    }),
+  });
+
   const data = await res.json();
   return data;
 }
