@@ -41,7 +41,7 @@ export default function LazyLoadPage({
           if (hasMore) LoadAssets();
         }
       },
-      { threshold: 1 }
+      { threshold: 0.1 }
     );
     if (loaderRef.current) observer.observe(loaderRef.current);
     return () => observer.disconnect();

@@ -1,8 +1,9 @@
 import { FiUser, FiLoader } from "react-icons/fi";
 import { useAuth } from "@/context/authContext";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useTheme } from "@/context/themeContext";
 import { useLoadingRouter } from "./LoadingRouterProvider";
+import { useClickOutside } from "@/utils/hooks";
 
 export default function UserCard({ isOpen, OpenNavFunction = null }) {
   const { user, loading, logout } = useAuth();
@@ -13,7 +14,10 @@ export default function UserCard({ isOpen, OpenNavFunction = null }) {
   const [imageError, setImageError] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
 
+  const userCardRef = useRef(null);
   const { router } = useLoadingRouter();
+
+  useClickOutside(userCardRef, () => setIsExpanded(false));
 
   const handleImageLoad = () => {
     setImageLoaded(true);
@@ -46,7 +50,7 @@ export default function UserCard({ isOpen, OpenNavFunction = null }) {
           {isOpen && <div className="whitespace-nowrap">Sign up</div>}
         </div>
       ) : (
-        <div className="relative">
+        <div ref={userCardRef} className="relative">
           <div
             onClick={() => {
               setIsExpanded(!isExpanded);
@@ -83,10 +87,14 @@ export default function UserCard({ isOpen, OpenNavFunction = null }) {
 
           {/* Menu desplegable con opciones de usuario autenticado  */}
           <div
-            className={`absolute ${
+            className={`absolute overflow-hidden ${
               currentTheme.colors.secondary
             } rounded-xl p-2 mx-auto w-full flex flex-col space-y-2 justify-center transition ${
-              !isOpen ? "opacity-0" : isExpanded ? "opacity-100" : "opacity-0"
+              !isOpen
+                ? "opacity-0"
+                : isExpanded
+                ? " opacity-100"
+                : " pointer-events-none opacity-0"
             }`}
           >
             <button className=" whitespace-nowrap px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-medium shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-200">
