@@ -26,6 +26,7 @@ export async function POST(request) {
           await prisma.asset.findMany({
             skip: page * limit,
             take: limit,
+            orderBy: { likes: "asc" },
           })
         );
 
@@ -34,6 +35,7 @@ export async function POST(request) {
           await prisma.asset.findMany({
             skip: page * limit,
             take: limit,
+            orderBy: { createdAt: "desc" },
           })
         );
     }

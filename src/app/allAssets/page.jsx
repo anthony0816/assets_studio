@@ -20,9 +20,9 @@ export default function AssetsPage() {
     { name: "Lastest", clave: "lastest" },
   ];
 
-  async function handleItemsClick(clave) {
+  const handleItemsClick = async (clave) => {
     setParam(clave);
-  }
+  };
 
   return (
     <>
@@ -68,6 +68,7 @@ export default function AssetsPage() {
           items={items}
           show={isMobile}
           colorContext={colorContext}
+          itemsOnClick={handleItemsClick}
         />
       </section>
       <div className={`pt-30`}>

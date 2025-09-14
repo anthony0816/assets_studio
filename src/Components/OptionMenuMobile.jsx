@@ -1,7 +1,12 @@
 "use client";
 import { useState } from "react";
 
-export default function OptionMenuMobile({ items, show, colorContext }) {
+export default function OptionMenuMobile({
+  items,
+  show,
+  colorContext,
+  itemsOnClick,
+}) {
   const { color, tcolor } = colorContext;
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -17,14 +22,15 @@ export default function OptionMenuMobile({ items, show, colorContext }) {
           >
             {items.map((item) => (
               <li
-                key={item}
+                onClick={() => itemsOnClick(item.clave)}
+                key={item.clave}
                 className={` ${
                   show ? "" : ""
                 } whitespace-nowrap rounded-xl cursor-pointer p-1 px-3 font-bold ${
                   color.primary
                 } ${tcolor.secondary}`}
               >
-                {item}
+                {item.name}
               </li>
             ))}
           </div>

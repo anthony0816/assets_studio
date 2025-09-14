@@ -1,7 +1,7 @@
 "use client";
 import { useAuth } from "@/context/authContext";
 import { useLoadingRouter } from "@/Components/LoadingRouterProvider";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import {
   GetAssetsByUserId,
   GetAssets,
@@ -27,29 +27,7 @@ export default function LazyLoadPage({
 
   console.log("assets", assets.length);
 
-  useEffect(() => {
-    async function execute() {
-      setAssets([]);
-      setPage(0);
-      await LoadAssets();
-    }
-    execute();
-  }, [user, param]);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !isLoading) {
-          if (hasMore) LoadAssets();
-        }
-      },
-      { threshold: 0.1 }
-    );
-    if (loaderRef.current) observer.observe(loaderRef.current);
-    return () => observer.disconnect();
-  }, [isLoading]);
-
-  async function LoadAssets() {
+  const LoadAssets = useCallback(async () => {
     setIsLoading(true);
     setError(false);
     if (user != "await") {
@@ -89,7 +67,33 @@ export default function LazyLoadPage({
       setIsLoading(false);
       router("/login");
     }
-  }
+  }, [hasMore, isLoading, page, limit, user, param]);
+
+  useEffect(() => {
+    setHasMore(true);
+    setAssets([]);
+    setPage(0);
+    setIsLoading(true);
+  }, [user, param]);
+
+  useEffect(() => {
+    if (page === 0 && hasMore && isLoading) {
+      LoadAssets();
+    }
+  }, [page, hasMore, isLoading, LoadAssets]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !isLoading) {
+          if (hasMore) LoadAssets();
+        }
+      },
+      { threshold: 0.1 }
+    );
+    if (loaderRef.current) observer.observe(loaderRef.current);
+    return () => observer.disconnect();
+  }, [isLoading, hasMore, LoadAssets]);
 
   async function Get() {
     if (param != "") {
