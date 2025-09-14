@@ -1,9 +1,37 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/libs/prisma";
+import { VerifySesion } from "@/utils/functions";
+import { adminAuth } from "@/libs/firebase-admin";
 
 export async function POST(request) {
   try {
-    const { param, page, limit } = await request.json();
+    const { param, page, limit, freeAcces } = await request.json();
+
+    {
+      /* Comprobar si es free acces o no  */
+    }
+    if (!freeAcces) {
+      const session = VerifySesion(request, adminAuth);
+      if (!session)
+        return NextResponse.json(
+          { error: "Unauthorized", session },
+          { status: 401 }
+        );
+    }
+
+    if (param.startsWith("cat-")) {
+      const categoria = param.split("-")[1];
+      return NextResponse.json(
+        await prisma.asset.findMany({
+          where: {
+            categoria: categoria,
+          },
+          skip: page * limit,
+          take: limit,
+        })
+      );
+    }
+
     switch (param) {
       case "explore":
         return NextResponse.json(

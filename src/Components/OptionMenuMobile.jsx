@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import CategorySelector from "./CategorySelector";
 
 export default function OptionMenuMobile({
   items,
@@ -71,12 +72,11 @@ export default function OptionMenuMobile({
             <div className="flex flex-row ml-5 items-center whitespace-nowrap">
               <p className={`${tcolor.primary} mr-4 `}>Categorias: </p>
               <select
+                onChange={(e) => itemsOnClick(e.target.value)}
                 className={`  whitespace-nowrap rounded-xl cursor-pointer p-1 px-3 font-bold ${color.primary} ${tcolor.secondary}`}
               >
                 <option value="">Select</option>
-                <option value="objetos">Objetos</option>
-                <option value="presonajes">Personajes</option>
-                <option value="naturaleza">Naturaleza</option>
+                <CategorySelector />
               </select>
             </div>
           </div>

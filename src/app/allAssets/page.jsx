@@ -1,5 +1,6 @@
 "use client";
 import LazyLoadPage from "@/Components/LazyLoadPageComponent";
+import CategorySelector from "@/Components/CategorySelector";
 import { useTheme } from "@/context/themeContext";
 import { useSize } from "@/context/resizeContext";
 import OptionMenuMobile from "@/Components/OptionMenuMobile";
@@ -51,12 +52,11 @@ export default function AssetsPage() {
               <div className="flex flexd-row ml-5  whitespace-nowrap">
                 <p className={`${tcolor.primary} mr-4 `}>Categorias: </p>
                 <select
+                  onChange={(e) => handleItemsClick(e.target.value)}
                   className={`  whitespace-nowrap rounded-xl cursor-pointer p-1 px-3 font-bold ${color.primary} ${tcolor.secondary}`}
                 >
                   <option value="">Select</option>
-                  <option value="objetos">Objetos</option>
-                  <option value="presonajes">Personajes</option>
-                  <option value="naturaleza">Naturaleza</option>
+                  <CategorySelector />
                 </select>
               </div>
             </li>
@@ -72,7 +72,7 @@ export default function AssetsPage() {
         />
       </section>
       <div className={`pt-30`}>
-        <LazyLoadPage param={param} />
+        <LazyLoadPage param={param} freeAcces={true} />
       </div>
     </>
   );

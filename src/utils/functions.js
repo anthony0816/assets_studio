@@ -24,7 +24,13 @@ export async function VerifySesion(request, adminAuth) {
   }
 }
 
-export async function CreateAsset(base64, id_local_provider, uid, providerId) {
+export async function CreateAsset(
+  base64,
+  id_local_provider,
+  uid,
+  providerId,
+  categoria
+) {
   console.log("ProviderID", providerId);
   let id = id_local_provider;
   if (providerId == "google.com") {
@@ -43,6 +49,7 @@ export async function CreateAsset(base64, id_local_provider, uid, providerId) {
       base64,
       id,
       user_providerId: providerId,
+      categoria: categoria,
     }),
   });
   const data = await res.json();
@@ -67,7 +74,14 @@ export async function getUserByUid(uid, adminAuth) {
   }
 }
 
-export async function GetAssetsByUserId(uid, id, providerId, page, limit) {
+export async function GetAssetsByUserId(
+  uid,
+  id,
+  providerId,
+  page,
+  limit,
+  freeAcces = false
+) {
   let user_id = id;
   if (providerId != "local") {
     user_id = uid;
@@ -82,6 +96,7 @@ export async function GetAssetsByUserId(uid, id, providerId, page, limit) {
       user_id,
       page,
       limit,
+      freeAcces,
     }),
   });
 
@@ -89,7 +104,7 @@ export async function GetAssetsByUserId(uid, id, providerId, page, limit) {
   return data;
 }
 
-export async function GetAssets(page, limit) {
+export async function GetAssets(page, limit, freeAcces = false) {
   const res = await fetch("api/assets/get", {
     method: "POST",
     headers: {
@@ -98,6 +113,7 @@ export async function GetAssets(page, limit) {
     body: JSON.stringify({
       page,
       limit,
+      freeAcces,
     }),
   });
 
@@ -122,7 +138,7 @@ export async function GetAssetsByCategoria(page, limit, categoria) {
   return data;
 }
 
-export async function GetByParam(param, page, limit) {
+export async function GetByParam(param, page, limit, freeAcces = false) {
   const res = await fetch("/api/assets/get/getBasedOnParams", {
     method: "POST",
     headers: {
@@ -132,6 +148,7 @@ export async function GetByParam(param, page, limit) {
       param,
       page,
       limit,
+      freeAcces,
     }),
   });
   const data = res.json();

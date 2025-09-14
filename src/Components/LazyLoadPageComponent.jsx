@@ -14,6 +14,7 @@ export default function LazyLoadPage({
   ByCurrentUser = false,
   category = false,
   param = "",
+  freeAcces = false,
 }) {
   const { user } = useAuth();
   const { router } = useLoadingRouter();
@@ -27,11 +28,18 @@ export default function LazyLoadPage({
 
   console.log("assets", assets.length);
 
+  function verifyAcces() {
+    const access = false;
+    if (user != "await" && user != null) return true;
+    if (freeAcces) return true;
+  }
+
   const LoadAssets = useCallback(async () => {
     setIsLoading(true);
     setError(false);
+    const access = verifyAcces();
     if (user != "await") {
-      if (user) {
+      if (access) {
         const data = await Get();
         console.log("Get all Assets", data);
 
@@ -98,7 +106,7 @@ export default function LazyLoadPage({
   async function Get() {
     if (param != "") {
       console.log("Params from lazy:", param);
-      const assets = await GetByParam(param, page, limit);
+      const assets = await GetByParam(param, page, limit, freeAcces);
       return assets;
     }
 
@@ -108,7 +116,8 @@ export default function LazyLoadPage({
         user?.id,
         user.providerId,
         page,
-        limit
+        limit,
+        freeAcces
       );
       return userAssets;
     }
@@ -120,7 +129,7 @@ export default function LazyLoadPage({
       );
       return byCategoryAssets;
     }
-    const assets = await GetAssets(page, limit);
+    const assets = await GetAssets(page, limit, freeAcces);
     return assets;
   }
 

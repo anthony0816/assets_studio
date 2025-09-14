@@ -5,12 +5,16 @@ import { CreateAsset } from "@/utils/functions";
 import { useAuth } from "@/context/authContext";
 import LoadingSpinner from "@/Components/LoadingSpiner";
 import { useLoadingRouter } from "@/Components/LoadingRouterProvider";
+import CategorySelector from "@/Components/CategorySelector";
 
 import { fileToBase64 } from "@/utils/functions";
 
 export default function UploadAsset() {
   const { currentTheme } = useTheme();
+  const color = currentTheme.colors;
+  const tcolor = currentTheme.textColor;
   const [file, setFile] = useState(null);
+  const [categoria, setCategoria] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const { user } = useAuth();
   const { router } = useLoadingRouter();
@@ -18,6 +22,7 @@ export default function UploadAsset() {
   async function handleSubmit(e) {
     setIsLoading(true);
     e.preventDefault();
+    if (!categoria) return setIsLoading(false);
     const base64file = await fileToBase64(file);
     if (!user) {
       setIsLoading(false);
@@ -28,7 +33,8 @@ export default function UploadAsset() {
       base64file,
       user?.id,
       user?.uid,
-      user?.providerId
+      user?.providerId,
+      categoria
     );
     setFile(null);
     setIsLoading(false);
@@ -58,6 +64,22 @@ export default function UploadAsset() {
             </label>
           </div>
 
+          <div className="flex flex-col justify-center items-center">
+            <select
+              required
+              onChange={(e) => {
+                if (e.target.value.startsWith("cat-")) {
+                  return setCategoria(e.target.value.split("-")[1]);
+                }
+                setCategoria(e.target.value);
+              }}
+              className={` w-[90%]  whitespace-nowrap rounded-xl cursor-pointer p-1 px-3 font-bold ${color.primary} ${tcolor.secondary}`}
+            >
+              <option value="">Select a category</option>
+              <CategorySelector />
+            </select>
+          </div>
+
           {/* Botón */}
           <div className="pt-4">
             <button
@@ -67,7 +89,7 @@ export default function UploadAsset() {
                 !file && "opacity-50"
               }`}
             >
-              {isLoading ? <LoadingSpinner color="white" /> : "Create Asset"}
+              {isLoading ? <LoadingSpinner color="white" /> : "Upload Asset"}
             </button>
           </div>
         </form>

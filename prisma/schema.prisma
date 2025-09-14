@@ -25,6 +25,14 @@ enum USER_ROLL{
   administrador
   cliente
 }
+enum ASSETS_CATEGORIAS {
+  object
+  character
+  nature
+  city
+  surfaces
+  other
+}
 
 model user {
   id Int @id @default(autoincrement()) 
@@ -52,3 +60,4 @@ id Int @id @default(autoincrement())
 user_id String
 description String 
 }
+

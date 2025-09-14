@@ -5,8 +5,8 @@ import { prisma } from "@/libs/prisma";
 
 export async function POST(request) {
   try {
-    const { base64, id, user_providerId } = await request.json();
-
+    const { base64, id, user_providerId, categoria } = await request.json();
+    console.error("Categoria", categoria);
     const folder = "assets-studio";
 
     const result = await cloudinary.uploader.upload(base64, {
@@ -19,6 +19,7 @@ export async function POST(request) {
         src: result.secure_url,
         user_id: id,
         user_providerId,
+        categoria: categoria,
       },
     });
     return NextResponse.json({ url: result.secure_url }, { status: 200 });

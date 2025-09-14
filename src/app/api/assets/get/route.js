@@ -9,16 +9,27 @@ export async function GET(params) {
 
 export async function POST(request) {
   try {
-    const session = await VerifySesion(request, adminAuth);
+    const {
+      user_id,
+      page,
+      limit,
+      categoria = null,
+      freeAcces,
+    } = await request.json();
 
-    if (!session) {
-      return NextResponse.json(
-        { error: "Unauthorized", session },
-        { status: 401 }
-      );
+    {
+      /*  Comprobar si es free acces */
     }
+    if (!freeAcces) {
+      const session = await VerifySesion(request, adminAuth);
 
-    const { user_id, page, limit, categoria = null } = await request.json();
+      if (!session) {
+        return NextResponse.json(
+          { error: "Unauthorized", session },
+          { status: 401 }
+        );
+      }
+    }
 
     if (categoria) {
       const assets = await prisma.asset.findMany({
