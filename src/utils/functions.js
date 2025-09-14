@@ -121,3 +121,19 @@ export async function GetAssetsByCategoria(page, limit, categoria) {
   const data = await res.json();
   return data;
 }
+
+export async function GetByParam(param, page, limit) {
+  const res = await fetch("/api/assets/get/getBasedOnParams", {
+    method: "POST",
+    headers: {
+      "Content-type": "Application/json",
+    },
+    body: JSON.stringify({
+      param,
+      page,
+      limit,
+    }),
+  });
+  const data = res.json();
+  return data;
+}

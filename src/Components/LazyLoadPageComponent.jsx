@@ -6,12 +6,14 @@ import {
   GetAssetsByUserId,
   GetAssets,
   GetAssetsByCategoria,
+  GetByParam,
 } from "@/utils/functions";
 import AssetsCard from "@/Components/AssetsCard";
 
 export default function LazyLoadPage({
   ByCurrentUser = false,
   category = false,
+  param = "",
 }) {
   const { user } = useAuth();
   const { router } = useLoadingRouter();
@@ -32,7 +34,7 @@ export default function LazyLoadPage({
       await LoadAssets();
     }
     execute();
-  }, [user]);
+  }, [user, param]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -90,6 +92,12 @@ export default function LazyLoadPage({
   }
 
   async function Get() {
+    if (param != "") {
+      console.log("Params from lazy:", param);
+      const assets = await GetByParam(param, page, limit);
+      return assets;
+    }
+
     if (ByCurrentUser) {
       const userAssets = await GetAssetsByUserId(
         user?.uid,

@@ -3,6 +3,7 @@ import LazyLoadPage from "@/Components/LazyLoadPageComponent";
 import { useTheme } from "@/context/themeContext";
 import { useSize } from "@/context/resizeContext";
 import OptionMenuMobile from "@/Components/OptionMenuMobile";
+import { useState } from "react";
 
 export default function AssetsPage() {
   const { currentTheme } = useTheme();
@@ -10,16 +11,19 @@ export default function AssetsPage() {
   const color = currentTheme.colors;
   const tcolor = currentTheme.textColor;
   const colorContext = { color, tcolor };
+  const [param, setParam] = useState("");
 
   const items = [
-    "Explore Assets",
-    "Monst Wanted",
-    "examvsple",
-    "examvple",
-    "example",
-
-    "exampsdvle",
+    { name: "Explore Assets", clave: "explore" },
+    { name: "More Liked", clave: "moreliked" },
+    { name: "Less Liked", clave: "lessliked" },
+    { name: "Lastest", clave: "lastest" },
   ];
+
+  async function handleItemsClick(clave) {
+    setParam(clave);
+  }
+
   return (
     <>
       <section
@@ -36,10 +40,11 @@ export default function AssetsPage() {
           <ul className="flex flex-row flex-wrap justify-center space-y-2 space-x-3 px-4 mt-4">
             {items.map((item) => (
               <li
-                key={item}
+                onClick={() => handleItemsClick(item.clave)}
+                key={item.clave}
                 className={` whitespace-nowrap rounded-xl cursor-pointer p-1 px-3 font-bold ${color.primary} ${tcolor.secondary}`}
               >
-                {item}
+                {item.name}
               </li>
             ))}
             <li>
@@ -66,7 +71,7 @@ export default function AssetsPage() {
         />
       </section>
       <div className={`pt-30`}>
-        <LazyLoadPage />
+        <LazyLoadPage param={param} />
       </div>
     </>
   );
