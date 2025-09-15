@@ -26,6 +26,10 @@ export async function POST(request) {
           where: {
             categoria: categoria,
           },
+          include: {
+            likes: true,
+            reports: true,
+          },
           skip: page * limit,
           take: limit,
         })
@@ -38,6 +42,10 @@ export async function POST(request) {
           await prisma.asset.findMany({
             skip: page * limit,
             take: limit,
+            include: {
+              likes: true,
+              reports: true,
+            },
           })
         );
 
@@ -47,6 +55,10 @@ export async function POST(request) {
             skip: page * limit,
             take: limit,
             orderBy: { likes: "desc" },
+            include: {
+              likes: true,
+              reports: true,
+            },
           })
         );
       case "lessliked":
@@ -55,6 +67,10 @@ export async function POST(request) {
             skip: page * limit,
             take: limit,
             orderBy: { likes: "asc" },
+            include: {
+              likes: true,
+              reports: true,
+            },
           })
         );
 
@@ -64,6 +80,10 @@ export async function POST(request) {
             skip: page * limit,
             take: limit,
             orderBy: { createdAt: "desc" },
+            include: {
+              likes: true,
+              reports: true,
+            },
           })
         );
     }

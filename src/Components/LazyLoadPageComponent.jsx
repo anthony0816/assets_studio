@@ -153,7 +153,7 @@ export default function LazyLoadPage({
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-4">
         {assets?.map((asset) => (
-          <AssetsCard key={asset.id} asset={asset} />
+          <AssetsCard key={asset.id} asset={asset} user_id={user?.uid} />
         ))}
       </div>
 

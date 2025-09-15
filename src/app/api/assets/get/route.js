@@ -36,6 +36,10 @@ export async function POST(request) {
         where: {
           categoria: categoria,
         },
+        include: {
+          likes: true,
+          reports: true,
+        },
         skip: page * limit,
         take: limit,
         orderBy: { createdAt: "desc" },
@@ -49,6 +53,10 @@ export async function POST(request) {
         where: {
           user_id: user_id,
         },
+        include: {
+          likes: true,
+          reports: true,
+        },
         skip: page * limit,
         take: limit,
         orderBy: { createdAt: "desc" },
@@ -58,6 +66,10 @@ export async function POST(request) {
     }
 
     const assets = await prisma.asset.findMany({
+      include: {
+        likes: true,
+        reports: true,
+      },
       skip: page * limit,
       take: limit,
       orderBy: { createdAt: "desc" },
