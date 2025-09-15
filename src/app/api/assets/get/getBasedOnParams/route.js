@@ -54,7 +54,7 @@ export async function POST(request) {
           await prisma.asset.findMany({
             skip: page * limit,
             take: limit,
-            orderBy: { likes: "desc" },
+            orderBy: { likes: { _count: "desc" } },
             include: {
               likes: true,
               reports: true,
@@ -66,7 +66,7 @@ export async function POST(request) {
           await prisma.asset.findMany({
             skip: page * limit,
             take: limit,
-            orderBy: { likes: "asc" },
+            orderBy: { likes: { _count: "asc" } },
             include: {
               likes: true,
               reports: true,
