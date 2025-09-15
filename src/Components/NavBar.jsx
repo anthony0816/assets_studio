@@ -8,6 +8,7 @@ import UserCard from "./userCard";
 import { useTheme } from "@/context/themeContext";
 import LogoAssetsStudio from "./LogoAssetsStudio";
 import MobileNavBar from "./MobileNavBar";
+import SettingsMenu from "./SettingsMenu";
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(true);
@@ -79,6 +80,7 @@ export default function NavBar() {
                   }}
                 />
               </div>
+              <SettingsMenu />
             </div>
           </nav>
         )}
