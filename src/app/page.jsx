@@ -26,13 +26,13 @@ export default function Home() {
         <div className="flex gap-4 flex-wrap justify-center">
           <button
             onClick={() => router("/login")}
-            className={`${color.secondary} ${tcolor.primary} px-6 py-3 rounded-lg hover:${color.fourth} transition`}
+            className={`${color.secondary} ${tcolor.primary} px-6 py-3 rounded-lg ${color.hover} transition`}
           >
             Login
           </button>
           <button
             onClick={() => router("/allAssets")}
-            className={`${color.third} ${tcolor.primary} px-6 py-3 rounded-lg hover:${color.fourth} transition`}
+            className={`${color.third} ${tcolor.primary} px-6 py-3 rounded-lg ${color.hover} transition`}
           >
             Explore Assets
           </button>
@@ -53,10 +53,10 @@ export default function Home() {
           </div>
           <div className={`p-6 rounded-lg shadow-lg ${color.third}`}>
             <h3 className={`text-xl font-semibold mb-2 ${tcolor.primary}`}>
-              Yo are in control
+              You are in control
             </h3>
             <p className={`${tcolor.secondary}`}>
-              Bad content you may find here can be reportend and proceces once
+              Bad content you may find here can be reported and processed once
               you decide it
             </p>
           </div>

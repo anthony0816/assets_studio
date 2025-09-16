@@ -32,7 +32,9 @@ export default function UserCard({ isOpen, OpenNavFunction = null }) {
   // Mostrar indicador de carga si los datos aún se están cargando
   if (loading) {
     return (
-      <div className="p-2 rounded hover:bg-gray-800 transition flex space-x-2 cursor-pointer">
+      <div
+        className={`p-2 rounded ${currentTheme.colors.hover} transition flex space-x-2 cursor-pointer`}
+      >
         <FiLoader size={24} className="animate-spin" />
         {isOpen && <div className="whitespace-nowrap">Cargando...</div>}
       </div>
@@ -44,7 +46,11 @@ export default function UserCard({ isOpen, OpenNavFunction = null }) {
       {!user ? (
         <div
           onClick={() => router("/login")}
-          className="p-2 rounded hover:bg-gray-800 transition flex space-x-2 cursor-pointer"
+          className={`p-2 rounded ${
+            currentTheme.colors.hover
+          } transition flex space-x-2 cursor-pointer ${
+            !isOpen && "justify-center"
+          }`}
         >
           <FiUser size={24} />
           {isOpen && <div className="whitespace-nowrap">Sign up</div>}
@@ -56,13 +62,15 @@ export default function UserCard({ isOpen, OpenNavFunction = null }) {
               setIsExpanded(!isExpanded);
               if (OpenNavFunction) OpenNavFunction();
             }}
-            className="p-2 rounded hover:bg-gray-800 transition flex space-x-2 cursor-pointer"
+            className={`p-2 rounded ${currentTheme.colors.hover} transition flex space-x-2 cursor-pointer`}
           >
             <div className="relative">
               {user.avatar && !imageError ? (
                 <>
                   {!imageLoaded && (
-                    <div className="w-6 h-6 rounded-full bg-gray-600 animate-pulse"></div>
+                    <div
+                      className={`w-6 h-6 rounded-full ${currentTheme.colors.fourth} animate-pulse`}
+                    ></div>
                   )}
                   <img
                     src={user.avatar}
@@ -75,7 +83,9 @@ export default function UserCard({ isOpen, OpenNavFunction = null }) {
                   />
                 </>
               ) : (
-                <div className="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center">
+                <div
+                  className={`w-6 h-6 rounded-full ${currentTheme.colors.buttonPrimary} flex items-center justify-center`}
+                >
                   <FiUser size={14} className="text-white" />
                 </div>
               )}
@@ -85,7 +95,7 @@ export default function UserCard({ isOpen, OpenNavFunction = null }) {
             )}
           </div>
 
-          {/* Menu desplegable con opciones de usuario autenticado  */}
+          {/* Menú desplegable */}
           <div
             className={`absolute overflow-hidden ${
               currentTheme.colors.secondary
@@ -93,16 +103,16 @@ export default function UserCard({ isOpen, OpenNavFunction = null }) {
               !isOpen
                 ? "opacity-0"
                 : isExpanded
-                ? " opacity-100"
-                : " pointer-events-none opacity-0"
+                ? "opacity-100"
+                : "pointer-events-none opacity-0"
             }`}
           >
-            <button className=" whitespace-nowrap px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-medium shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-200">
+            <button className="whitespace-nowrap px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-medium shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-200">
               Perfil
             </button>
             <button
               onClick={logout}
-              className=" whitespace-nowrap px-4 py-2 rounded-lg bg-red-500 text-white font-medium shadow-md hover:bg-red-600 hover:shadow-lg hover:scale-105 transition-transform duration-200"
+              className={`whitespace-nowrap px-4 py-2 rounded-lg ${currentTheme.colors.buttonGoogle} text-white font-medium shadow-md ${currentTheme.colors.buttonGoogleHover} hover:shadow-lg hover:scale-105 transition-transform duration-200`}
             >
               Log out
             </button>

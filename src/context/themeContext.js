@@ -17,7 +17,9 @@ export function ThemeContextProvider({ children }) {
   }, [isBlackTheme]);
 
   return (
-    <themeContext.Provider value={{ currentTheme, setIsBlackTheme }}>
+    <themeContext.Provider
+      value={{ currentTheme, setIsBlackTheme, isBlackTheme }}
+    >
       {children}
     </themeContext.Provider>
   );

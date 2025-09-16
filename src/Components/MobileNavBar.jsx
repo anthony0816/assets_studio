@@ -7,6 +7,7 @@ import { useClickOutside } from "@/utils/hooks";
 import { useRef } from "react";
 import UserCard from "./userCard";
 import { useTheme } from "@/context/themeContext";
+import SettingsMenu from "./SettingsMenu";
 
 export default function MobileNavBar({ items, router }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -19,12 +20,12 @@ export default function MobileNavBar({ items, router }) {
   return (
     <header
       ref={headerRef}
-      className="w-full bg-gray-900 text-white shadow-md fixed top-0 left-0 z-50"
+      className={`w-full ${currentTheme.colors.primary} ${currentTheme.textColor.primary} shadow-md fixed top-0 left-0 z-50`}
     >
       {/* Barra superior */}
       <div className="flex items-center justify-between px-4 py-3">
         {/* Logo */}
-        <div className="">
+        <div>
           <LogoAS height={49} width={49} onClick={() => router("/")} />
         </div>
 
@@ -34,7 +35,7 @@ export default function MobileNavBar({ items, router }) {
         {/* Botón menú */}
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="p-2 rounded hover:bg-gray-800 transition"
+          className={`p-2 rounded ${currentTheme.colors.hover} transition`}
         >
           {isOpen ? <FiX size={24} /> : <FiMenu size={24} />}
         </button>
@@ -55,11 +56,22 @@ export default function MobileNavBar({ items, router }) {
               router(item.route);
               setIsOpen(false); // cerrar menú al navegar
             }}
-            className={` ${currentTheme.colors.third} w-[90%] mx-auto rounded-xl px-4 py-3 hover:bg-gray-700 cursor-pointer whitespace-nowrap`}
+            className={`${currentTheme.colors.third} w-[90%] mx-auto rounded-xl px-4 py-3 ${currentTheme.colors.hover} cursor-pointer whitespace-nowrap`}
           >
             {item.name}
           </div>
         ))}
+        <div className="flex justify-end">
+          <div className="w-40 rounded-xl">
+            <SettingsMenu
+              iconHeigth="40"
+              iconWidth="40"
+              menuIconHeigth="30"
+              menuIconWidth="30"
+              marginBetween="4"
+            />
+          </div>
+        </div>
       </nav>
     </header>
   );

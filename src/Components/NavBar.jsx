@@ -36,11 +36,11 @@ export default function NavBar() {
         className={
           mobileStyle
             ? `hidden`
-            : `h-[100vh] ${
-                currentTheme.colors.primary
-              } text-white shadow-lg transition-all duration-300 z-50  overflow-y-auto overflow-x-hidden
-    ${isOpen ? "w-64" : "w-16"} 
-    relative`
+            : `h-[100vh] ${currentTheme.colors.primary} ${
+                currentTheme.textColor.primary
+              } shadow-lg transition-all duration-300 z-50 overflow-y-auto overflow-x-hidden
+         ${isOpen ? "w-64" : "w-16"} 
+         relative border ${currentTheme.colors.border}`
         }
       >
         {/* Botón de expansión */}
@@ -49,30 +49,34 @@ export default function NavBar() {
         >
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="focus:outline-none hover:bg-gray-800 p-2 rounded transition"
+            className={`focus:outline-none ${currentTheme.colors.hover} p-2 rounded transition`}
           >
             {isOpen ? <FiX size={20} /> : <FiMenu size={20} />}
           </button>
         </div>
 
-        {/*LOGO*/}
+        {/* LOGO */}
         <LogoAssetsStudio isOpen={isOpen} onClick={() => router("/")} />
 
-        {/* Menú para escritorio*/}
+        {/* Menú para escritorio */}
         {!mobileStyle && (
-          <nav className={"mt-4"}>
-            <div className={"flex flex-col gap-3"}>
+          <nav className="mt-4">
+            <div className="flex flex-col gap-3">
               {items.map((item, idx) => (
                 <div
-                  key={`${item.name}-${idx}`} // clave única
+                  key={`${item.name}-${idx}`}
                   onClick={() => router(item.route)}
-                  className={`  ${currentTheme.colors.secondary} w-[90%] mx-auto whitespace-nowrap px-4 py-2 hover:bg-gray-800 rounded-xl cursor-pointer`}
+                  className={`${currentTheme.colors.secondary} w-[90%] mx-auto whitespace-nowrap px-4 py-2 ${currentTheme.colors.hover} rounded-xl cursor-pointer`}
                 >
                   {isOpen ? item.name : item.fl}
                 </div>
               ))}
 
               <div className="mt-10">
+                <SettingsMenu
+                  isOpen={isOpen}
+                  OpenNavFunction={() => setIsOpen(true)}
+                />
                 <UserCard
                   isOpen={isOpen}
                   OpenNavFunction={() => {
@@ -80,11 +84,11 @@ export default function NavBar() {
                   }}
                 />
               </div>
-              <SettingsMenu />
             </div>
           </nav>
         )}
       </aside>
+
       {/* Menu para Mobiles */}
       {mobileStyle && <MobileNavBar items={items} router={router} />}
     </>

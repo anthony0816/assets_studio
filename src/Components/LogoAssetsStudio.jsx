@@ -19,8 +19,11 @@ export default function LogoAssetsStudio({
       viewBox="0 0 760 180"
       role="img"
       aria-label={title}
-      style={{ display: "block", background: bg }}
-      className="cursor-pointer"
+      style={{
+        display: "block",
+        background: "#1f2937", // gris oscuro fijo (Tailwind bg-gray-800)
+      }}
+      className="cursor-pointer rounded-xl "
       onClick={onClick}
     >
       <title>{title}</title>
@@ -59,34 +62,32 @@ export default function LogoAssetsStudio({
         {/* S */}
         <path
           d="M80 46
-             C80 36, 90 30, 104 30
-             C118 30, 128 36, 128 46
-             C128 56, 118 60, 106 62
-             C94 64, 84 68, 84 78
-             C84 90, 96 98, 112 98
-             C124 98, 132 94, 136 88
-             L136 100
-             C130 108, 118 114, 104 114
-             C84 114, 70 102, 70 86
-             C70 70, 86 64, 102 62
-             C114 60, 120 56, 120 48
-             C120 40, 112 36, 104 36
-             C94 36, 86 40, 82 44 Z"
+           C80 36, 90 30, 104 30
+           C118 30, 128 36, 128 46
+           C128 56, 118 60, 106 62
+           C94 64, 84 68, 84 78
+           C84 90, 96 98, 112 98
+           C124 98, 132 94, 136 88
+           L136 100
+           C130 108, 118 114, 104 114
+           C84 114, 70 102, 70 86
+           C70 70, 86 64, 102 62
+           C114 60, 120 56, 120 48
+           C120 40, 112 36, 104 36
+           C94 36, 86 40, 82 44 Z"
           fill={accent}
           opacity="0.9"
         />
       </g>
 
       {/* Wordmark */}
-
       <g
         transform="translate(170, 56)"
-        className={`transition-all duration-300 ease-in-out
-    ${
-      isOpen
-        ? "opacity-100 translate-y-0"
-        : "opacity-0 -translate-y-4 pointer-events-none"
-    }`}
+        className={`transition-all duration-300 ease-in-out ${
+          isOpen
+            ? "opacity-100 translate-y-0"
+            : "opacity-0 -translate-y-4 pointer-events-none"
+        }`}
       >
         <text
           x="0"

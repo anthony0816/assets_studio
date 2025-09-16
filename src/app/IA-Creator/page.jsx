@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { useTheme } from "@/context/themeContext";
 
 export default function ImageGenerator() {
   const [prompt, setPrompt] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const { currentTheme } = useTheme();
 
   const generateImage = async () => {
     if (!prompt.trim()) return;
@@ -39,7 +41,9 @@ export default function ImageGenerator() {
   };
 
   return (
-    <div style={{ padding: "20px", maxWidth: "600px" }}>
+    <div
+      className={`p-5 max-w-[600px] ${currentTheme.colors.primary} ${currentTheme.textColor.primary}`}
+    >
       <h1>Generador de Imágenes con IA</h1>
 
       <div>
@@ -48,36 +52,32 @@ export default function ImageGenerator() {
           onChange={(e) => setPrompt(e.target.value)}
           placeholder="Describe la imagen que quieres generar..."
           rows="3"
-          style={{ width: "100%", marginBottom: "10px", padding: "8px" }}
+          className={`w-full mb-2 p-2 rounded ${currentTheme.colors.secondary} ${currentTheme.textColor.primary}`}
         />
 
         <button
           onClick={generateImage}
           disabled={loading}
-          style={{
-            padding: "10px 20px",
-            background: loading ? "#ccc" : "#0070f3",
-            color: "white",
-            border: "none",
-          }}
+          className={`px-5 py-2 rounded ${
+            loading
+              ? currentTheme.colors.mutedText
+              : currentTheme.colors.buttonPrimary
+          } ${
+            !loading && currentTheme.colors.buttonPrimaryHover
+          } text-white border-none transition`}
         >
           {loading ? "Generando..." : "Generar Imagen"}
         </button>
       </div>
 
       {error && (
-        <div style={{ color: "red", marginTop: "10px" }}>Error: {error}</div>
+        <div className={`${currentTheme.colors.errorText} mt-2`}>
+          Error: {error}
+        </div>
       )}
 
       {imageUrl && (
-        <div
-          style={{
-            position: "relative",
-            width: "512px",
-            height: "512px",
-            marginTop: "20px",
-          }}
-        >
+        <div className="relative w-[512px] h-[512px] mt-5">
           <Image
             src={imageUrl}
             alt="Imagen generada"

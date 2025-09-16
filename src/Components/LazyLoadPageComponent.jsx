@@ -2,6 +2,7 @@
 import { useAuth } from "@/context/authContext";
 import { useLoadingRouter } from "@/Components/LoadingRouterProvider";
 import { useEffect, useState, useRef, useCallback } from "react";
+import { useTheme } from "@/context/themeContext";
 import {
   GetAssetsByUserId,
   GetAssets,
@@ -16,6 +17,7 @@ export default function LazyLoadPage({
   param = "",
   freeAcces = false,
 }) {
+  const { currentTheme } = useTheme();
   const { user } = useAuth();
   const { router } = useLoadingRouter();
   const [isLoading, setIsLoading] = useState(true);
@@ -136,12 +138,12 @@ export default function LazyLoadPage({
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center gap-4 py-10">
-        <p className="text-red-600 font-semibold text-lg">
+        <p className={`${currentTheme.colors.errorText} font-semibold text-lg`}>
           Could not connect to the database.
         </p>
         <button
           onClick={() => LoadAssets()}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+          className={`px-4 py-2 rounded transition ${currentTheme.colors.buttonPrimary} ${currentTheme.colors.buttonPrimaryHover} ${currentTheme.textColor.primary}`}
         >
           Try Again
         </button>
@@ -164,9 +166,13 @@ export default function LazyLoadPage({
         {isLoading && (
           <>
             {/* Spinner */}
-            <div className="w-6 h-6 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+            <div
+              className={`w-6 h-6 border-4 ${currentTheme.colors.spinner} border-t-transparent rounded-full animate-spin`}
+            ></div>
             {/* Texto */}
-            <span className="text-sm text-gray-500 animate-pulse">
+            <span
+              className={`text-sm ${currentTheme.colors.subtleText} animate-pulse`}
+            >
               Cargando más assets...
             </span>
           </>
@@ -174,7 +180,9 @@ export default function LazyLoadPage({
       </div>
 
       {!hasMore && (
-        <div className="py-6 text-center text-sm text-gray-400">
+        <div
+          className={`py-6 text-center text-sm ${currentTheme.colors.mutedText}`}
+        >
           No more items to load
         </div>
       )}

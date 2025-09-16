@@ -52,18 +52,21 @@ export default function UploadAsset() {
 
         <form onSubmit={(e) => handleSubmit(e)} className="space-y-4">
           {/* SRC */}
-          <div className="w-full  flex text-center">
-            <label className="w-full  border h-40 text-white font-medium py-2 px-4 rounded-lg transition">
+          <div className="w-full flex text-center">
+            <label
+              className={`w-full border ${currentTheme.colors.border} ${currentTheme.textColor.primary} font-medium py-2 px-4 h-40 rounded-lg transition cursor-pointer flex items-center justify-center`}
+            >
               find your asset in local store
               <input
                 onChange={(e) => setFile(e.target.files[0])}
                 type="file"
                 placeholder="https://..."
-                className={`hidden`}
+                className="hidden"
               />
             </label>
           </div>
 
+          {/* Categoría */}
           <div className="flex flex-col justify-center items-center">
             <select
               required
@@ -73,7 +76,7 @@ export default function UploadAsset() {
                 }
                 setCategoria(e.target.value);
               }}
-              className={` w-[90%]  whitespace-nowrap rounded-xl cursor-pointer p-1 px-3 font-bold ${color.primary} ${tcolor.secondary}`}
+              className={`w-[90%] whitespace-nowrap rounded-xl cursor-pointer p-1 px-3 font-bold ${currentTheme.colors.primary} ${currentTheme.textColor.secondary}`}
             >
               <option value="">Select a category</option>
               <CategorySelector />
@@ -85,7 +88,9 @@ export default function UploadAsset() {
             <button
               disabled={file == null}
               type="submit"
-              className={`w-full bg-indigo-500 hover:bg-indigo-600 text-white font-medium py-2 px-4 rounded-lg transition ${
+              className={`w-full ${currentTheme.colors.buttonPrimary} ${
+                currentTheme.colors.buttonPrimaryHover
+              } text-white font-medium py-2 px-4 rounded-lg transition ${
                 !file && "opacity-50"
               }`}
             >
