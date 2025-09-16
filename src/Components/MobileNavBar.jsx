@@ -62,10 +62,10 @@ export default function MobileNavBar({ items, router }) {
           </div>
         ))}
         <div className="flex justify-end">
-          <div className="w-40 rounded-xl">
+          <div className="w-30 rounded-xl">
             <SettingsMenu
-              iconHeigth="40"
-              iconWidth="40"
+              iconHeigth="30"
+              iconWidth="30"
               menuIconHeigth="30"
               menuIconWidth="30"
               marginBetween="4"
