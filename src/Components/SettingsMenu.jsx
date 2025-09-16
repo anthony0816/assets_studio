@@ -60,7 +60,10 @@ export default function SettingsMenu({
           }`}
         >
           <button
-            onClick={() => setIsBlackTheme(!isBlackTheme)}
+            onClick={() => {
+              localStorage.setItem("isDark", !isBlackTheme);
+              setIsBlackTheme(!isBlackTheme);
+            }}
             className={`${
               isOpen && "border"
             } w-[60%] py-1 rounded-xl flex justify-center ${

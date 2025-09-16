@@ -15,12 +15,16 @@ export default function NavBar() {
   const { router } = useLoadingRouter();
   const [mobileStyle, setMobileStyle] = useState(true);
   const { isMobile } = useSize();
-  const { currentTheme } = useTheme();
+  const { currentTheme, setIsBlackTheme, isBlackTheme } = useTheme();
 
   useEffect(() => {
     console.log("Estadi de si es mobile", isMobile);
     setMobileStyle(isMobile);
   }, [isMobile]);
+
+  useEffect(() => {
+    setIsBlackTheme(localStorage.getItem("isDark"));
+  }, []);
 
   const items = [
     { name: "Discover Assets", route: "/allAssets", fl: "DA" },

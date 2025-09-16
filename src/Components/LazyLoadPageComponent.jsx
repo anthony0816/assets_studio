@@ -10,6 +10,7 @@ import {
   GetByParam,
 } from "@/utils/functions";
 import AssetsCard from "@/Components/AssetsCard";
+import ModalShowPicture from "./ModalShowPicture";
 
 export default function LazyLoadPage({
   ByCurrentUser = false,
@@ -27,6 +28,7 @@ export default function LazyLoadPage({
   const [error, setError] = useState(null);
   const [hasMore, setHasMore] = useState(true);
   const loaderRef = useRef(null);
+  const ModalShowPictueRef = useRef();
 
   console.log("assets", assets.length);
 
@@ -34,6 +36,27 @@ export default function LazyLoadPage({
     const access = false;
     if (user != "await" && user != null) return true;
     if (freeAcces) return true;
+  }
+
+  function onClickPhoto(asset) {
+    if (ModalShowPictueRef.current) {
+      ModalShowPictueRef.current.open(asset);
+    }
+  }
+  function nextAsset() {
+    const modal = ModalShowPictueRef.current;
+    const currentAsset = modal.currentAsset();
+    const index = assets.indexOf(currentAsset);
+    const nextIndex = (index + 1) % assets.length;
+    modal.foward(assets[nextIndex]);
+  }
+
+  function prevAsset() {
+    const modal = ModalShowPictueRef.current;
+    const currentAsset = modal.currentAsset();
+    const index = assets.indexOf(currentAsset);
+    const prevIndex = (index - 1 + assets.length) % assets.length;
+    modal.backwards(assets[prevIndex]);
   }
 
   const LoadAssets = useCallback(async () => {
@@ -153,9 +176,24 @@ export default function LazyLoadPage({
 
   return (
     <>
+      <ModalShowPicture
+        ref={ModalShowPictueRef}
+        nextAsset={() => {
+          nextAsset();
+        }}
+        prevAsset={() => {
+          prevAsset();
+        }}
+      />
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-4">
         {assets?.map((asset) => (
-          <AssetsCard key={asset.id} asset={asset} user_id={user?.uid} />
+          <AssetsCard
+            key={asset.id}
+            asset={asset}
+            user_id={user?.uid}
+            onClickBar={() => console.log("hola")}
+            onClickPhoto={onClickPhoto}
+          />
         ))}
       </div>
 
