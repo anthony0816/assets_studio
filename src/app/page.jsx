@@ -47,8 +47,7 @@ export default function Home() {
               Download your assets
             </h3>
             <p className={`${tcolor.secondary}`}>
-              here you can find whatever you need to start building your
-              videogame
+              Find everything you need to kickstart your video game project.
             </p>
           </div>
           <div className={`p-6 rounded-lg shadow-lg ${color.third}`}>
@@ -56,8 +55,7 @@ export default function Home() {
               You are in control
             </h3>
             <p className={`${tcolor.secondary}`}>
-              Bad content you may find here can be reported and processed once
-              you decide it
+              Report and manage any inappropriate content at your convenience.
             </p>
           </div>
           <div className={`p-6 rounded-lg shadow-lg ${color.third}`}>
@@ -65,8 +63,7 @@ export default function Home() {
               Create Assets
             </h3>
             <p className={`${tcolor.secondary}`}>
-              You can create your assets, let the world know and get some money
-              for it
+              Create your own assets, share them with the world, and get paid.
             </p>
           </div>
         </div>
@@ -74,8 +71,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className={`${color.third} ${tcolor.secondary} text-center py-4`}>
-        © {new Date().getFullYear()} Assets Studio — Todos los derechos
-        reservados.
+        © {new Date().getFullYear()} Assets Studio — All rigth reserved.
       </footer>
     </main>
   );
