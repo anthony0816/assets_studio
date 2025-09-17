@@ -7,6 +7,7 @@ const ModalAssetData = forwardRef((props, ref) => {
   const [isOpen, setIsOpen] = useState(false);
   const { onClose } = props;
   const { currentTheme } = useTheme();
+  const [user, setUser] = useState(null);
 
   useImperativeHandle(ref, () => ({
     open: (asset) => {
@@ -17,6 +18,7 @@ const ModalAssetData = forwardRef((props, ref) => {
 
   function close() {
     setAsset(null);
+    setUser(null);
     setIsOpen(false);
     onClose();
   }
@@ -31,6 +33,7 @@ const ModalAssetData = forwardRef((props, ref) => {
       }
       const data = await res.json();
       console.log("Data", data);
+      setUser(data);
     }
     loadDataFromUser();
   }, [asset]);
@@ -75,6 +78,7 @@ const ModalAssetData = forwardRef((props, ref) => {
               {asset.categoria}
             </span>
           </div>
+          <div>{user?.displayName}</div>
 
           {/* Likes y Reports */}
           <div className="flex gap-4 text-sm">
