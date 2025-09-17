@@ -78,7 +78,7 @@ const ModalAssetData = forwardRef((props, ref) => {
               {asset.categoria}
             </span>
           </div>
-          <div>{user?.displayName}</div>
+          <div>{user?.displayName || "Cargando usuario..."}</div>
 
           {/* Likes y Reports */}
           <div className="flex gap-4 text-sm">
