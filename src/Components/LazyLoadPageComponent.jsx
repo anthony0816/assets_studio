@@ -207,7 +207,7 @@ export default function LazyLoadPage({
       <div className="flex flex-row h-[100%]">
         <div
           className={`transition-all duration-300   ${
-            ModalAssetsDataisOpen ? `flex-${isMobile ? "99" : "1"}` : ""
+            ModalAssetsDataisOpen ? `flex-1` : ""
           } `}
         >
           <ModalAssetData
