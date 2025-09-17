@@ -53,9 +53,11 @@ export default function LazyLoadPage({
     if (ModalAssetOptionsRef.current) {
       const modal = ModalAssetOptionsRef.current;
       setModalAssetsDataisOpen(true);
-      setTimeout(() => {
-        setHideAssets(true);
-      }, 300);
+      if (isMobile) {
+        setTimeout(() => {
+          setHideAssets(true);
+        }, 300);
+      }
       modal.open(asset);
     }
   }

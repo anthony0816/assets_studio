@@ -10,7 +10,7 @@ export default function Home() {
   const { router } = useLoadingRouter();
 
   return (
-    <main className={`${color.primary} min-h-screen flex flex-col`}>
+    <main className={`${color.primary} h-[100%] overflow-auto flex flex-col`}>
       {/* Hero */}
       <section
         className={`flex flex-col items-center justify-center flex-1 p-6 text-center ${tcolor.primary}`}
