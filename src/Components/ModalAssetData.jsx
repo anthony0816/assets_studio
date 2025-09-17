@@ -20,8 +20,33 @@ const ModalAssetData = forwardRef((props, ref) => {
     setIsOpen(false);
     onClose();
   }
+  console.log("asset:", asset);
+  useEffect(() => {
+    if (!asset) return;
+    async function loadDataFromUser(params) {
+      const res = await GetDataFromUser();
+      if (!res.ok) {
+        console.error("Error a la hora de hacer el fetch", res);
+        return;
+      }
+      const data = await res.json();
+      console.log("Data", data);
+    }
+    loadDataFromUser();
+  }, [asset]);
 
-  useEffect(() => {}, []);
+  async function GetDataFromUser() {
+    const res = await fetch("api/user/get", {
+      method: "POST",
+      headers: {
+        "Content-type": "Application/json",
+      },
+      body: JSON.stringify({
+        uid: asset.user_id,
+      }),
+    });
+    return res;
+  }
 
   if (!isOpen) return;
   return (
