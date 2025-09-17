@@ -20,7 +20,7 @@ export default function MobileNavBar({ items, router }) {
   return (
     <header
       ref={headerRef}
-      className={`w-full ${currentTheme.colors.primary} ${currentTheme.textColor.primary} shadow-md fixed top-0 left-0 z-50`}
+      className={`w-full ${currentTheme.colors.primary} ${currentTheme.textColor.primary} shadow-md  `}
     >
       {/* Barra superior */}
       <div className="flex items-center justify-between px-4 py-3">

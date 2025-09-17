@@ -88,7 +88,7 @@ export default function AssetsCard({
           alt={`Asset ${asset.id}`}
           className="w-full h-48 object-cover"
         />
-        <div onClick={onClickBar} className="p-3 flex flex-col gap-1">
+        <div onClick={() => onClickBar()} className="p-3 flex flex-col gap-1">
           <div className="flex flex-row items-center">
             <span
               onClick={(e) => {

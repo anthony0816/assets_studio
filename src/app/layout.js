@@ -34,14 +34,14 @@ export default function RootLayout({ children }) {
         <SizeContextProvider>
           <LoadingRouterProvider>
             <ThemeContextProvider>
-              <CustomBody>
-                <AuthContextProvaider>
+              <AuthContextProvaider>
+                <CustomBody>
                   <NavBar />
                   <GlobalLoader>
                     <Frame>{children}</Frame>
                   </GlobalLoader>
-                </AuthContextProvaider>
-              </CustomBody>
+                </CustomBody>
+              </AuthContextProvaider>
             </ThemeContextProvider>
           </LoadingRouterProvider>
         </SizeContextProvider>

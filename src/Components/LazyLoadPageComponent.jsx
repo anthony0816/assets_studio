@@ -11,6 +11,8 @@ import {
 } from "@/utils/functions";
 import AssetsCard from "@/Components/AssetsCard";
 import ModalShowPicture from "./ModalShowPicture";
+import ModalAssetData from "./ModalAssetData";
+import { useSize } from "@/context/resizeContext";
 
 export default function LazyLoadPage({
   ByCurrentUser = false,
@@ -27,8 +29,12 @@ export default function LazyLoadPage({
   const [limit, setLimit] = useState(10);
   const [error, setError] = useState(null);
   const [hasMore, setHasMore] = useState(true);
+  const [ModalAssetsDataisOpen, setModalAssetsDataisOpen] = useState(false);
+  const [hideAssets, setHideAssets] = useState(false);
+  const { isMobile } = useSize();
   const loaderRef = useRef(null);
   const ModalShowPictueRef = useRef();
+  const ModalAssetOptionsRef = useRef();
 
   console.log("assets", assets.length);
 
@@ -41,6 +47,16 @@ export default function LazyLoadPage({
   function onClickPhoto(asset) {
     if (ModalShowPictueRef.current) {
       ModalShowPictueRef.current.open(asset);
+    }
+  }
+  function onClickBar(asset) {
+    if (ModalAssetOptionsRef.current) {
+      const modal = ModalAssetOptionsRef.current;
+      setModalAssetsDataisOpen(true);
+      setTimeout(() => {
+        setHideAssets(true);
+      }, 300);
+      modal.open(asset);
     }
   }
   function nextAsset() {
@@ -185,45 +201,68 @@ export default function LazyLoadPage({
           prevAsset();
         }}
       />
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-4">
-        {assets?.map((asset) => (
-          <AssetsCard
-            key={asset.id}
-            asset={asset}
-            user_id={user?.uid}
-            onClickBar={() => console.log("hola")}
-            onClickPhoto={onClickPhoto}
-          />
-        ))}
-      </div>
 
-      <div
-        ref={loaderRef}
-        className="h-16 flex flex-col items-center justify-center gap-2"
-      >
-        {isLoading && (
-          <>
-            {/* Spinner */}
-            <div
-              className={`w-6 h-6 border-4 ${currentTheme.colors.spinner} border-t-transparent rounded-full animate-spin`}
-            ></div>
-            {/* Texto */}
-            <span
-              className={`text-sm ${currentTheme.colors.subtleText} animate-pulse`}
-            >
-              Cargando más assets...
-            </span>
-          </>
-        )}
-      </div>
-
-      {!hasMore && (
+      <div className="flex flex-row h-[100%]">
         <div
-          className={`py-6 text-center text-sm ${currentTheme.colors.mutedText}`}
+          className={`transition-all duration-300   ${
+            ModalAssetsDataisOpen ? `flex-${isMobile ? "99" : "1"}` : ""
+          } `}
         >
-          No more items to load
+          <ModalAssetData
+            ref={ModalAssetOptionsRef}
+            onClose={() => {
+              setHideAssets(false);
+              setModalAssetsDataisOpen(false);
+            }}
+          />
         </div>
-      )}
+
+        <div
+          className={`flex-1 h-[100%] pb-40 overflow-auto ${
+            hideAssets ? "hidden" : ""
+          }`}
+        >
+          <div className="grid gap-6 p-4 [grid-template-columns:repeat(auto-fit,minmax(250px,1fr))]">
+            {assets?.map((asset) => (
+              <AssetsCard
+                key={asset.id}
+                asset={asset}
+                user_id={user?.uid}
+                onClickBar={() => onClickBar(asset)}
+                onClickPhoto={onClickPhoto}
+              />
+            ))}
+          </div>
+
+          <div
+            ref={loaderRef}
+            className="h-16 flex flex-col items-center justify-center gap-2"
+          >
+            {isLoading && (
+              <>
+                {/* Spinner */}
+                <div
+                  className={`w-6 h-6 border-4 ${currentTheme.colors.spinner} border-t-transparent rounded-full animate-spin`}
+                ></div>
+                {/* Texto */}
+                <span
+                  className={`text-sm ${currentTheme.colors.subtleText} animate-pulse`}
+                >
+                  Cargando más assets...
+                </span>
+              </>
+            )}
+          </div>
+
+          {!hasMore && (
+            <div
+              className={`py-6 text-center text-sm ${currentTheme.colors.mutedText}`}
+            >
+              No more items to load
+            </div>
+          )}
+        </div>
+      </div>
     </>
   );
 }

@@ -8,9 +8,7 @@ export default function Frame({ children }) {
   return (
     <>
       <section
-        className={` ${
-          currentTheme.colors.primary
-        } w-full h-[100vh] overflow-y-auto ${isMobile && "pt-[72px]"}`}
+        className={` ${currentTheme.colors.primary} w-full h-[100%] overflow-hidden `}
       >
         {children}
       </section>

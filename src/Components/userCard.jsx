@@ -33,7 +33,9 @@ export default function UserCard({ isOpen, OpenNavFunction = null }) {
   if (loading) {
     return (
       <div
-        className={`p-2 rounded ${currentTheme.colors.hover} transition flex space-x-2 cursor-pointer`}
+        className={` flex p-2 rounded ${currentTheme.colors.hover} ${
+          !isOpen && "justify-center"
+        } transition  space-x-2 cursor-pointer`}
       >
         <FiLoader size={24} className="animate-spin" />
         {isOpen && <div className="whitespace-nowrap">Cargando...</div>}
@@ -56,12 +58,15 @@ export default function UserCard({ isOpen, OpenNavFunction = null }) {
           {isOpen && <div className="whitespace-nowrap">Sign up</div>}
         </div>
       ) : (
-        <div ref={userCardRef} className="relative">
+        <div
+          onClick={() => {
+            setIsExpanded(!isExpanded);
+            if (OpenNavFunction) OpenNavFunction();
+          }}
+          ref={userCardRef}
+          className={`relative ${!isOpen ? "flex justify-center" : ""}`}
+        >
           <div
-            onClick={() => {
-              setIsExpanded(!isExpanded);
-              if (OpenNavFunction) OpenNavFunction();
-            }}
             className={`p-2 rounded ${currentTheme.colors.hover} transition flex space-x-2 cursor-pointer`}
           >
             <div className="relative">

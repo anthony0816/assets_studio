@@ -5,7 +5,9 @@ export default function CustomBody({ children }) {
   const { isMobile } = useSize();
   return (
     <>
-      <main className={`flex flex-${isMobile ? "col" : "row"} w-full`}>
+      <main
+        className={`flex flex-${isMobile ? "col" : "row"} w-full h-[100vh]`}
+      >
         {children}
       </main>
     </>

@@ -1,7 +1,7 @@
 import { forwardRef, useImperativeHandle, useState } from "react";
 const ModalShowPicture = forwardRef((props, ref) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [asset, setAsset] = useState(false);
+  const [asset, setAsset] = useState(null);
   const { nextAsset, prevAsset } = props;
 
   useImperativeHandle(ref, () => ({
@@ -17,7 +17,6 @@ const ModalShowPicture = forwardRef((props, ref) => {
     },
     currentAsset: () => asset,
   }));
-  console.log("asset", asset);
   if (!isOpen) return null;
   return (
     <>
