@@ -23,7 +23,10 @@ export async function POST(req) {
   } catch (error) {
     console.error("Error obteniendo usuario:", error, error.message);
     return NextResponse.json(
-      { error: "No se pudo obtener el usuario" },
+      {
+        error: "No se pudo obtener el usuario",
+        message: error.message,
+      },
       { status: 500 }
     );
   }
