@@ -1,17 +1,23 @@
 "use client";
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { useTheme } from "@/context/themeContext";
+import { useLoadingRouter } from "./LoadingRouterProvider";
+import { useData } from "@/context/GlobalDataAccesContext";
 
 const ModalAssetData = forwardRef((props, ref) => {
+  const { router } = useLoadingRouter();
+  const storage = useData();
   const [asset, setAsset] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const { onClose } = props;
   const { currentTheme } = useTheme();
   const [user, setUser] = useState(null);
+  const [fetchingUserError, setfetchingUserError] = useState(false);
 
   useImperativeHandle(ref, () => ({
     open: (asset) => {
       setAsset(asset);
+      setUser(null);
       setIsOpen(true);
     },
   }));
@@ -25,20 +31,24 @@ const ModalAssetData = forwardRef((props, ref) => {
   console.log("asset:", asset);
   useEffect(() => {
     if (!asset) return;
-    async function loadDataFromUser(params) {
-      const res = await GetDataFromUser();
-      if (!res.ok) {
-        console.error("Error a la hora de hacer el fetch", res);
-        return;
-      }
-      const data = await res.json();
-      console.log("Data", data);
-      setUser(data);
-    }
+
     loadDataFromUser();
   }, [asset]);
 
+  async function loadDataFromUser() {
+    const res = await GetDataFromUser();
+    if (!res.ok) {
+      console.error("Error a la hora de hacer el fetch", res);
+      setfetchingUserError(true);
+      return;
+    }
+    const data = await res.json();
+    console.log("Data", data);
+    setUser(data);
+  }
+
   async function GetDataFromUser() {
+    setfetchingUserError(false);
     const res = await fetch("api/user/get", {
       method: "POST",
       headers: {
@@ -49,6 +59,11 @@ const ModalAssetData = forwardRef((props, ref) => {
       }),
     });
     return res;
+  }
+
+  function GoToUserProfile(user) {
+    storage.setUserToProfile(user);
+    router("/visit_user_profile");
   }
 
   if (!isOpen) return;
@@ -78,7 +93,26 @@ const ModalAssetData = forwardRef((props, ref) => {
               {asset.categoria}
             </span>
           </div>
-          <div>{user?.displayName || "Cargando usuario..."}</div>
+
+          <span
+            onClick={() => GoToUserProfile(user)}
+            className={`hover:text-blue-500 transition  cursor-pointer`}
+          >
+            {user?.displayName || (
+              <span onClick={(e) => e.stopPropagation()}>
+                {fetchingUserError ? (
+                  <span
+                    onClick={loadDataFromUser}
+                    className="text-red-400 cursor-pointer hover:text-red-500"
+                  >
+                    error, try again🔄
+                  </span>
+                ) : (
+                  "loadind..."
+                )}
+              </span>
+            )}
+          </span>
 
           {/* Likes y Reports */}
           <div className="flex gap-4 text-sm">

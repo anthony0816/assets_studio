@@ -9,6 +9,7 @@ import GlobalLoader from "@/Components/GlobalLoader";
 import { ThemeContextProvider } from "@/context/themeContext";
 import CustomBody from "@/Components/CustomBody";
 import AuthContextProvaider from "@/context/authContext";
+import { GlobalDataAccesContextProvider } from "@/context/GlobalDataAccesContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,12 +36,14 @@ export default function RootLayout({ children }) {
           <LoadingRouterProvider>
             <ThemeContextProvider>
               <AuthContextProvaider>
-                <CustomBody>
-                  <NavBar />
-                  <GlobalLoader>
-                    <Frame>{children}</Frame>
-                  </GlobalLoader>
-                </CustomBody>
+                <GlobalDataAccesContextProvider>
+                  <CustomBody>
+                    <NavBar />
+                    <GlobalLoader>
+                      <Frame>{children}</Frame>
+                    </GlobalLoader>
+                  </CustomBody>
+                </GlobalDataAccesContextProvider>
               </AuthContextProvaider>
             </ThemeContextProvider>
           </LoadingRouterProvider>
