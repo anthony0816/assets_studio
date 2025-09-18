@@ -183,7 +183,7 @@ export default function UserProfile() {
           </div>
         </div>
         {/* Imagenes */}
-        <div className="bg-red-200">
+        <div className="">
           <h2
             className={`${currentTheme.textColor.primary} text-xl font-semibold mb-4`}
           >
