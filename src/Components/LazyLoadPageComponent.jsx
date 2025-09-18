@@ -229,7 +229,7 @@ export default function LazyLoadPage({
               <AssetsCard
                 key={asset.id}
                 asset={asset}
-                user_id={user?.uid}
+                currentUserId={user?.uid}
                 onClickBar={() => onClickBar(asset)}
                 onClickPhoto={onClickPhoto}
               />

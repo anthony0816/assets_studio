@@ -4,7 +4,7 @@ import { useLoadingRouter } from "./LoadingRouterProvider";
 
 export default function AssetsCard({
   asset,
-  user_id,
+  currentUserId,
   onClickPhoto,
   onClickBar,
 }) {
@@ -17,7 +17,7 @@ export default function AssetsCard({
 
   useEffect(() => {
     asset.likes.forEach((like) => {
-      if (like.user_id == user_id) {
+      if (like.user_id == currentUserId) {
         setLiked(true);
         setIsStarting(false);
         return;
@@ -36,7 +36,7 @@ export default function AssetsCard({
           "Content-type": "Application/json",
         },
         body: JSON.stringify({
-          user_id,
+          user_id: currentUserId,
           asset_id,
         }),
       });
@@ -62,7 +62,7 @@ export default function AssetsCard({
           "Content-type": "Application/json",
         },
         body: JSON.stringify({
-          user_id,
+          user_id: currentUserId,
           asset_id,
         }),
       });

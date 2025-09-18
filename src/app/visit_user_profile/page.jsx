@@ -1,24 +1,101 @@
 "use client";
 import { useData } from "@/context/GlobalDataAccesContext";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useTheme } from "@/context/themeContext";
-import LazyLoadPage from "@/Components/LazyLoadPageComponent";
+import { useAuth } from "@/context/authContext";
+import AssetsCard from "@/Components/AssetsCard";
+import { GetAssetsByUserId } from "@/utils/functions";
+import ModalShowPicture from "@/Components/ModalShowPicture";
+import ModalAssetData from "@/Components/ModalAssetData";
 
 export default function UserProfile() {
   const storage = useData();
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState("");
   const [assets, setAssets] = useState([]);
   const { currentTheme } = useTheme();
+  const auth = useAuth();
+  const [page, setPage] = useState(0);
+  const freeAcces = true;
+  const limit = 10;
+
+  const ModalShowPictueRef = useRef();
+  const ModalAssetOptionsRef = useRef();
 
   useEffect(() => {
     const user = storage.userToProfile;
     setUser(user);
   }, [storage.userToProfile]);
 
+  useEffect(() => {
+    if (user == "") return;
+    async function loadAssets() {
+      const data = await GetAssetsByUserId(
+        user?.uid,
+        user?.id,
+        user?.providerId,
+        page,
+        limit,
+        freeAcces
+      );
+      console.log("AssetsCard", data);
+      const { error } = data;
+      if (error) {
+        return console.error("error", error, error.messaje || "unknown");
+      }
+      setAssets(data);
+    }
+    loadAssets();
+  }, [user]);
+
+  {
+    /* Modales */
+  }
+
+  function onClickBar(asset) {
+    if (ModalAssetOptionsRef.current) {
+      const modal = ModalAssetOptionsRef.current;
+      modal.open(asset);
+    }
+  }
+
+  function onClickPhoto(asset) {
+    if (ModalShowPictueRef.current) {
+      ModalShowPictueRef.current.open(asset);
+    }
+  }
+
+  function nextAsset() {
+    const modal = ModalShowPictueRef.current;
+    const currentAsset = modal.currentAsset();
+    const index = assets.indexOf(currentAsset);
+    const nextIndex = (index + 1) % assets.length;
+    modal.foward(assets[nextIndex]);
+  }
+
+  function prevAsset() {
+    const modal = ModalShowPictueRef.current;
+    const currentAsset = modal.currentAsset();
+    const index = assets.indexOf(currentAsset);
+    const prevIndex = (index - 1 + assets.length) % assets.length;
+    modal.backwards(assets[prevIndex]);
+  }
+
   if (!user) return null;
 
   return (
     <>
+      <ModalShowPicture
+        ref={ModalShowPictueRef}
+        nextAsset={() => {
+          nextAsset();
+        }}
+        prevAsset={() => {
+          prevAsset();
+        }}
+      />
+
+      <ModalAssetData ref={ModalAssetOptionsRef} onClose={() => null} />
+
       <div
         className={`${currentTheme.colors.primary} min-h-screen p-6 h-[100%] overflow-auto`}
       >
@@ -59,7 +136,6 @@ export default function UserProfile() {
               </div>
             </div>
           </div>
-
           {/* Información de la cuenta */}
           <div
             className={`${currentTheme.colors.third} rounded-lg shadow-lg p-6 mb-6`}
@@ -105,14 +181,25 @@ export default function UserProfile() {
               </div>
             </div>
           </div>
-
+        </div>
+        {/* Imagenes */}
+        <div className="bg-red-200">
           <h2
             className={`${currentTheme.textColor.primary} text-xl font-semibold mb-4`}
           >
             Assets
           </h2>
-          <div className="h-[100%]"></div>
-          <LazyLoadPage freeAcces={true}></LazyLoadPage>
+          <div className="grid gap-6 p-4 [grid-template-columns:repeat(auto-fit,minmax(250px,1fr))]">
+            {assets.map((asset) => (
+              <AssetsCard
+                key={asset.id}
+                asset={asset}
+                currentUserId={auth.user.uid}
+                onClickBar={() => onClickBar(asset)}
+                onClickPhoto={onClickPhoto}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </>
