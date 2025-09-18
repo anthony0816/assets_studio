@@ -204,7 +204,7 @@ export default function LazyLoadPage({
         }}
       />
 
-      <div className="flex flex-row h-[100%]">
+      <div className="flex flex-row h-[100%] overflow-y-auto">
         <div
           className={`transition-all duration-300   ${
             ModalAssetsDataisOpen ? `flex-1` : ""
