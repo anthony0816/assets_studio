@@ -194,7 +194,7 @@ export default function UserProfile() {
               <AssetsCard
                 key={asset.id}
                 asset={asset}
-                currentUserId={auth.user.uid}
+                currentUserId={auth.user?.uid}
                 onClickBar={() => onClickBar(asset)}
                 onClickPhoto={onClickPhoto}
               />
