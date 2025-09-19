@@ -154,3 +154,41 @@ export async function GetByParam(param, page, limit, freeAcces = false) {
   const data = res.json();
   return data;
 }
+
+export async function CreateComent(user_id, asset_id, content) {
+  const res = await fetch("/api/coments/create", {
+    method: "POST",
+    headers: {
+      "Content-type": "Application/json",
+    },
+    body: JSON.stringify({
+      user_id,
+      asset_id,
+      content,
+    }),
+  });
+  return res;
+}
+
+export async function GetComentByAsset(asset_id) {
+  const res = await fetch("/api/coments/get/asset_id", {
+    method: "POST",
+    headers: {
+      "Content-type": "Application/json",
+    },
+    body: JSON.stringify({
+      asset_id,
+    }),
+  });
+  return res;
+}
+
+/*
+ id Int @id @default(autoincrement())
+  user_id String
+  asset Asset @relation(fields: [asset_id], references: [id], onDelete: Cascade)
+  asset_id Int
+  content  String
+  createdAt DateTime @default(now())
+  likes ComentLike[] 
+ */

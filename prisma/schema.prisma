@@ -48,6 +48,7 @@ model Asset{
   id Int @id @default(autoincrement())
   likes Like[]
   reports Report[]
+  coments Coment[]
   createdAt DateTime @default(now())
   src String
   user_id String
@@ -68,4 +69,21 @@ model Like {
   user_id String
   asset_id Int
   asset Asset @relation(fields: [asset_id], references: [id], onDelete: Cascade)
+}
+
+model Coment {
+  id Int @id @default(autoincrement())
+  user_id String
+  asset Asset @relation(fields: [asset_id], references: [id], onDelete: Cascade)
+  asset_id Int
+  content  String
+  createdAt DateTime @default(now())
+  likes ComentLike[]
+}
+
+model ComentLike{
+  id Int @id @default(autoincrement())
+  user_id String
+  coment_id  Int
+  coment Coment @relation(fields: [coment_id], references: [id], onDelete: Cascade)
 }

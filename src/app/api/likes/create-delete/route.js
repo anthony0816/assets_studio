@@ -37,7 +37,7 @@ export async function DELETE(request) {
       );
 
     const data = await request.json();
-    console.log("ddddddddddddddddddddddddddd", data);
+
     const like = await prisma.like.deleteMany({
       where: {
         user_id: data.user_id,

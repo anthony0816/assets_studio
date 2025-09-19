@@ -3,6 +3,11 @@ import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { useTheme } from "@/context/themeContext";
 import { useLoadingRouter } from "./LoadingRouterProvider";
 import { useData } from "@/context/GlobalDataAccesContext";
+import { CreateComent } from "@/utils/functions";
+import { useAuth } from "@/context/authContext";
+import LoadingSpinner from "./LoadingSpiner";
+import { GetComentByAsset } from "@/utils/functions";
+import ComentCard from "./ComentCard";
 
 const ModalAssetData = forwardRef((props, ref) => {
   const { router } = useLoadingRouter();
@@ -13,19 +18,69 @@ const ModalAssetData = forwardRef((props, ref) => {
   const { currentTheme } = useTheme();
   const [user, setUser] = useState(null);
   const [fetchingUserError, setfetchingUserError] = useState(false);
+  const auth = useAuth();
+  const [content, setContent] = useState("");
+  const [coments, setComents] = useState([]);
+  const [isLoadingComents, setIsLoadingComents] = useState(false);
+  const [loadingComentsCreation, setLoadingComentsCreation] = useState(false);
 
   useImperativeHandle(ref, () => ({
     open: (asset) => {
       setAsset(asset);
       setUser(null);
       setIsOpen(true);
+      FetchComents(asset.id);
     },
   }));
+
+  async function FetchComents(asset_id) {
+    setIsLoadingComents(true);
+    const res = await GetComentByAsset(asset_id);
+    const data = await res.json();
+    if (!res.ok) {
+      console.error("Error al traer los comentarios", data);
+      setIsLoadingComents(false);
+      return;
+    }
+    console.log("Comentarios Cargados Correctamente", data);
+    setComents(data);
+    setIsLoadingComents(false);
+  }
+
+  async function handleCreateComent() {
+    if (!auth.user) {
+      router("/login");
+      return;
+    }
+
+    if (!asset.id) return;
+    if (content == "") return;
+
+    setLoadingComentsCreation(true);
+    const res = await CreateComent(auth.user.uid, asset.id, content);
+    if (!res.ok) {
+      const data = await res.json();
+      setLoadingComentsCreation(false);
+      return console.error(
+        "Error creando el comentario, la respuesta no fue satisfactoria",
+        "Data:",
+        data
+      );
+    }
+    const data = await res.json();
+    console.log(
+      "Data satisfactoria desde el backend  de los comentarios",
+      data
+    );
+    setContent("");
+    setLoadingComentsCreation(false);
+  }
 
   function close() {
     setAsset(null);
     setUser(null);
     setIsOpen(false);
+    setContent("");
     onClose();
   }
 
@@ -43,7 +98,7 @@ const ModalAssetData = forwardRef((props, ref) => {
       return;
     }
     const data = await res.json();
-    console.log("Data", data);
+
     setUser(data);
   }
 
@@ -80,7 +135,6 @@ const ModalAssetData = forwardRef((props, ref) => {
             className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
           />
         </div>
-
         {/* Información del asset */}
         <div className="p-4 space-y-2">
           <div className="flex justify-between items-center">
@@ -124,14 +178,69 @@ const ModalAssetData = forwardRef((props, ref) => {
             </span>
           </div>
         </div>
-
-        {/* Botón cerrar */}
+        {/* Botón Volver */}
         <div
           onClick={close}
           className={` sticky top-0 cursor-pointer text-center py-3 mt-2 ${currentTheme.colors.buttonPrimary} ${currentTheme.colors.buttonPrimaryHover} rounded-b-xl`}
         >
-          Cerrar
+          back
         </div>
+        {/* Comentarios */}
+        <h2 className="text-2xl mt-2  ">Coments</h2>
+        <div className="flex flex-col mt-5">
+          {loadingComentsCreation ? (
+            <LoadingSpinner />
+          ) : (
+            <button onClick={handleCreateComent}>➕Add a coment</button>
+          )}
+
+          <textarea
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            id="createComent"
+            placeholder="What do you think?"
+            type="text"
+            className=" w-[90%] m-auto mt-2 px-2 py-1 border-b outline-none  rounded-xl "
+          />
+        </div>
+        {/* Comentarios de otros usuario */}
+        {coments.length === 0 ? (
+          <>
+            {isLoadingComents ? (
+              <div className="  pb-30 flex items-center justify-center w-full h-60 ">
+                <LoadingSpinner text={"cargando comentarios..."} />
+              </div>
+            ) : (
+              <div
+                className={`pb-50 mt-10 flex flex-col items-center ${currentTheme.textColor.secondary}`}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="48"
+                  height="48"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={1.8}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  viewBox="0 0 24 24"
+                  className="mb-2"
+                >
+                  <path d="M7 7h10a3 3 0 0 1 3 3v4a3 3 0 0 1-3 3H11l-4 3v-3H7a3 3 0 0 1-3-3v-4a3 3 0 0 1 3-3z" />
+                </svg>
+                <span>No coments yet</span>
+              </div>
+            )}
+          </>
+        ) : (
+          <div>
+            <div className="pb-40 mt-10">
+              {coments.map((coment) => (
+                <ComentCard key={coment.id} coment={coment} />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </>
   );

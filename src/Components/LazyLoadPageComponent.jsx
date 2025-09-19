@@ -36,8 +36,6 @@ export default function LazyLoadPage({
   const ModalShowPictueRef = useRef();
   const ModalAssetOptionsRef = useRef();
 
-  console.log("assets", assets.length);
-
   function verifyAcces() {
     const access = false;
     if (user != "await" && user != null) return true;
