@@ -1,6 +1,6 @@
 "use client";
 import { useData } from "@/context/GlobalDataAccesContext";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useTheme } from "@/context/themeContext";
 import { useAuth } from "@/context/authContext";
 import AssetsCard from "@/Components/AssetsCard";
@@ -10,6 +10,8 @@ import ModalAssetData from "@/Components/ModalAssetData";
 
 export default function UserProfile() {
   const storage = useData();
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasMore, setHasMore] = useState(true);
   const [user, setUser] = useState("");
   const [assets, setAssets] = useState([]);
   const { currentTheme } = useTheme();
@@ -20,6 +22,34 @@ export default function UserProfile() {
 
   const ModalShowPictueRef = useRef();
   const ModalAssetOptionsRef = useRef();
+  const loadingRef = useRef();
+
+  const loadAssets = useCallback(async () => {
+    setIsLoading(true);
+    const data = await GetAssetsByUserId(
+      user?.uid,
+      user?.id,
+      user?.providerId,
+      page,
+      limit,
+      freeAcces
+    );
+    console.log("AssetsCard", data);
+    const { error } = data;
+    if (error) {
+      setIsLoading(false);
+      return console.error("error", error, error.messaje || "unknown");
+    }
+    setAssets((prev) => {
+      const ids = new Set(prev.map((a) => a.id));
+      const nuevos = data.filter((a) => !ids.has(a.id));
+      return [...prev, ...nuevos];
+    });
+    setPage((prev) => prev + 1);
+    if (data.length < limit) setHasMore(false);
+
+    setIsLoading(false);
+  });
 
   useEffect(() => {
     const user = storage.userToProfile;
@@ -28,24 +58,32 @@ export default function UserProfile() {
 
   useEffect(() => {
     if (user == "") return;
-    async function loadAssets() {
-      const data = await GetAssetsByUserId(
-        user?.uid,
-        user?.id,
-        user?.providerId,
-        page,
-        limit,
-        freeAcces
-      );
-      console.log("AssetsCard", data);
-      const { error } = data;
-      if (error) {
-        return console.error("error", error, error.messaje || "unknown");
-      }
-      setAssets(data);
-    }
     loadAssets();
   }, [user]);
+
+  useEffect(() => {
+    if (!loadingRef.current) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry.isIntersecting) {
+          if (isLoading) return console.log("STOP_Loading...");
+          console.log("El elemento está visible, cargar más datos...");
+          if (hasMore) loadAssets();
+        }
+      },
+      {
+        root: null,
+        rootMargin: "0px",
+        threshold: 1.0,
+      }
+    );
+
+    const target = loadingRef.current;
+
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [loadAssets, hasMore]);
 
   {
     /* Modales */
@@ -97,7 +135,7 @@ export default function UserProfile() {
       <ModalAssetData ref={ModalAssetOptionsRef} onClose={() => null} />
 
       <div
-        className={`${currentTheme.colors.primary} min-h-screen p-6 h-[100%] overflow-auto`}
+        className={`${currentTheme.colors.primary} min-h-screen p-1 h-[100%] overflow-auto`}
       >
         <div className="max-w-4xl mx-auto">
           {/* Header del perfil */}
@@ -182,14 +220,15 @@ export default function UserProfile() {
             </div>
           </div>
         </div>
+
         {/* Imagenes */}
-        <div className="">
+        <div className=" ">
           <h2
-            className={`${currentTheme.textColor.primary} text-xl font-semibold mb-4`}
+            className={`${currentTheme.textColor.primary} text-xl font-semibold mb-4 `}
           >
             Assets
           </h2>
-          <div className="grid gap-6 p-4 [grid-template-columns:repeat(auto-fit,minmax(250px,1fr))]">
+          <div className="grid gap-6 p-4  [grid-template-columns:repeat(auto-fit,minmax(250px,1fr))]">
             {assets.map((asset) => (
               <AssetsCard
                 key={asset.id}
@@ -200,6 +239,29 @@ export default function UserProfile() {
               />
             ))}
           </div>
+          {hasMore ? (
+            <div
+              ref={loadingRef}
+              className="h-16 flex flex-col items-center justify-center gap-2 mb-20 "
+            >
+              {/* Spinner */}
+              <div
+                className={`w-6 h-6 border-4 ${currentTheme.colors.spinner} border-t-transparent rounded-full animate-spin`}
+              ></div>
+              {/* Texto */}
+              <span
+                className={`text-sm ${currentTheme.colors.subtleText} animate-pulse`}
+              >
+                Cargando más assets...
+              </span>
+            </div>
+          ) : (
+            <div
+              className={`py-6 text-center text-sm mb-20 ${currentTheme.colors.mutedText}`}
+            >
+              No more items to load
+            </div>
+          )}
         </div>
       </div>
     </>

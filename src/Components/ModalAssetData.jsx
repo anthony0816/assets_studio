@@ -28,7 +28,7 @@ const ModalAssetData = forwardRef((props, ref) => {
     setIsOpen(false);
     onClose();
   }
-  console.log("asset:", asset);
+
   useEffect(() => {
     if (!asset) return;
 
