@@ -19,6 +19,7 @@ export default function UserProfile() {
   const auth = useAuth();
   const [page, setPage] = useState(0);
   const [modalAssetsDataisOpen, setModalAssetsDataisOpen] = useState(false);
+  const [hideMainContent, setHideMainContent] = useState(false);
   const freeAcces = true;
   const limit = 10;
 
@@ -95,6 +96,11 @@ export default function UserProfile() {
   function onClickBar(asset) {
     if (ModalAssetOptionsRef.current) {
       const modal = ModalAssetOptionsRef.current;
+      if (isMobile) {
+        setTimeout(() => {
+          setHideMainContent(true);
+        }, 300);
+      }
       setModalAssetsDataisOpen(true);
       modal.open(asset);
     }
@@ -144,12 +150,17 @@ export default function UserProfile() {
         >
           <ModalAssetData
             ref={ModalAssetOptionsRef}
-            onClose={() => setModalAssetsDataisOpen(false)}
+            onClose={() => {
+              setModalAssetsDataisOpen(false);
+              setHideMainContent(false);
+            }}
           />
         </div>
 
         <div
-          className={`${currentTheme.colors.primary} ${
+          className={` transition-all duration-300  ${
+            hideMainContent ? "hidden" : ""
+          }  ${currentTheme.colors.primary} ${
             modalAssetsDataisOpen ? (isMobile ? "w-0" : "w-full") : "w-full"
           } p-1 h-[100%] overflow-auto`}
         >
@@ -195,7 +206,7 @@ export default function UserProfile() {
               className={`${currentTheme.colors.third} rounded-lg shadow-lg p-6 mb-6`}
             >
               <h2
-                className={`${currentTheme.textColor.primary} text-xl font-semibold mb-4`}
+                className={`${currentTheme.textColor.primary} whitespace-nowrap text-xl font-semibold mb-4`}
               >
                 Información de la cuenta
               </h2>
@@ -204,10 +215,14 @@ export default function UserProfile() {
                 <div
                   className={`${currentTheme.colors.secondary} p-4 rounded-lg`}
                 >
-                  <p className={`${currentTheme.textColor.muted} text-sm`}>
+                  <p
+                    className={` whitespace-nowrap ${currentTheme.textColor.muted} text-sm`}
+                  >
                     Provider
                   </p>
-                  <p className={`${currentTheme.textColor.secondary}`}>
+                  <p
+                    className={` whitespace-nowrap ${currentTheme.textColor.secondary}`}
+                  >
                     {user.providerData[0]?.providerId || "Google"}
                   </p>
                 </div>
@@ -215,10 +230,14 @@ export default function UserProfile() {
                 <div
                   className={`${currentTheme.colors.secondary} p-4 rounded-lg`}
                 >
-                  <p className={`${currentTheme.textColor.muted} text-sm`}>
+                  <p
+                    className={` whitespace-nowrap ${currentTheme.textColor.muted} text-sm`}
+                  >
                     Created at
                   </p>
-                  <p className={`${currentTheme.textColor.secondary}`}>
+                  <p
+                    className={` whitespace-nowrap ${currentTheme.textColor.secondary}`}
+                  >
                     {user.metadata.creationTime}
                   </p>
                 </div>
@@ -226,10 +245,14 @@ export default function UserProfile() {
                 <div
                   className={`${currentTheme.colors.secondary} p-4 rounded-lg`}
                 >
-                  <p className={`${currentTheme.textColor.muted} text-sm`}>
+                  <p
+                    className={` whitespace-nowrap ${currentTheme.textColor.muted} text-sm`}
+                  >
                     Last seen
                   </p>
-                  <p className={`${currentTheme.textColor.secondary}`}>
+                  <p
+                    className={` whitespace-nowrap ${currentTheme.textColor.secondary}`}
+                  >
                     {user.metadata.lastSignInTime}
                   </p>
                 </div>

@@ -207,7 +207,7 @@ export default function LazyLoadPage({
       <div className="flex flex-row h-[100%] overflow-y-auto">
         <div
           className={`transition-all duration-300   ${
-            ModalAssetsDataisOpen ? `flex-1` : ""
+            ModalAssetsDataisOpen ? `w-full` : "w-0"
           } `}
         >
           <ModalAssetData
@@ -220,9 +220,11 @@ export default function LazyLoadPage({
         </div>
 
         <div
-          className={`flex-1 h-[100%] pb-40 overflow-auto ${
+          className={`h-[100%] pb-40 overflow-auto ${
             hideAssets ? "hidden" : ""
-          }`}
+          } ${
+            ModalAssetsDataisOpen ? (isMobile ? "w-0" : "w-full") : "w-full"
+          } `}
         >
           <div className="grid gap-6 p-4 [grid-template-columns:repeat(auto-fit,minmax(250px,1fr))]">
             {assets?.map((asset) => (
