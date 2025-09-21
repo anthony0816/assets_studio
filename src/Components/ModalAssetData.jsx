@@ -5,6 +5,7 @@ import {
   useImperativeHandle,
   useState,
   useRef,
+  useCallback,
 } from "react";
 import { useTheme } from "@/context/themeContext";
 import { useLoadingRouter } from "./LoadingRouterProvider";
@@ -16,35 +17,52 @@ import { GetComentByAsset } from "@/utils/functions";
 import ComentCard from "./ComentCard";
 
 const ModalAssetData = forwardRef((props, ref) => {
+  // 🔹 Hooks externos / contextos
   const { router } = useLoadingRouter();
   const storage = useData();
-  const [asset, setAsset] = useState(null);
-  const [isOpen, setIsOpen] = useState(false);
   const { onClose } = props;
   const { currentTheme } = useTheme();
-  const [user, setUser] = useState(null);
-  const [fetchingUserError, setfetchingUserError] = useState(false);
   const auth = useAuth();
+
+  // 🔹 Refs
+  const textareaRef = useRef(null);
+  const loaderRef = useRef();
+
+  // 🔹 Estados de datos principales
+  const [asset, setAsset] = useState(null);
+  const [user, setUser] = useState(null);
   const [content, setContent] = useState("");
   const [coments, setComents] = useState([]);
+  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(0);
+  const [limit, setLimit] = useState(5);
+
+  // 🔹 Estados de control / UI
+  const [isOpen, setIsOpen] = useState(false);
+  const [openWithFocus, setOpenWithFocus] = useState(false);
+
+  // 🔹 Estados de carga / error
   const [isLoadingComents, setIsLoadingComents] = useState(false);
   const [loadingComentsCreation, setLoadingComentsCreation] = useState(false);
-  const [openWithFocus, setOpenWithFocus] = useState(false);
-  const textareaRef = useRef(null);
+  const [fetchingUserError, setfetchingUserError] = useState(false);
 
   useImperativeHandle(ref, () => ({
     open: (asset) => {
+      setPage(0);
+      setHasMore(true);
       setAsset(asset);
+      setComents([]);
       setUser(null);
       setIsOpen(true);
-      FetchComents(asset.id);
     },
     openAndCreateComent: (asset) => {
       setOpenWithFocus(true);
+      setPage(0);
+      setHasMore(true);
       setAsset(asset);
+      setComents([]);
       setUser(null);
       setIsOpen(true);
-      FetchComents(asset.id);
     },
   }));
 
@@ -55,9 +73,9 @@ const ModalAssetData = forwardRef((props, ref) => {
     }
   };
 
-  async function FetchComents(asset_id) {
+  const FetchComents = useCallback(async (asset_id) => {
     setIsLoadingComents(true);
-    const res = await GetComentByAsset(asset_id);
+    const res = await GetComentByAsset(asset_id, page, limit);
     const data = await res.json();
     if (!res.ok) {
       console.error("Error al traer los comentarios", data);
@@ -65,9 +83,41 @@ const ModalAssetData = forwardRef((props, ref) => {
       return;
     }
     console.log("Comentarios Cargados Correctamente", data);
-    setComents(data);
+    setComents((prev) => [...prev, ...data]);
+    setPage((prev) => prev + 1);
+    if (data.length < limit) setHasMore(false);
     setIsLoadingComents(false);
-  }
+  });
+
+  useEffect(() => {
+    if (isOpen == false) return;
+    if (page != 0) return;
+    FetchComents(asset.id);
+  }, [isOpen, page]);
+
+  useEffect(() => {
+    if (!loaderRef.current) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry.isIntersecting) {
+          if (isLoadingComents) return console.log("STOP_Loading...");
+          console.log("El elemento está visible, cargar más datos...");
+          if (hasMore) FetchComents(asset.id);
+        }
+      },
+      {
+        root: null,
+        rootMargin: "0px",
+        threshold: 1.0,
+      }
+    );
+
+    const target = loaderRef.current;
+
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [hasMore, FetchComents]);
 
   async function handleCreateComent() {
     if (!auth.user) {
@@ -99,7 +149,10 @@ const ModalAssetData = forwardRef((props, ref) => {
   }
 
   function close() {
+    setPage(0);
+    setHasMore(true);
     setAsset(null);
+    setComents([]);
     setUser(null);
     setIsOpen(false);
     setContent("");
@@ -262,6 +315,17 @@ const ModalAssetData = forwardRef((props, ref) => {
               {coments.map((coment) => (
                 <ComentCard key={coment.id} coment={coment} />
               ))}
+              {hasMore ? (
+                <div ref={loaderRef}>
+                  <LoadingSpinner />
+                </div>
+              ) : (
+                <div
+                  className={`py-6 text-center text-sm ${currentTheme.colors.mutedText}`}
+                >
+                  No more items to load
+                </div>
+              )}
             </div>
           </div>
         )}

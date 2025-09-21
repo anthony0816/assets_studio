@@ -170,7 +170,7 @@ export async function CreateComent(user_id, asset_id, content) {
   return res;
 }
 
-export async function GetComentByAsset(asset_id) {
+export async function GetComentByAsset(asset_id, page, limit) {
   const res = await fetch("/api/coments/get/asset_id", {
     method: "POST",
     headers: {
@@ -178,6 +178,8 @@ export async function GetComentByAsset(asset_id) {
     },
     body: JSON.stringify({
       asset_id,
+      page,
+      limit,
     }),
   });
   return res;

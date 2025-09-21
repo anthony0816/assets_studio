@@ -1,11 +1,16 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/libs/prisma";
+import { skip } from "@prisma/client/runtime/library";
 
 export async function POST(req) {
   try {
-    const data = await req.json();
+    const { asset_id, page, limit } = await req.json();
     const coments = await prisma.coment.findMany({
-      where: data,
+      where: {
+        asset_id: asset_id,
+      },
+      skip: page * limit,
+      take: limit,
     });
     return NextResponse.json(coments);
   } catch (error) {
