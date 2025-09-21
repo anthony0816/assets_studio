@@ -11,8 +11,6 @@ import { fileToBase64 } from "@/utils/functions";
 
 export default function UploadAsset() {
   const { currentTheme } = useTheme();
-  const color = currentTheme.colors;
-  const tcolor = currentTheme.textColor;
   const [file, setFile] = useState(null);
   const [categoria, setCategoria] = useState(null);
   const [isLoading, setIsLoading] = useState(false);

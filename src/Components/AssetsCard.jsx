@@ -7,10 +7,12 @@ export default function AssetsCard({
   currentUserId,
   onClickPhoto,
   onClickBar,
+  onClickComents,
 }) {
   const { currentTheme } = useTheme();
   const [liked, setLiked] = useState(false);
   const [likes, setLikes] = useState(asset.likes.length);
+  const [coments, setComents] = useState("");
   const [isStarting, setIsStarting] = useState(true);
 
   const { router } = useLoadingRouter();
@@ -23,6 +25,7 @@ export default function AssetsCard({
         return;
       }
     });
+    setComents(asset?._count.coments);
     setIsStarting(false);
   }, []);
 
@@ -77,6 +80,11 @@ export default function AssetsCard({
     }
   }
 
+  function handleCreateComent(e) {
+    e.stopPropagation();
+    onClickComents();
+  }
+
   return (
     <>
       <div
@@ -90,7 +98,7 @@ export default function AssetsCard({
         />
         <div onClick={() => onClickBar()} className="p-3 flex flex-col gap-1">
           <div className="flex flex-row items-center">
-            <div className="flex justify-between w-full ">
+            <div className="flex flex-row space-x-1 w-full ">
               <span
                 onClick={(e) => {
                   e.stopPropagation();
@@ -111,49 +119,52 @@ export default function AssetsCard({
                 <span
                   className={`text-sm ml-2 ${currentTheme.textColor.primary}`}
                 >
-                  {likes} likes
+                  {likes}
                 </span>
               </span>
               {/* Comentarios */}
               <span
-                onClick={(e) => e.stopPropagation()}
+                onClick={(e) => handleCreateComent(e)}
                 className={`cursor-pointer ${currentTheme.textColor.primary}`}
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="30"
-                  height="30"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={1.8}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path d="M7 7h10a3 3 0 0 1 3 3v4a3 3 0 0 1-3 3H11l-4 3v-3H7a3 3 0 0 1-3-3v-4a3 3 0 0 1 3-3z" />
-                  <circle
-                    cx="10"
-                    cy="12"
-                    r="1.1"
-                    fill="currentColor"
-                    stroke="none"
-                  />
-                  <circle
-                    cx="13"
-                    cy="12"
-                    r="1.1"
-                    fill="currentColor"
-                    stroke="none"
-                  />
-                  <circle
-                    cx="16"
-                    cy="12"
-                    r="1.1"
-                    fill="currentColor"
-                    stroke="none"
-                  />
-                </svg>
+                <div className="flex flex-row  items-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="30"
+                    height="30"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={0.7}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <path d="M7 7h10a3 3 0 0 1 3 3v4a3 3 0 0 1-3 3H11l-4 3v-3H7a3 3 0 0 1-3-3v-4a3 3 0 0 1 3-3z" />
+                    <circle
+                      cx="10"
+                      cy="12"
+                      r="1.1"
+                      fill="currentColor"
+                      stroke="none"
+                    />
+                    <circle
+                      cx="13"
+                      cy="12"
+                      r="1.1"
+                      fill="currentColor"
+                      stroke="none"
+                    />
+                    <circle
+                      cx="16"
+                      cy="12"
+                      r="1.1"
+                      fill="currentColor"
+                      stroke="none"
+                    />
+                  </svg>
+                  <span className="ml-1">{coments} </span>
+                </div>
               </span>
             </div>
           </div>

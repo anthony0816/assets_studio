@@ -59,6 +59,20 @@ export default function LazyLoadPage({
       modal.open(asset);
     }
   }
+
+  function onClickComents(asset) {
+    if (ModalAssetOptionsRef.current) {
+      const modal = ModalAssetOptionsRef.current;
+      setModalAssetsDataisOpen(true);
+      if (isMobile) {
+        setTimeout(() => {
+          setHideAssets(true);
+        }, 300);
+      }
+      modal.openAndCreateComent(asset);
+    }
+  }
+
   function nextAsset() {
     const modal = ModalShowPictueRef.current;
     const currentAsset = modal.currentAsset();
@@ -232,6 +246,7 @@ export default function LazyLoadPage({
                 currentUserId={user?.uid}
                 onClickBar={() => onClickBar(asset)}
                 onClickPhoto={onClickPhoto}
+                onClickComents={() => onClickComents(asset)}
               />
             ))}
           </div>

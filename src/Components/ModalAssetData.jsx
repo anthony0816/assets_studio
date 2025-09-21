@@ -1,5 +1,11 @@
 "use client";
-import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
+import {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useState,
+  useRef,
+} from "react";
 import { useTheme } from "@/context/themeContext";
 import { useLoadingRouter } from "./LoadingRouterProvider";
 import { useData } from "@/context/GlobalDataAccesContext";
@@ -23,6 +29,8 @@ const ModalAssetData = forwardRef((props, ref) => {
   const [coments, setComents] = useState([]);
   const [isLoadingComents, setIsLoadingComents] = useState(false);
   const [loadingComentsCreation, setLoadingComentsCreation] = useState(false);
+  const [openWithFocus, setOpenWithFocus] = useState(false);
+  const textareaRef = useRef(null);
 
   useImperativeHandle(ref, () => ({
     open: (asset) => {
@@ -31,7 +39,21 @@ const ModalAssetData = forwardRef((props, ref) => {
       setIsOpen(true);
       FetchComents(asset.id);
     },
+    openAndCreateComent: (asset) => {
+      setOpenWithFocus(true);
+      setAsset(asset);
+      setUser(null);
+      setIsOpen(true);
+      FetchComents(asset.id);
+    },
   }));
+
+  const setTextAreaRef = (el) => {
+    textareaRef.current = el;
+    if (el && openWithFocus) {
+      el.focus();
+    }
+  };
 
   async function FetchComents(asset_id) {
     setIsLoadingComents(true);
@@ -81,6 +103,7 @@ const ModalAssetData = forwardRef((props, ref) => {
     setUser(null);
     setIsOpen(false);
     setContent("");
+    setOpenWithFocus(false);
     onClose();
   }
 
@@ -195,6 +218,7 @@ const ModalAssetData = forwardRef((props, ref) => {
           )}
 
           <textarea
+            ref={setTextAreaRef}
             value={content}
             onChange={(e) => setContent(e.target.value)}
             id="createComent"
