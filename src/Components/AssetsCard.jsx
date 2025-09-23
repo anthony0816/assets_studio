@@ -1,6 +1,7 @@
 import { useTheme } from "@/context/themeContext";
 import { useState, useEffect } from "react";
 import { useLoadingRouter } from "./LoadingRouterProvider";
+import { GiveLike } from "@/utils/functions";
 
 export default function AssetsCard({
   asset,
@@ -29,60 +30,32 @@ export default function AssetsCard({
     setIsStarting(false);
   }, []);
 
-  async function GiveLike(asset_id) {
-    if (isStarting) return;
-
-    if (!liked) {
-      const res = await fetch("api/likes/create-delete", {
-        method: "POST",
-        headers: {
-          "Content-type": "Application/json",
-        },
-        body: JSON.stringify({
-          user_id: currentUserId,
-          asset_id,
-        }),
-      });
-
-      if (!res.ok) {
-        if (res.status == 401) {
-          return router("/login");
-        }
-      }
-      const data = await res.json();
-      const { id } = data;
-      if (id) {
-        setLiked(true);
-        setLikes(likes + 1);
-      }
-      console.log("data from liked asset", data);
-      return;
-    }
-    if (liked) {
-      const res = await fetch("api/likes/create-delete", {
-        method: "DELETE",
-        headers: {
-          "Content-type": "Application/json",
-        },
-        body: JSON.stringify({
-          user_id: currentUserId,
-          asset_id,
-        }),
-      });
-      const data = await res.json();
-      const { count } = data;
-      console.log("FROM delete:", data);
-      if (count) {
-        setLiked(false);
-        setLikes(likes - 1);
-        return;
-      }
-    }
-  }
-
   function handleCreateComent(e) {
     e.stopPropagation();
     onClickComents();
+  }
+
+  async function handleGiveLike(e) {
+    e.stopPropagation();
+    const res = await GiveLike(asset.id, liked, currentUserId);
+    if (!res.ok) {
+      if (res.status == 401) {
+        router("/login");
+      }
+    }
+    const data = await res.json();
+    const { id, count } = data;
+    if (id) {
+      setLiked(true);
+      setLikes(likes + 1);
+      console.log("data from liked asset", data);
+      return;
+    }
+    if (count) {
+      setLiked(false);
+      setLikes(likes - 1);
+      return;
+    }
   }
 
   return (
@@ -100,10 +73,7 @@ export default function AssetsCard({
           <div className="flex flex-row items-center">
             <div className="flex flex-row space-x-1 w-full ">
               <span
-                onClick={(e) => {
-                  e.stopPropagation();
-                  GiveLike(asset.id);
-                }}
+                onClick={async (e) => handleGiveLike(e)}
                 className="cursor-pointer flex flex-row  items-center px-2 rounded-xl  "
               >
                 <svg

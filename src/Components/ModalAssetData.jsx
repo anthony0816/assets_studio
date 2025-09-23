@@ -15,6 +15,8 @@ import { useAuth } from "@/context/authContext";
 import LoadingSpinner from "./LoadingSpiner";
 import { GetComentByAsset } from "@/utils/functions";
 import ComentCard from "./ComentCard";
+import LikeIcon from "@/Icons/LikeIcon";
+import ReportButton from "@/Icons/ReportButton";
 
 const ModalAssetData = forwardRef((props, ref) => {
   // 🔹 Hooks externos / contextos
@@ -245,12 +247,17 @@ const ModalAssetData = forwardRef((props, ref) => {
           </span>
 
           {/* Likes y Reports */}
-          <div className="flex gap-4 text-sm">
-            <span className={currentTheme.textColor.muted}>
-              ❤️ {asset.likes?.length || 0}
+          <div className="flex gap-4 text-sm mt-2">
+            <span
+              className={`${currentTheme.textColor.muted} flex items-center cursor-pointer`}
+            >
+              <LikeIcon /> {asset.likes?.length || 0}
             </span>
-            <span className={currentTheme.textColor.muted}>
-              🚩 {asset.reports?.length || 0}
+            <span
+              className={`${currentTheme.textColor.muted}  flex items-center cursor-pointer`}
+            >
+              <ReportButton />{" "}
+              <div className="ml-1">{asset.reports?.length || 0}</div>
             </span>
           </div>
         </div>

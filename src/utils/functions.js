@@ -185,6 +185,88 @@ export async function GetComentByAsset(asset_id, page, limit) {
   return res;
 }
 
+export async function GiveLike(asset_id, liked, currentUserId) {
+  if (!liked) {
+    const res = await fetch("api/likes/create-delete", {
+      method: "POST",
+      headers: {
+        "Content-type": "Application/json",
+      },
+      body: JSON.stringify({
+        user_id: currentUserId,
+        asset_id,
+      }),
+    });
+
+    return res;
+  }
+
+  if (liked) {
+    const res = await fetch("api/likes/create-delete", {
+      method: "DELETE",
+      headers: {
+        "Content-type": "Application/json",
+      },
+      body: JSON.stringify({
+        user_id: currentUserId,
+        asset_id,
+      }),
+    });
+    return res;
+  }
+}
+
+// async function avd(asset_id) {
+//   if (isStarting) return;
+
+//   if (!liked) {
+//     const res = await fetch("api/likes/create-delete", {
+//       method: "POST",
+//       headers: {
+//         "Content-type": "Application/json",
+//       },
+//       body: JSON.stringify({
+//         user_id: currentUserId,
+//         asset_id,
+//       }),
+//     });
+
+//     if (!res.ok) {
+//       if (res.status == 401) {
+//         return router("/login");
+//       }
+//     }
+//     const data = await res.json();
+//     const { id } = data;
+//     if (id) {
+//       setLiked(true);
+//       setLikes(likes + 1);
+//     }
+//     console.log("data from liked asset", data);
+//     return;
+//   }
+//   if (liked) {
+//     const res = await fetch("api/likes/create-delete", {
+//       method: "DELETE",
+//       headers: {
+//         "Content-type": "Application/json",
+//       },
+//       body: JSON.stringify({
+//         user_id: currentUserId,
+//         asset_id,
+//       }),
+//     });
+//     const data = await res.json();
+//     const { count } = data;
+//     console.log("FROM delete:", data);
+//     if (count) {
+//       setLiked(false);
+//       setLikes(likes - 1);
+//       return;
+//     }
+//   }
+// }
+
 /*
  id Int @id @default(autoincrement())
   user_id String
