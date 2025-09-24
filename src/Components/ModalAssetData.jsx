@@ -39,6 +39,7 @@ const ModalAssetData = forwardRef((props, ref) => {
   const textareaRef = useRef(null);
   const loaderRef = useRef();
   const ReportFormOpenRef = useRef(null);
+  const scrollContainerRef = useRef(null);
 
   // 🔹 Estados de datos principales
   const [asset, setAsset] = useState(null);
@@ -110,10 +111,21 @@ const ModalAssetData = forwardRef((props, ref) => {
       setTimeout(() => {
         if (ReportFormOpenRef.current) {
           console.log("exitoso");
-          ReportFormOpenRef.current.scrollIntoView({
-            behavior: "smooth", // animación suave
-            block: "center", // posición en el viewport: start, center, end, nearest
-          });
+          const container = scrollContainerRef.current; // tu div con overflow-y-auto
+          const target = ReportFormOpenRef.current;
+
+          if (container && target) {
+            const top =
+              target.offsetTop -
+              container.offsetTop +
+              target.offsetHeight / 2 -
+              container.clientHeight / 2;
+
+            container.scrollTo({
+              top,
+              behavior: "smooth", // animación suave
+            });
+          }
         }
       }, 300);
     }
@@ -300,6 +312,7 @@ const ModalAssetData = forwardRef((props, ref) => {
   return (
     <>
       <div
+        ref={scrollContainerRef}
         className={`h-full w-full  overflow-y-auto rounded-xl shadow-lg ${currentTheme.colors.secondary} ${currentTheme.textColor.primary}`}
       >
         {/* Imagen principal */}
