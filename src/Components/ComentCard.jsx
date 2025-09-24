@@ -8,7 +8,9 @@ export default function ComentCard({ coment }) {
       className={`${currentTheme.colors.third} ${currentTheme.colors.border} border rounded-lg p-4 mb-3`}
     >
       {/* Contenido del comentario */}
-      <p className={`${currentTheme.textColor.primary} text-base mb-2`}>
+      <p
+        className={`${currentTheme.textColor.primary} text-base mb-2 whitespace-normal break-words `}
+      >
         {coment.content}
       </p>
 

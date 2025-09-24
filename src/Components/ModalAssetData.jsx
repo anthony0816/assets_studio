@@ -219,6 +219,7 @@ const ModalAssetData = forwardRef((props, ref) => {
       "Data satisfactoria desde el backend  de los comentarios",
       data
     );
+    setComents((prev) => [data, ...prev]);
     setContent("");
     setLoadingComentsCreation(false);
   }

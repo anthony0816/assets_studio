@@ -218,7 +218,7 @@ export default function LazyLoadPage({
 
       <div className="flex flex-row h-[100%] overflow-y-auto">
         <div
-          className={`transition-all duration-300   ${
+          className={`transition-all duration-300 min-w-0  ${
             ModalAssetsDataisOpen ? `w-full` : "w-0"
           } `}
         >
@@ -232,7 +232,7 @@ export default function LazyLoadPage({
         </div>
 
         <div
-          className={`h-[100%] pb-40 overflow-auto ${
+          className={`h-[100%] pb-40 overflow-auto min-w-0 ${
             hideAssets ? "hidden" : ""
           } ${
             ModalAssetsDataisOpen ? (isMobile ? "w-0" : "w-full") : "w-full"
