@@ -17,6 +17,9 @@ import { GetComentByAsset } from "@/utils/functions";
 import ComentCard from "./ComentCard";
 import LikeIcon from "@/Icons/LikeIcon";
 import ReportButton from "@/Icons/ReportButton";
+import { GiveLike } from "@/utils/functions";
+import { useInterface } from "@/context/intercomunicationContext";
+import ReportForm from "./ReportForm";
 
 const ModalAssetData = forwardRef((props, ref) => {
   // 🔹 Hooks externos / contextos
@@ -25,10 +28,17 @@ const ModalAssetData = forwardRef((props, ref) => {
   const { onClose } = props;
   const { currentTheme } = useTheme();
   const auth = useAuth();
+  const {
+    LikeInterface,
+    setLikeInterface,
+    OpenReportsFormInterface,
+    setOpenReportsFormInterface,
+  } = useInterface();
 
   // 🔹 Refs
   const textareaRef = useRef(null);
   const loaderRef = useRef();
+  const ReportFormOpenRef = useRef(null);
 
   // 🔹 Estados de datos principales
   const [asset, setAsset] = useState(null);
@@ -38,6 +48,10 @@ const ModalAssetData = forwardRef((props, ref) => {
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(5);
+  const [liked, setLiked] = useState(false);
+  const [likes, setLikes] = useState(0);
+  const [isStarting, setIsStarting] = useState(true);
+  const [ReportFormOpen, setReportFormOpen] = useState(false);
 
   // 🔹 Estados de control / UI
   const [isOpen, setIsOpen] = useState(false);
@@ -47,6 +61,7 @@ const ModalAssetData = forwardRef((props, ref) => {
   const [isLoadingComents, setIsLoadingComents] = useState(false);
   const [loadingComentsCreation, setLoadingComentsCreation] = useState(false);
   const [fetchingUserError, setfetchingUserError] = useState(false);
+  const [loadingLikesInfo, setLoadingLikesInfo] = useState(false);
 
   useImperativeHandle(ref, () => ({
     open: (asset) => {
@@ -56,6 +71,7 @@ const ModalAssetData = forwardRef((props, ref) => {
       setComents([]);
       setUser(null);
       setIsOpen(true);
+      setReportFormOpen(false);
     },
     openAndCreateComent: (asset) => {
       setOpenWithFocus(true);
@@ -65,8 +81,65 @@ const ModalAssetData = forwardRef((props, ref) => {
       setComents([]);
       setUser(null);
       setIsOpen(true);
+      setReportFormOpen(false);
     },
   }));
+
+  {
+    /* useffect de la interfaz */
+  }
+  useEffect(() => {
+    if (!LikeInterface) return;
+    const { asset_id, liked_status } = LikeInterface;
+    if (asset_id == asset?.id) {
+      setLikes(likes + liked_status);
+      if (liked_status == -1) {
+        setLiked(false);
+      } else {
+        setLiked(true);
+      }
+    }
+  }, [LikeInterface]);
+
+  useEffect(() => {
+    if (!OpenReportsFormInterface) return;
+
+    const { to, message } = OpenReportsFormInterface;
+    if (to == "ModalAssetData" && message == "open") {
+      setReportFormOpen(true);
+      setTimeout(() => {
+        if (ReportFormOpenRef.current) {
+          console.log("exitoso");
+          ReportFormOpenRef.current.scrollIntoView({
+            behavior: "smooth", // animación suave
+            block: "center", // posición en el viewport: start, center, end, nearest
+          });
+        }
+      }, 300);
+    }
+  }, [OpenReportsFormInterface]);
+
+  useEffect(() => {
+    async function loadLikesInformation() {
+      if (!asset) return;
+      setLoadingLikesInfo(true);
+      const res = await fetch(`api/assets/get/getLikes/${asset.id}`);
+      const From_db_Likes = await res.json();
+
+      let boolean = false;
+      From_db_Likes.forEach((like) => {
+        if (like.user_id == auth.user?.uid) {
+          boolean = true;
+          return;
+        }
+      });
+      setLiked(boolean);
+      setLikes(From_db_Likes.length);
+      setIsStarting(false);
+      setLoadingLikesInfo(false);
+    }
+    loadLikesInformation();
+  }, [asset]);
 
   const setTextAreaRef = (el) => {
     textareaRef.current = el;
@@ -150,6 +223,28 @@ const ModalAssetData = forwardRef((props, ref) => {
     setLoadingComentsCreation(false);
   }
 
+  async function handleCreateLike() {
+    if (isStarting) return;
+    const res = await GiveLike(asset.id, liked, auth.user?.uid);
+    if (!res.ok) {
+      if (res.status == 401) {
+        router("/login");
+        return;
+      }
+    }
+    const data = await res.json();
+    const { id, count } = data;
+    if (id) {
+      console.log("data from liked asset", data);
+      setLikeInterface({ asset_id: asset.id, liked_status: 1 });
+      return;
+    }
+    if (count) {
+      setLikeInterface({ asset_id: asset.id, liked_status: -1 });
+      return;
+    }
+  }
+
   function close() {
     setPage(0);
     setHasMore(true);
@@ -160,6 +255,7 @@ const ModalAssetData = forwardRef((props, ref) => {
     setContent("");
     setOpenWithFocus(false);
     onClose();
+    setReportFormOpen(false);
   }
 
   useEffect(() => {
@@ -249,14 +345,22 @@ const ModalAssetData = forwardRef((props, ref) => {
           {/* Likes y Reports */}
           <div className="flex gap-4 text-sm mt-2">
             <span
+              onClick={() => handleCreateLike()}
               className={`${currentTheme.textColor.muted} flex items-center cursor-pointer`}
             >
-              <LikeIcon /> {asset.likes?.length || 0}
+              {loadingLikesInfo ? (
+                <LoadingSpinner />
+              ) : (
+                <>
+                  <LikeIcon liked={liked} /> {likes}
+                </>
+              )}
             </span>
             <span
               className={`${currentTheme.textColor.muted}  flex items-center cursor-pointer`}
+              onClick={() => setReportFormOpen(!ReportFormOpen)}
             >
-              <ReportButton />{" "}
+              <ReportButton />
               <div className="ml-1">{asset.reports?.length || 0}</div>
             </span>
           </div>
@@ -268,6 +372,17 @@ const ModalAssetData = forwardRef((props, ref) => {
         >
           back
         </div>
+
+        {/* Formulario de Reportes */}
+        <section
+          ref={ReportFormOpenRef}
+          className={`${
+            ReportFormOpen ? "max-h-full" : "max-h-0"
+          } transition-all duration-500  overflow-y-hidden`}
+        >
+          <ReportForm />
+        </section>
+
         {/* Comentarios */}
         <h2 className="text-2xl mt-2  ">Coments</h2>
         <div className="flex flex-col mt-5">

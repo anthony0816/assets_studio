@@ -10,6 +10,7 @@ import { ThemeContextProvider } from "@/context/themeContext";
 import CustomBody from "@/Components/CustomBody";
 import AuthContextProvaider from "@/context/authContext";
 import { GlobalDataAccesContextProvider } from "@/context/GlobalDataAccesContext";
+import { InterfaceContextProvider } from "@/context/intercomunicationContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,22 +33,24 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <SizeContextProvider>
-          <LoadingRouterProvider>
-            <ThemeContextProvider>
-              <AuthContextProvaider>
-                <GlobalDataAccesContextProvider>
-                  <CustomBody>
-                    <NavBar />
-                    <GlobalLoader>
-                      <Frame>{children}</Frame>
-                    </GlobalLoader>
-                  </CustomBody>
-                </GlobalDataAccesContextProvider>
-              </AuthContextProvaider>
-            </ThemeContextProvider>
-          </LoadingRouterProvider>
-        </SizeContextProvider>
+        <InterfaceContextProvider>
+          <SizeContextProvider>
+            <LoadingRouterProvider>
+              <ThemeContextProvider>
+                <AuthContextProvaider>
+                  <GlobalDataAccesContextProvider>
+                    <CustomBody>
+                      <NavBar />
+                      <GlobalLoader>
+                        <Frame>{children}</Frame>
+                      </GlobalLoader>
+                    </CustomBody>
+                  </GlobalDataAccesContextProvider>
+                </AuthContextProvaider>
+              </ThemeContextProvider>
+            </LoadingRouterProvider>
+          </SizeContextProvider>
+        </InterfaceContextProvider>
       </body>
     </html>
   );
