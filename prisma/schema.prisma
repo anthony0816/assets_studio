@@ -34,6 +34,16 @@ enum ASSETS_CATEGORIAS {
   other
 }
 
+enum REPORT_TYPES{
+  InappropriateContent
+  Spam
+  DataError
+  Abuse
+  Bug
+  Fraud
+  other
+}
+
 model user {
   uid Int @id @default(autoincrement()) 
   longName String
@@ -59,7 +69,8 @@ model Asset{
 model Report{
 id Int @id @default(autoincrement())
 user_id String
-description String 
+type REPORT_TYPES
+description String @default("")
 asset_id Int
 asset Asset @relation(fields: [asset_id], references: [id], onDelete: Cascade)
 }

@@ -13,3 +13,20 @@ export function useClickOutside(ref, handler) {
     };
   }, [ref, handler]);
 }
+
+export function useCenterElement(container, target) {
+  if (container && target) {
+    const offset = -60; // píxeles extra hacia arriba
+    const top =
+      target.offsetTop -
+      container.offsetTop +
+      target.offsetHeight / 2 -
+      container.clientHeight / 2 -
+      offset;
+
+    container.scrollTo({
+      top,
+      behavior: "smooth", // animación suave
+    });
+  }
+}

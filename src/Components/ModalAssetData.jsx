@@ -115,11 +115,13 @@ const ModalAssetData = forwardRef((props, ref) => {
           const target = ReportFormOpenRef.current;
 
           if (container && target) {
+            const offset = -60; // píxeles extra hacia arriba
             const top =
               target.offsetTop -
               container.offsetTop +
               target.offsetHeight / 2 -
-              container.clientHeight / 2;
+              container.clientHeight / 2 -
+              offset;
 
             container.scrollTo({
               top,
@@ -394,7 +396,7 @@ const ModalAssetData = forwardRef((props, ref) => {
             ReportFormOpen ? "max-h-full" : "max-h-0"
           } transition-all duration-500  overflow-y-hidden`}
         >
-          <ReportForm />
+          <ReportForm asset_id={asset.id} onSubmit={() => null} />
         </section>
 
         {/* Comentarios */}

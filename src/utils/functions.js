@@ -216,6 +216,22 @@ export async function GiveLike(asset_id, liked, currentUserId) {
   }
 }
 
+export async function CreateReport(asset_id, user_id, type, description) {
+  const res = await fetch("api/reports/create", {
+    method: "POST",
+    headers: {
+      "Content-type": "Application/json",
+    },
+    body: JSON.stringify({
+      asset_id,
+      user_id,
+      type,
+      description,
+    }),
+  });
+  return res;
+}
+
 // async function avd(asset_id) {
 //   if (isStarting) return;
 

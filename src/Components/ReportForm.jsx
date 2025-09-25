@@ -1,18 +1,47 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTheme } from "@/context/themeContext";
-export default function ReportForm({ theme, onSubmit }) {
-  const [userId, setUserId] = useState("");
-  const [assetId, setAssetId] = useState("");
+import { useAuth } from "@/context/authContext";
+
+import { CreateReport } from "@/utils/functions";
+import ReportsCategorySelector from "./ReportsCategorySelector";
+
+export default function ReportForm({ asset_id, onSubmit }) {
+  {
+    /* custom hooks */
+  }
+  const { user } = useAuth();
+
+  {
+    /* Estados  */
+  }
+
+  const [type, setType] = useState(null);
   const [description, setDescription] = useState("");
+  const [optional, setOptional] = useState(true);
   {
     /* estilos */
   }
   const { currentTheme } = useTheme();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit({ user_id: userId, asset_id: Number(assetId), description });
+    if (type == "") return;
+    if (type == "other" && description == "") return;
+    if (!user) return;
+
+    console.log("hola", asset_id);
+
+    const res = await CreateReport(asset_id, user.uid, type, description);
+    const data = await res.json();
+    console.log("res:", data);
   };
+
+  useEffect(() => {
+    if (type == "other") {
+      return setOptional(false);
+    }
+    setOptional(true);
+  }, [type]);
 
   return (
     <form
@@ -21,40 +50,23 @@ export default function ReportForm({ theme, onSubmit }) {
     >
       <h2 className="text-xl font-semibold">Create Report</h2>
 
-      {/* user_id */}
-      <div className="flex flex-col">
-        <label className={`${currentTheme.textColor.secondary} text-sm mb-1`}>
-          User ID
-        </label>
-        <input
-          type="text"
-          value={userId}
-          onChange={(e) => setUserId(e.target.value)}
-          className={`px-3 py-2 rounded-lg outline-none ${currentTheme.colors.secondary} ${currentTheme.textColor.primary} ${currentTheme.colors.border}`}
-          placeholder="Enter user id"
-        />
-      </div>
-
-      {/* asset_id */}
-      <div className="flex flex-col">
-        <label className={`${currentTheme.textColor.secondary} text-sm mb-1`}>
-          Asset ID
-        </label>
-        <input
-          type="number"
-          value={assetId}
-          onChange={(e) => setAssetId(e.target.value)}
-          className={`px-3 py-2 rounded-lg outline-none ${currentTheme.colors.secondary} ${currentTheme.textColor.primary} ${currentTheme.colors.border}`}
-          placeholder="Enter asset id"
-        />
-      </div>
+      {/* Categorias */}
+      <select
+        required
+        onChange={(e) => setType(e.target.value)}
+        className={` w-full px-3 py-2 rounded-lg outline-none ${currentTheme.colors.secondary} ${currentTheme.textColor.primary} ${currentTheme.colors.border}`}
+      >
+        <option value={""}> select type of issue</option>
+        <ReportsCategorySelector />
+      </select>
 
       {/* description */}
       <div className="flex flex-col">
         <label className={`${currentTheme.textColor.secondary} text-sm mb-1`}>
-          Description
+          Description {optional && "(optional)"}
         </label>
         <textarea
+          required={!optional}
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           className={`px-3 py-2 rounded-lg outline-none resize-none ${currentTheme.colors.secondary} ${currentTheme.textColor.primary} ${currentTheme.colors.border}`}
