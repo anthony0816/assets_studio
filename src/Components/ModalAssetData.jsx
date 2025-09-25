@@ -32,7 +32,8 @@ const ModalAssetData = forwardRef((props, ref) => {
     LikeInterface,
     setLikeInterface,
     OpenReportsFormInterface,
-    setOpenReportsFormInterface,
+    ReportInterface,
+    setReportInterface,
   } = useInterface();
 
   // 🔹 Refs
@@ -51,6 +52,7 @@ const ModalAssetData = forwardRef((props, ref) => {
   const [limit, setLimit] = useState(5);
   const [liked, setLiked] = useState(false);
   const [likes, setLikes] = useState(0);
+  const [reports, setReports] = useState(0);
   const [isStarting, setIsStarting] = useState(true);
   const [ReportFormOpen, setReportFormOpen] = useState(false);
 
@@ -73,6 +75,7 @@ const ModalAssetData = forwardRef((props, ref) => {
       setUser(null);
       setIsOpen(true);
       setReportFormOpen(false);
+      setReports(asset.reports.length);
     },
     openAndCreateComent: (asset) => {
       setOpenWithFocus(true);
@@ -89,6 +92,16 @@ const ModalAssetData = forwardRef((props, ref) => {
   {
     /* useffect de la interfaz */
   }
+
+  useEffect(() => {
+    if (!ReportInterface) return;
+
+    const { asset_id, report_status } = ReportInterface;
+    if (asset_id == asset.id) {
+      if (report_status == 1) return setReports(reports + 1);
+    }
+  }, [ReportInterface]);
+
   useEffect(() => {
     if (!LikeInterface) return;
     const { asset_id, liked_status } = LikeInterface;
@@ -377,7 +390,7 @@ const ModalAssetData = forwardRef((props, ref) => {
               onClick={() => setReportFormOpen(!ReportFormOpen)}
             >
               <ReportButton />
-              <div className="ml-1">{asset.reports?.length || 0}</div>
+              <div className="ml-1">{reports}</div>
             </span>
           </div>
         </div>
@@ -396,7 +409,14 @@ const ModalAssetData = forwardRef((props, ref) => {
             ReportFormOpen ? "max-h-full" : "max-h-0"
           } transition-all duration-500  overflow-y-hidden`}
         >
-          <ReportForm asset_id={asset.id} onSubmit={() => null} />
+          <ReportForm
+            asset_id={asset.id}
+            onSucces={() => {
+              setReportInterface({ asset_id: asset.id, report_status: 1 });
+              setReportFormOpen(false);
+            }}
+            onError={() => null}
+          />
         </section>
 
         {/* Comentarios */}

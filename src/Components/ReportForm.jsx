@@ -2,14 +2,17 @@ import { useEffect, useState } from "react";
 import { useTheme } from "@/context/themeContext";
 import { useAuth } from "@/context/authContext";
 
+import { useLoadingRouter } from "./LoadingRouterProvider";
 import { CreateReport } from "@/utils/functions";
 import ReportsCategorySelector from "./ReportsCategorySelector";
+import LoadingSpinner from "./LoadingSpiner";
 
-export default function ReportForm({ asset_id, onSubmit }) {
+export default function ReportForm({ asset_id, onError, onSucces }) {
   {
     /* custom hooks */
   }
   const { user } = useAuth();
+  const { router } = useLoadingRouter();
 
   {
     /* Estados  */
@@ -18,6 +21,8 @@ export default function ReportForm({ asset_id, onSubmit }) {
   const [type, setType] = useState(null);
   const [description, setDescription] = useState("");
   const [optional, setOptional] = useState(true);
+  const [isLoading, setisLoading] = useState(false);
+
   {
     /* estilos */
   }
@@ -27,13 +32,30 @@ export default function ReportForm({ asset_id, onSubmit }) {
     e.preventDefault();
     if (type == "") return;
     if (type == "other" && description == "") return;
-    if (!user) return;
-
-    console.log("hola", asset_id);
-
+    if (!user) return router("/login");
+    setisLoading(true);
     const res = await CreateReport(asset_id, user.uid, type, description);
-    const data = await res.json();
-    console.log("res:", data);
+
+    {
+      //  handle  error
+    }
+    if (!res.ok) {
+      const { status, message } = await res.json();
+      console.log("status:", res.status, "mensaje:", message);
+      onError();
+      setisLoading(false);
+      return;
+    }
+
+    //  handle Succes
+
+    const { report, status } = await res.json();
+    if (report) {
+      console.log("report:", report);
+      onSucces();
+      setisLoading(false);
+      return;
+    }
   };
 
   useEffect(() => {
@@ -80,7 +102,7 @@ export default function ReportForm({ asset_id, onSubmit }) {
         type="submit"
         className={`w-full py-2 rounded-lg font-semibold transition ${currentTheme.colors.buttonPrimary} ${currentTheme.colors.buttonPrimaryHover} ${currentTheme.textColor.primary}`}
       >
-        Submit Report
+        {isLoading ? <LoadingSpinner color="white" /> : "Report"}
       </button>
     </form>
   );

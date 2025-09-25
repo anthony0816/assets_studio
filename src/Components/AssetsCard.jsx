@@ -17,16 +17,31 @@ export default function AssetsCard({
   const { currentTheme } = useTheme();
   const [liked, setLiked] = useState(false);
   const [likes, setLikes] = useState(asset.likes.length);
+  const [reports, setReports] = useState(asset.reports.length);
   const [coments, setComents] = useState("");
   const [isStarting, setIsStarting] = useState(true);
 
   const { router } = useLoadingRouter();
-  const { LikeInterface, setLikeInterface, setOpenReportsFormInterface } =
-    useInterface();
+  const {
+    LikeInterface,
+    setLikeInterface,
+    setOpenReportsFormInterface,
+    ReportInterface,
+  } = useInterface();
 
   {
     /* useffect de la interfaz */
   }
+
+  useEffect(() => {
+    if (!ReportInterface) return;
+
+    const { asset_id, report_status } = ReportInterface;
+    if (asset_id == asset.id) {
+      if (report_status == 1) return setReports(reports + 1);
+    }
+  }, [ReportInterface]);
+
   useEffect(() => {
     if (!LikeInterface) return;
     const { asset_id, liked_status, createdBy } = LikeInterface;
@@ -99,7 +114,7 @@ export default function AssetsCard({
           className="w-full h-48 object-cover"
         />
         <div onClick={() => onClickBar()} className="p-3 flex flex-col gap-1">
-          <div className="flex flex-row justify-between items-center  ">
+          <div className={`flex flex-row justify-between items-center   `}>
             <div className="flex flex-row space-x-1 w-full ">
               <span
                 onClick={async (e) => handleGiveLike(e)}
@@ -123,12 +138,14 @@ export default function AssetsCard({
                 </div>
               </span>
             </div>
+            {/* Reportes */}
             <div>
               <span
                 onClick={(e) => handleReport(e)}
-                className={` cursor-pointer ${currentTheme.textColor.secondary} `}
+                className={` flex flex-row items-center space-x-2 cursor-pointer ${currentTheme.textColor.secondary} `}
               >
                 <ReportButton />
+                <p> {reports}</p>
               </span>
             </div>
           </div>

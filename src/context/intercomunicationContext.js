@@ -7,6 +7,7 @@ export function InterfaceContextProvider({ children }) {
   const [LikeInterface, setLikeInterface] = useState(null);
   const [OpenReportsFormInterface, setOpenReportsFormInterface] =
     useState(null);
+  const [ReportInterface, setReportInterface] = useState(null);
 
   return (
     <interfaceContext.Provider
@@ -15,6 +16,8 @@ export function InterfaceContextProvider({ children }) {
         setLikeInterface,
         OpenReportsFormInterface,
         setOpenReportsFormInterface,
+        ReportInterface,
+        setReportInterface,
       }}
     >
       {children}
