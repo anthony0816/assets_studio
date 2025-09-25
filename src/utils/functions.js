@@ -155,7 +155,13 @@ export async function GetByParam(param, page, limit, freeAcces = false) {
   return data;
 }
 
-export async function CreateComent(user_id, asset_id, content) {
+export async function CreateComent(
+  user_id,
+  asset_id,
+  content,
+  username,
+  userPhotoUrl
+) {
   const res = await fetch("/api/coments/create", {
     method: "POST",
     headers: {
@@ -165,6 +171,8 @@ export async function CreateComent(user_id, asset_id, content) {
       user_id,
       asset_id,
       content,
+      username,
+      userPhotoUrl,
     }),
   });
   return res;
@@ -227,6 +235,19 @@ export async function CreateReport(asset_id, user_id, type, description) {
       user_id,
       type,
       description,
+    }),
+  });
+  return res;
+}
+
+export async function FetchUserData(user_id) {
+  const res = await fetch("api/user/get", {
+    method: "POST",
+    headers: {
+      "Content-type": "Application/json",
+    },
+    body: JSON.stringify({
+      uid: user_id,
     }),
   });
   return res;

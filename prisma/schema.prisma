@@ -85,6 +85,8 @@ model Like {
 model Coment {
   id Int @id @default(autoincrement())
   user_id String
+  username String 
+  userPhotoUrl String @default("none")
   asset Asset @relation(fields: [asset_id], references: [id], onDelete: Cascade)
   asset_id Int
   content  String

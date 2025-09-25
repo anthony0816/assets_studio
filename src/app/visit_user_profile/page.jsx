@@ -8,6 +8,7 @@ import { GetAssetsByUserId } from "@/utils/functions";
 import ModalShowPicture from "@/Components/ModalShowPicture";
 import ModalAssetData from "@/Components/ModalAssetData";
 import { useSize } from "@/context/resizeContext";
+import { FetchUserData } from "@/utils/functions";
 
 export default function UserProfile() {
   const storage = useData();
@@ -56,8 +57,19 @@ export default function UserProfile() {
   });
 
   useEffect(() => {
-    const user = storage.userToProfile;
-    setUser(user);
+    async function LoadUserData(params) {
+      const user = storage.userToProfile;
+      const { user_id } = user;
+      if (user_id) {
+        console.log("success");
+        const res = await FetchUserData(user);
+        const userData = await res.json();
+        setUser(userData);
+        return;
+      }
+      setUser(user);
+    }
+    LoadUserData();
   }, [storage.userToProfile]);
 
   useEffect(() => {

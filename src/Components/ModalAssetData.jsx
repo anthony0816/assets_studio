@@ -231,7 +231,14 @@ const ModalAssetData = forwardRef((props, ref) => {
     if (content == "") return;
 
     setLoadingComentsCreation(true);
-    const res = await CreateComent(auth.user.uid, asset.id, content);
+    const res = await CreateComent(
+      auth.user.uid,
+      asset.id,
+      content,
+      auth.user.name,
+      auth.user.avatar
+    );
+
     if (!res.ok) {
       const data = await res.json();
       setLoadingComentsCreation(false);
