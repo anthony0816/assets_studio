@@ -97,7 +97,7 @@ const ModalAssetData = forwardRef((props, ref) => {
     if (!ReportInterface) return;
 
     const { asset_id, report_status } = ReportInterface;
-    if (asset_id == asset.id) {
+    if (asset_id == asset?.id) {
       if (report_status == 1) return setReports(reports + 1);
     }
   }, [ReportInterface]);
