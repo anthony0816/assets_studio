@@ -62,7 +62,7 @@ export default function UserProfile() {
       const { user_id } = user;
       if (user_id) {
         console.log("success");
-        const res = await FetchUserData(user);
+        const res = await FetchUserData(user_id);
         const userData = await res.json();
         setUser(userData);
         return;
