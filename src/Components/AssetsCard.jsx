@@ -6,6 +6,8 @@ import { useInterface } from "@/context/intercomunicationContext";
 import LikeIcon from "@/Icons/LikeIcon";
 import ComentsIcon from "@/Icons/ComentsIcon";
 import ReportButton from "@/Icons/ReportButton";
+import AssetCardOptionButton from "./AssetCardOptionButton";
+import { useAuth } from "@/context/authContext";
 
 export default function AssetsCard({
   asset,
@@ -19,7 +21,9 @@ export default function AssetsCard({
   const [likes, setLikes] = useState(asset.likes.length);
   const [reports, setReports] = useState(asset.reports.length);
   const [coments, setComents] = useState("");
+  const [destroy, setDestroy] = useState(false);
   const [isStarting, setIsStarting] = useState(true);
+  const { user } = useAuth();
 
   const { router } = useLoadingRouter();
   const {
@@ -102,11 +106,22 @@ export default function AssetsCard({
     }
   }
 
+  if (destroy) return null;
+
   return (
     <>
       <div
-        className={`${currentTheme.colors.secondary} rounded-lg shadow ${currentTheme.colors.hover} hover:shadow-lg transition overflow-hidden`}
+        className={` relative ${currentTheme.colors.secondary} rounded-lg shadow ${currentTheme.colors.hover} hover:shadow-lg transition overflow-hidden`}
       >
+        <div className="absolute right-2 top-2">
+          <AssetCardOptionButton
+            asset={asset}
+            onDelete={() => setDestroy(true)}
+            currentUser_id={user?.uid}
+            menuColor={currentTheme.colors.primary}
+            fontMenuColor={currentTheme.textColor.primary}
+          />
+        </div>
         <img
           onClick={() => onClickPhoto(asset)}
           src={asset.src}

@@ -20,6 +20,8 @@ export async function POST(request) {
         user_id: id,
         user_providerId,
         categoria: categoria,
+        public_id: result.public_id,
+        format: result.format,
       },
     });
     return NextResponse.json({ url: result.secure_url }, { status: 200 });

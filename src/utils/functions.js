@@ -56,6 +56,20 @@ export async function CreateAsset(
   return data;
 }
 
+export async function DeleteAsset_AlsoCloudnary(id, public_id) {
+  const res = await fetch("api/assets/delete/deleteAlsoCloud", {
+    method: "POST",
+    headers: {
+      "Content-type": "Application/json",
+    },
+    body: JSON.stringify({
+      id,
+      public_id,
+    }),
+  });
+  return res;
+}
+
 export async function getUserByUid(uid, adminAuth) {
   try {
     const userRecord = await adminAuth.getUser(uid);

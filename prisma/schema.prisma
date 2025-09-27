@@ -64,6 +64,8 @@ model Asset{
   user_id String
   user_providerId String
   categoria String @default("other")
+  public_id String 
+  format String
 }
 
 model Report{
