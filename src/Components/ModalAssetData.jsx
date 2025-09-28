@@ -421,7 +421,6 @@ const ModalAssetData = forwardRef((props, ref) => {
           <ReportForm
             asset_id={asset.id}
             onSucces={() => {
-              setReportInterface({ asset_id: asset.id, report_status: 1 });
               setReportFormOpen(false);
             }}
             onError={() => null}
