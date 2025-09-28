@@ -15,6 +15,7 @@ export const Theme = {
       buttonGoogleHover: "hover:bg-red-600",
       buttonGithub: "bg-gray-700",
       buttonGithubHover: "hover:bg-gray-600",
+      buttonReport: " #bbad0f96",
 
       // Estados y textos
       errorText: "text-red-600",
@@ -46,6 +47,7 @@ export const Theme = {
       buttonGoogleHover: "hover:bg-red-600",
       buttonGithub: "bg-gray-300",
       buttonGithubHover: "hover:bg-gray-400",
+      buttonReport: " #bbad0f96",
 
       // Estados y textos
       errorText: "text-red-600",

@@ -7,7 +7,6 @@ export function InterfaceContextProvider({ children }) {
   const [LikeInterface, setLikeInterface] = useState(null);
   const [OpenReportsFormInterface, setOpenReportsFormInterface] =
     useState(null);
-  const [ReportInterface, setReportInterface] = useState(null);
   const [ModalDeleteAssetInterface, setModalDeleteAssetInterface] =
     useState(null);
 
@@ -18,8 +17,6 @@ export function InterfaceContextProvider({ children }) {
         setLikeInterface,
         OpenReportsFormInterface,
         setOpenReportsFormInterface,
-        ReportInterface,
-        setReportInterface,
         ModalDeleteAssetInterface,
         setModalDeleteAssetInterface,
       }}

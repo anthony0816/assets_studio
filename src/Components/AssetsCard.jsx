@@ -8,6 +8,7 @@ import ComentsIcon from "@/Icons/ComentsIcon";
 import ReportButton from "@/Icons/ReportButton";
 import AssetCardOptionButton from "./AssetCardOptionButton";
 import { useAuth } from "@/context/authContext";
+import Image from "next/image";
 
 export default function AssetsCard({
   asset,
@@ -19,32 +20,18 @@ export default function AssetsCard({
   const { currentTheme } = useTheme();
   const [liked, setLiked] = useState(false);
   const [likes, setLikes] = useState(asset.likes.length);
-  const [reports, setReports] = useState(asset.reports.length);
   const [coments, setComents] = useState("");
   const [destroy, setDestroy] = useState(false);
   const [isStarting, setIsStarting] = useState(true);
   const { user } = useAuth();
 
   const { router } = useLoadingRouter();
-  const {
-    LikeInterface,
-    setLikeInterface,
-    setOpenReportsFormInterface,
-    ReportInterface,
-  } = useInterface();
+  const { LikeInterface, setLikeInterface, setOpenReportsFormInterface } =
+    useInterface();
 
   {
     /* useffect de la interfaz */
   }
-
-  useEffect(() => {
-    if (!ReportInterface) return;
-
-    const { asset_id, report_status } = ReportInterface;
-    if (asset_id == asset.id) {
-      if (report_status == 1) return setReports(reports + 1);
-    }
-  }, [ReportInterface]);
 
   useEffect(() => {
     if (!LikeInterface) return;
@@ -122,12 +109,15 @@ export default function AssetsCard({
             fontMenuColor={currentTheme.textColor.primary}
           />
         </div>
-        <img
-          onClick={() => onClickPhoto(asset)}
-          src={asset.src}
-          alt={`Asset ${asset.id}`}
-          className="w-full h-48 object-cover"
-        />
+        <div className="relative w-full h-48">
+          <Image
+            onClick={() => onClickPhoto(asset)}
+            src={asset.src}
+            alt={`Asset ${asset.id}`}
+            fill
+            className="object-cover cursor-pointer"
+          />
+        </div>
         <div onClick={() => onClickBar()} className="p-3 flex flex-col gap-1">
           <div className={`flex flex-row justify-between items-center   `}>
             <div className="flex flex-row space-x-1 w-full ">
@@ -159,8 +149,10 @@ export default function AssetsCard({
                 onClick={(e) => handleReport(e)}
                 className={` flex flex-row items-center space-x-2 cursor-pointer ${currentTheme.textColor.secondary} `}
               >
-                <ReportButton />
-                <p> {reports}</p>
+                <ReportButton
+                  color={currentTheme.colors.buttonReport}
+                  strokeWidth="3"
+                />
               </span>
             </div>
           </div>

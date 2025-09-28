@@ -396,8 +396,10 @@ const ModalAssetData = forwardRef((props, ref) => {
               className={`${currentTheme.textColor.muted}  flex items-center cursor-pointer`}
               onClick={() => setReportFormOpen(!ReportFormOpen)}
             >
-              <ReportButton />
-              <div className="ml-1">{reports}</div>
+              <ReportButton
+                color={currentTheme.colors.buttonReport}
+                strokeWidth="3"
+              />
             </span>
           </div>
         </div>
