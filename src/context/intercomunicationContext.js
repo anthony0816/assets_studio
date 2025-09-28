@@ -8,6 +8,8 @@ export function InterfaceContextProvider({ children }) {
   const [OpenReportsFormInterface, setOpenReportsFormInterface] =
     useState(null);
   const [ReportInterface, setReportInterface] = useState(null);
+  const [ModalDeleteAssetInterface, setModalDeleteAssetInterface] =
+    useState(null);
 
   return (
     <interfaceContext.Provider
@@ -18,6 +20,8 @@ export function InterfaceContextProvider({ children }) {
         setOpenReportsFormInterface,
         ReportInterface,
         setReportInterface,
+        ModalDeleteAssetInterface,
+        setModalDeleteAssetInterface,
       }}
     >
       {children}

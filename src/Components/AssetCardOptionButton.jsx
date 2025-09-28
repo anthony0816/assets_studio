@@ -3,6 +3,7 @@ import { OptionsDots } from "@/Icons/OptionDocsIcon";
 import DeleteIcon from "@/Icons/DeleteIcon";
 import { DeleteAsset_AlsoCloudnary } from "@/utils/functions";
 import LoadingSpinner from "./LoadingSpiner";
+import { useInterface } from "@/context/intercomunicationContext";
 
 export default function AssetCardOptionButton({
   asset,
@@ -13,8 +14,9 @@ export default function AssetCardOptionButton({
 }) {
   const asset_user_id = asset.user_id;
   const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
   const menuRef = useRef(null);
+
+  const { setModalDeleteAssetInterface } = useInterface();
 
   useEffect(() => {
     function handleClickOutside(e) {
@@ -26,16 +28,20 @@ export default function AssetCardOptionButton({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  async function handleDelete() {
-    console.log("deleting...");
-    setLoading(true);
-    const res = await DeleteAsset_AlsoCloudnary(asset.id, asset.public_id);
-    if (res.ok) {
-      onDelete();
-      setLoading(false);
-      return;
+  function handleDelete() {
+    async function Delete() {
+      console.log("deleting...");
+
+      const res = await DeleteAsset_AlsoCloudnary(asset.id, asset.public_id);
+      if (res.ok) {
+        onDelete();
+        return;
+      }
     }
-    setLoading(false);
+    setModalDeleteAssetInterface({
+      to: "ModalDeleteAsset",
+      callBack: Delete,
+    });
   }
 
   if (String(currentUser_id) !== String(asset_user_id)) return null;
@@ -51,13 +57,13 @@ export default function AssetCardOptionButton({
 
       {open && (
         <div
-          className={`absolute right-0 mt-2 w-40 ${menuColor} ${fontMenuColor} rounded-lg shadow-lg z-50`}
+          className={`absolute right-0 mt-2 w-40 ${menuColor} ${fontMenuColor} rounded-lg shadow-lg z-40`}
         >
           <ul className="py-2 text-sm">
             <li onClick={handleDelete} className={`px-4 py-2  cursor-pointer`}>
               <div className="flex justify-between">
                 <div>Delete</div>
-                {loading ? <LoadingSpinner /> : <DeleteIcon />}
+                <DeleteIcon />
               </div>
             </li>
           </ul>

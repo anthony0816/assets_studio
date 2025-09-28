@@ -13,6 +13,7 @@ import AssetsCard from "@/Components/AssetsCard";
 import ModalShowPicture from "./ModalShowPicture";
 import ModalAssetData from "./ModalAssetData";
 import { useSize } from "@/context/resizeContext";
+import ModalDeleteAsset from "./ModalDeleteAsset";
 
 export default function LazyLoadPage({
   ByCurrentUser = false,
@@ -215,6 +216,7 @@ export default function LazyLoadPage({
           prevAsset();
         }}
       />
+      <ModalDeleteAsset />
 
       <div className="flex flex-row h-[100%] overflow-y-auto">
         <div
