@@ -100,7 +100,7 @@ export default function AssetsCard({
       <div
         className={` relative ${currentTheme.colors.secondary} rounded-lg shadow ${currentTheme.colors.hover} hover:shadow-lg transition overflow-hidden`}
       >
-        <div className="absolute right-2 top-2">
+        <div className="absolute right-2 top-2 z-10">
           <AssetCardOptionButton
             asset={asset}
             onDelete={() => setDestroy(true)}
