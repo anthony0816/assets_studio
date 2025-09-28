@@ -267,6 +267,15 @@ export async function FetchUserData(user_id) {
   return res;
 }
 
+export function downloadImgFromBase64(base64Data, filename = "image.png") {
+  const link = document.createElement("a");
+  link.href = base64Data; // debe incluir "data:image/png;base64,..."
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
 // async function avd(asset_id) {
 //   if (isStarting) return;
 

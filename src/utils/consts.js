@@ -3,6 +3,7 @@ export const Options = [
   { name: "Character", param: "cat-character", value: "character" },
   { name: "Nature", param: "cat-nature", value: "nature" },
   { name: "Surfaces", param: "cat-surfaces", value: "surfaces" },
+  { name: "Made with IA", param: "cat-ia", value: "ia" },
   { name: "Other", param: "cat-other", value: "other" },
 ];
 

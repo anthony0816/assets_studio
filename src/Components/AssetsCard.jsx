@@ -115,6 +115,7 @@ export default function AssetsCard({
             src={asset.src}
             alt={`Asset ${asset.id}`}
             fill
+            sizes="551px"
             className="object-cover cursor-pointer"
           />
         </div>

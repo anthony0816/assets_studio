@@ -27,6 +27,9 @@ export async function POST(request) {
     return NextResponse.json({ url: result.secure_url }, { status: 200 });
   } catch (error) {
     console.error("Error subiendo a Cloudinary:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json(
+      { error: error.message || "error subiendo imagen" },
+      { status: 500 }
+    );
   }
 }
