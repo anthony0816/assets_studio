@@ -16,7 +16,7 @@ export default function OptionMenuMobile({
   if (show)
     return (
       <>
-        <ul className="flex flex-col flex-wrap justify-center space-y-2 space-x-3 px-4 pt-3 mt-4">
+        <ul className="flex flex-col flex-wrap justify-center space-y-1 space-x-3 px-4 ">
           {/* Opciones */}
           <div
             className={`grid grid-cols-2 gap-4 overflow-hidden transition-all duration-300 ${

@@ -9,6 +9,7 @@ import ModalShowPicture from "@/Components/ModalShowPicture";
 import ModalAssetData from "@/Components/ModalAssetData";
 import { useSize } from "@/context/resizeContext";
 import { FetchUserData } from "@/utils/functions";
+import { useRouter } from "next/navigation";
 
 export default function UserProfile() {
   const storage = useData();
@@ -21,6 +22,8 @@ export default function UserProfile() {
   const [page, setPage] = useState(0);
   const [modalAssetsDataisOpen, setModalAssetsDataisOpen] = useState(false);
   const [hideMainContent, setHideMainContent] = useState(false);
+  const [loadingUserDataError, setloadingUserDataError] = useState(false);
+  const router = useRouter();
   const freeAcces = true;
   const limit = 10;
 
@@ -64,6 +67,8 @@ export default function UserProfile() {
         console.log("success");
         const res = await FetchUserData(user_id);
         const userData = await res.json();
+        console.log("Datos Perfil visitar el suuario:", userData);
+        if (userData.error) return setloadingUserDataError(true);
         setUser(userData);
         return;
       }
@@ -138,6 +143,35 @@ export default function UserProfile() {
     const index = assets.indexOf(currentAsset);
     const prevIndex = (index - 1 + assets.length) % assets.length;
     modal.backwards(assets[prevIndex]);
+  }
+
+  if (loadingUserDataError) {
+    return (
+      <div
+        className={`flex flex-col items-center justify-center min-h-[60vh] 
+                  ${currentTheme.colors.primary} ${currentTheme.textColor.primary}`}
+      >
+        <h2
+          className={`text-2xl font-bold mb-4 ${currentTheme.colors.errorText}`}
+        >
+          ❌ Failed to load user data
+        </h2>
+
+        <p className={`mb-6 ${currentTheme.textColor.secondary}`}>
+          Please try again later
+        </p>
+
+        <button
+          onClick={() => router.push("/allAssets")}
+          className={`rounded-lg px-4 py-2 font-semibold 
+                    ${currentTheme.colors.buttonPrimary} 
+                    ${currentTheme.colors.buttonPrimaryHover} 
+                    ${currentTheme.textColor.primary}`}
+        >
+          ⬅ Back to Home
+        </button>
+      </div>
+    );
   }
 
   if (!user) return null;

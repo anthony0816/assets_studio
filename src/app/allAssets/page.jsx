@@ -29,17 +29,10 @@ export default function AssetsPage() {
     <>
       <div className="overflow-hidden h-[100vh]">
         <section
-          className={` w-[100%] shadow text-center   ${color.secondary} pb-4`}
+          className={` py-2  w-[100%] shadow text-center ${color.secondary} rounded `}
         >
           {!isMobile && (
-            <h1
-              className={` whitespace-nowrap text-center text-xl  ${tcolor.primary}`}
-            >
-              Find here what you need
-            </h1>
-          )}
-          {!isMobile && (
-            <ul className="flex flex-row flex-wrap justify-center space-y-2 space-x-3 px-4 mt-4">
+            <ul className="flex flex-row flex-wrap justify-center items-center space-x-3 space-y-2 px-4">
               {items.map((item) => (
                 <li
                   onClick={() => handleItemsClick(item.clave)}
@@ -50,7 +43,7 @@ export default function AssetsPage() {
                 </li>
               ))}
               <li>
-                <div className="flex flexd-row ml-5  whitespace-nowrap">
+                <div className="flex flex-row ml-5  whitespace-nowrap">
                   <p className={`${tcolor.primary} mr-4 `}>Categorias: </p>
                   <select
                     onChange={(e) => handleItemsClick(e.target.value)}

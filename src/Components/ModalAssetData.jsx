@@ -221,7 +221,8 @@ const ModalAssetData = forwardRef((props, ref) => {
     return () => observer.disconnect();
   }, [hasMore, FetchComents]);
 
-  async function handleCreateComent() {
+  async function handleCreateComent(e) {
+    e.preventDefault();
     if (!auth.user) {
       router("/login");
       return;
@@ -428,24 +429,33 @@ const ModalAssetData = forwardRef((props, ref) => {
         </section>
 
         {/* Comentarios */}
-        <h2 className="text-2xl mt-2  ">Coments</h2>
-        <div className="flex flex-col mt-5">
-          {loadingComentsCreation ? (
-            <LoadingSpinner />
-          ) : (
-            <button onClick={handleCreateComent}>➕Add a coment</button>
-          )}
+        <form onSubmit={(e) => handleCreateComent(e)}>
+          <h2 className="text-2xl mt-2">Coments</h2>
 
-          <textarea
-            ref={setTextAreaRef}
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            id="createComent"
-            placeholder="What do you think?"
-            type="text"
-            className=" w-[90%] m-auto mt-2 px-2 py-1 border-b outline-none  rounded-xl "
-          />
-        </div>
+          <div className="flex flex-col mt-5">
+            {loadingComentsCreation ? (
+              <LoadingSpinner />
+            ) : (
+              <button type="submit">➕ Add a coment</button>
+            )}
+
+            <textarea
+              ref={setTextAreaRef}
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault(); // evita salto de línea
+                  e.currentTarget.form?.requestSubmit(); // dispara el submit nativo
+                }
+              }}
+              id="createComent"
+              placeholder="What do you think?"
+              className="w-[90%] m-auto mt-2 px-2 py-1 border-b outline-none rounded-xl"
+            />
+          </div>
+        </form>
+
         {/* Comentarios de otros usuario */}
         {coments.length === 0 ? (
           <>
