@@ -64,7 +64,7 @@ export default function ModalVerifyEmail({ open, onClose, email, onSucces }) {
     <>
       <div
         className={`fixed inset-0 flex items-center justify-center 
-      ${currentTheme.colors.primary}/60 z-50`}
+      bg-gray-800/80 z-50`}
       >
         <div
           className={`p-6 rounded-lg shadow-lg w-full max-w-md 
