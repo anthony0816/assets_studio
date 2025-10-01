@@ -22,9 +22,10 @@ datasource db {
 
 
 enum USER_ROLL{
-  administrador
-  cliente
+  admin
+  client
 }
+
 enum ASSETS_CATEGORIAS {
   object
   character
@@ -46,12 +47,14 @@ enum REPORT_TYPES{
 
 model user {
   uid Int @id @default(autoincrement()) 
+  avatar String @default("")
   longName String
   username String @unique
   password String
   email String @unique
-  roll USER_ROLL @default(cliente)
+  roll USER_ROLL @default(client)
   providerId String @default("local")
+  createdAt DateTime @default(now())
 }
 
 model Asset{
@@ -101,4 +104,13 @@ model ComentLike{
   user_id String
   coment_id  Int
   coment Coment @relation(fields: [coment_id], references: [id], onDelete: Cascade)
+}
+
+model VerificationCode{
+  id Int @id @default(autoincrement())
+  email String @unique
+  code String
+  expiresAt DateTime
+  createdAt DateTime
+  used Boolean @default(false)
 }

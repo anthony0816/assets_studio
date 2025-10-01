@@ -1,10 +1,12 @@
 "use client";
 import { useTheme } from "@/context/themeContext";
 import { useAuth } from "@/context/authContext";
+import { useLoadingRouter } from "@/Components/LoadingRouterProvider";
 
 export default function Login() {
   const { currentTheme } = useTheme();
   const { loginGoogle, loginGithub } = useAuth();
+  const { router } = useLoadingRouter();
 
   return (
     <div
@@ -31,6 +33,7 @@ export default function Login() {
           </button>
 
           <button
+            onClick={() => router("/registrar")}
             className={`w-full flex items-center justify-center px-4 py-2 rounded-lg transition ${currentTheme.colors.buttonPrimary} ${currentTheme.colors.buttonPrimaryHover} text-white`}
           >
             Crear cuenta

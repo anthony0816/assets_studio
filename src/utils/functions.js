@@ -192,6 +192,29 @@ export async function CreateComent(
   return res;
 }
 
+export async function CreateUser(
+  longName,
+  username,
+  password,
+  email,
+  avatar = ""
+) {
+  const res = await fetch("api/user/create", {
+    method: "POST",
+    headers: {
+      "Content-type": "Application/json",
+    },
+    body: JSON.stringify({
+      longName,
+      username,
+      password,
+      email,
+      avatar,
+    }),
+  });
+  return res;
+}
+
 export async function GetComentByAsset(asset_id, page, limit) {
   const res = await fetch("/api/coments/get/asset_id", {
     method: "POST",
@@ -274,6 +297,110 @@ export function downloadImgFromBase64(base64Data, filename = "image.png") {
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
+}
+
+export async function VerifyUserCreationParameters(
+  longName,
+  username,
+  password,
+  confirmPassword,
+  email
+) {
+  // 1. Validar que longName no tenga números ni caracteres especiales
+  const regexOnlyLetters = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
+  if (!regexOnlyLetters.test(longName)) {
+    return {
+      status: false,
+      message: "El longName no puede contener números ni caracteres especiales",
+    };
+  }
+
+  // 2. Validar username
+  if (typeof username !== "string" || username.length < 5) {
+    return {
+      status: false,
+      message: "El username debe tener al menos 5 caracteres",
+    };
+  }
+
+  const onlyNumbers = /^[0-9]+$/;
+  if (onlyNumbers.test(username)) {
+    return {
+      status: false,
+      message: "El username no puede estar compuesto solo por números",
+    };
+  }
+
+  // 3. Validar longitud de password
+  if (typeof password !== "string" || password.length <= 8) {
+    return {
+      status: false,
+      message: "El password debe tener más de 8 caracteres",
+    };
+  }
+
+  // 4. Validar igualdad entre password y confirmPassword
+  if (password !== confirmPassword) {
+    return {
+      status: false,
+      message: "El password y el confirmPassword no coinciden",
+    };
+  }
+
+  // 5. Validar formato de email
+  const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!regexEmail.test(email)) {
+    return { status: false, message: "El email no tiene un formato válido" };
+  }
+
+  // 6 Validar que no se repita el Username y Email
+
+  const res = await fetch("api/verify-email-username", {
+    method: "POST",
+    headers: {
+      "Content-type": "Application/json",
+    },
+    body: JSON.stringify({
+      username,
+      email,
+    }),
+  });
+
+  const { userExist, userEmailExist, error } = await res.json();
+  if (error) return { status: false, message: "Verification Error, Try Again" };
+  if (userExist) return { status: false, message: "Username already exist" };
+  if (userEmailExist)
+    return { status: false, message: "email is already taken" };
+
+  // Si todo pasa
+  return { status: true, message: "Parámetros válidos" };
+}
+
+export async function SendVerificationCode(email) {
+  const res = await fetch("/api/email/send-verification-code", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email,
+    }),
+  });
+  return res;
+}
+
+export async function VerifyCode(email, code) {
+  const res = await fetch("/api/email/verify-code", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email,
+      code,
+    }),
+  });
+  return res;
 }
 
 // async function avd(asset_id) {
