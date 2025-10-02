@@ -1,12 +1,11 @@
 import { prisma } from "@/libs/prisma";
 import { NextResponse } from "next/server";
-import { VerifySesion } from "@/utils/functions";
 import { adminAuth } from "@/libs/firebase-admin";
+import { ValidateSession } from "@/libs/session";
 
 export async function POST(req) {
   try {
-    const session = await VerifySesion(req, adminAuth);
-    if (!session)
+    if (!ValidateSession(req, adminAuth))
       return NextResponse.json(
         { messaje: "Session no activa" },
         { status: 401 }

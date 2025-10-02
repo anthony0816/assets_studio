@@ -5,7 +5,7 @@ import { prisma } from "@/libs/prisma";
 
 export async function POST(request) {
   try {
-    const { base64, id, user_providerId, categoria } = await request.json();
+    const { base64, uid, user_providerId, categoria } = await request.json();
     console.error("Categoria", categoria);
     const folder = "assets-studio";
 
@@ -17,7 +17,7 @@ export async function POST(request) {
     await prisma.asset.create({
       data: {
         src: result.secure_url,
-        user_id: id,
+        user_id: uid,
         user_providerId,
         categoria: categoria,
         public_id: result.public_id,

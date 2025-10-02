@@ -6,7 +6,7 @@ import { useLoadingRouter } from "./LoadingRouterProvider";
 import { useClickOutside } from "@/utils/hooks";
 
 export default function UserCard({ isOpen, OpenNavFunction = null }) {
-  const { user, loading, logout } = useAuth();
+  const { user, loading, logout, logoutJWT } = useAuth();
   const { currentTheme } = useTheme();
 
   // Estado de carga para la imagen
@@ -28,6 +28,13 @@ export default function UserCard({ isOpen, OpenNavFunction = null }) {
     setImageLoaded(false);
     setImageError(true);
   };
+
+  async function handleLogOut() {
+    if (user.providerId != "local") return logout();
+    const res = await logoutJWT();
+    const data = await res.json();
+    console.log("Session:", data);
+  }
 
   // Mostrar indicador de carga si los datos aún se están cargando
   if (loading) {
@@ -116,7 +123,7 @@ export default function UserCard({ isOpen, OpenNavFunction = null }) {
               Perfil
             </button>
             <button
-              onClick={logout}
+              onClick={handleLogOut}
               className={`whitespace-nowrap px-4 py-2 rounded-lg ${currentTheme.colors.buttonGoogle} text-white font-medium shadow-md ${currentTheme.colors.buttonGoogleHover} hover:shadow-lg hover:scale-105 transition-transform duration-200`}
             >
               Log out

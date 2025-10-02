@@ -6,12 +6,17 @@ import { VerifyUserCreationParameters } from "@/utils/functions";
 import ModalVerifyEmail from "@/Components/ModalVerifyEmail";
 import { CreateUser } from "@/utils/functions";
 import LoadingSpinner from "@/Components/LoadingSpiner";
+import { useLoadingRouter } from "@/Components/LoadingRouterProvider";
+import { useAuth } from "@/context/authContext";
+import { CreateJWTCookieSession } from "@/utils/functions";
 
 import { ShowPasswordIcon } from "@/Icons/ShowPasswordIcon";
 import { HidePasswordIcon } from "@/Icons/HidePasswordIcon";
 
 export default function Registrar() {
   const { currentTheme } = useTheme();
+  const { router } = useLoadingRouter();
+  const { setUser } = useAuth();
 
   /* Estados */
   const [openModalVerifyEmail, setOpenModalVerifyEmail] = useState(false);
@@ -47,7 +52,7 @@ export default function Registrar() {
     if (status == false) {
       setErrorMessage(message);
       setLoading(false);
-      console.error("error en la verificacion");
+      console.error("error en la verificacion", message);
       return;
     }
 
@@ -57,16 +62,24 @@ export default function Registrar() {
   }
 
   async function handleCreation() {
-    const res = await CreateUser(
-      longName,
-      username,
-      password,
-      confirmPassword,
-      email,
-      avatar
-    );
+    setLoading(true);
+    const res = await CreateUser(longName, username, password, email, avatar);
     const data = await res.json();
-    console.log("Datos de Creacion", data);
+    console.log("Datos:", data);
+    const { error, success, user } = data;
+    if (error) {
+      setLoading(false);
+      setErrorMessage(error);
+      return;
+    }
+    if (success) {
+      const res = await CreateJWTCookieSession(user.email);
+      const data = await res.json();
+      console.log("Datos de TOKEN JWT:", data);
+      if (!data.success) return;
+      setUser(user);
+      router("/");
+    }
   }
 
   return (

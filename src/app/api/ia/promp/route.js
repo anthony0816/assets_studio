@@ -1,11 +1,10 @@
 import { NextResponse } from "next/server";
-import { VerifySesion } from "@/utils/functions";
 import { adminAuth } from "@/libs/firebase-admin";
+import { ValidateSession } from "@/libs/session";
 
 export async function POST(request) {
   try {
-    const session = await VerifySesion(request, adminAuth);
-    if (!session)
+    if (!ValidateSession(request, adminAuth))
       return NextResponse.json(
         { error: "No tiene sesion activa" },
         { status: 500 }

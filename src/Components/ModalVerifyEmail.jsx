@@ -34,8 +34,8 @@ export default function ModalVerifyEmail({ open, onClose, email, onSucces }) {
       setVerificationError(error);
     }
     if (success) {
+      await onSucces();
       setVerifing(false);
-      onSucces();
       close();
       return;
     }

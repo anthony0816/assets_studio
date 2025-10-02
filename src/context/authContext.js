@@ -15,6 +15,20 @@ export default function AuthContextProvaider({ children }) {
     onAuthStateChange(setUser);
   }, []);
 
+  useEffect(() => {
+    async function exe() {
+      if (user == null) {
+        const res = await fetch("/api/session/verify-jwt", {
+          method: "GET",
+          credentials: "include",
+        });
+        const { success, error } = await res.json();
+        if (error) alert("error de sesion");
+      }
+    }
+    exe();
+  }, [user]);
+
   const loginGoogle = async () => {
     const loguedUser = await loginWithGoogle();
     setUser(loguedUser);
@@ -25,9 +39,21 @@ export default function AuthContextProvaider({ children }) {
     setUser(loguedUser);
   };
 
+  const logoutJWT = async () => {
+    const res = await fetch("api/session/delete-jwt", {
+      method: "POST",
+      headers: {
+        "Content-type": "Application/json",
+      },
+    });
+    return res;
+  };
+
   return (
     <>
-      <AuthContext.Provider value={{ user, loginGithub, loginGoogle, logout }}>
+      <AuthContext.Provider
+        value={{ user, setUser, loginGithub, loginGoogle, logout, logoutJWT }}
+      >
         {children}
       </AuthContext.Provider>
     </>

@@ -24,22 +24,12 @@ export async function VerifySesion(request, adminAuth) {
   }
 }
 
-export async function CreateAsset(
-  base64,
-  id_local_provider,
-  uid,
-  providerId,
-  categoria
-) {
-  console.log("ProviderID", providerId);
-  let id = id_local_provider;
-  if (providerId == "google.com") {
-    id = uid;
-  }
-  if (providerId != "google.com") {
-    providerId = "local";
-  }
+export async function VerifyJWToken() {
+  const res = await fetch(`${process.env.BASE_URL}api/session/verify-jwt`);
+  return res;
+}
 
+export async function CreateAsset(base64, uid, providerId, categoria) {
   const res = await fetch("api/assets/upload", {
     method: "POST",
     headers: {
@@ -47,7 +37,7 @@ export async function CreateAsset(
     },
     body: JSON.stringify({
       base64,
-      id,
+      uid,
       user_providerId: providerId,
       categoria: categoria,
     }),
@@ -88,26 +78,14 @@ export async function getUserByUid(uid, adminAuth) {
   }
 }
 
-export async function GetAssetsByUserId(
-  uid,
-  id,
-  providerId,
-  page,
-  limit,
-  freeAcces = false
-) {
-  let user_id = id;
-  if (providerId != "local") {
-    user_id = uid;
-  }
-
+export async function GetAssetsByUserId(uid, page, limit, freeAcces = false) {
   const res = await fetch("api/assets/get", {
     method: "POST",
     headers: {
       "Content-type": "Application/json",
     },
     body: JSON.stringify({
-      user_id,
+      user_id: uid,
       page,
       limit,
       freeAcces,
@@ -398,6 +376,19 @@ export async function VerifyCode(email, code) {
     body: JSON.stringify({
       email,
       code,
+    }),
+  });
+  return res;
+}
+
+export async function CreateJWTCookieSession(email) {
+  const res = await fetch("api/session/create-jwt-session", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email,
     }),
   });
   return res;

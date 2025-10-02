@@ -169,8 +169,6 @@ export default function LazyLoadPage({
     if (ByCurrentUser) {
       const userAssets = await GetAssetsByUserId(
         user?.uid,
-        user?.id,
-        user.providerId,
         page,
         limit,
         freeAcces

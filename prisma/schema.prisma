@@ -46,10 +46,10 @@ enum REPORT_TYPES{
 }
 
 model user {
-  uid Int @id @default(autoincrement()) 
+  uid String @id @default(cuid()) 
   avatar String @default("")
   longName String
-  username String @unique
+  name String @unique
   password String
   email String @unique
   roll USER_ROLL @default(client)

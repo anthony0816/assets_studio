@@ -20,7 +20,7 @@ export default function ComentCard({ coment }) {
         }}
       >
         <img
-          src={coment.userPhotoUrl}
+          src={coment.userPhotoUrl == "" ? "/favicon.ico" : coment.userPhotoUrl}
           alt={coment.username}
           className="w-6 h-6 rounded-full object-cover"
         />

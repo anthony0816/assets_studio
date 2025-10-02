@@ -35,15 +35,8 @@ export default function ImageGenerator() {
     if (saving) return;
     setSaveError(false);
     setSaving(true);
-    const data = await CreateAsset(
-      imageUrl,
-      user?.id,
-      user?.uid,
-      user?.providerId,
-      "ia"
-    );
+    const data = await CreateAsset(imageUrl, user?.uid, user?.providerId, "ia");
     const { error } = data;
-
     if (error) setSaveError(true);
 
     console.log("res:", data);

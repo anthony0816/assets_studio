@@ -37,7 +37,6 @@ export default function UploadAsset() {
     }
     const data = await CreateAsset(
       base64file,
-      user?.id,
       user?.uid,
       user?.providerId,
       categoria

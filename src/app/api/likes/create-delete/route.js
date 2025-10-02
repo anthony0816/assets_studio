@@ -1,11 +1,10 @@
 import { adminAuth } from "@/libs/firebase-admin";
 import { prisma } from "@/libs/prisma";
-import { VerifySesion } from "@/utils/functions";
+import { ValidateSession } from "@/libs/session";
 import { NextResponse } from "next/server";
 export async function POST(request) {
   try {
-    const session = await VerifySesion(request, adminAuth);
-    if (!session)
+    if (!ValidateSession(request, adminAuth))
       return NextResponse.json(
         { messaje: "Session no activa" },
         { status: 401 }

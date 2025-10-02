@@ -1,7 +1,7 @@
-import { VerifySesion } from "@/utils/functions";
 import { adminAuth } from "@/libs/firebase-admin";
 import { NextResponse } from "next/server";
 import { prisma } from "@/libs/prisma";
+import { ValidateSession } from "@/libs/session";
 
 // 🔹 Definimos el include una sola vez
 const includeParams = {
@@ -20,32 +20,18 @@ export async function POST(request) {
       user_id,
       page,
       limit,
-      categoria = null,
+
       freeAcces,
     } = await request.json();
 
-    // Comprobar si es free acces
+    // Comprobar si es free access
     if (!freeAcces) {
-      const session = await VerifySesion(request, adminAuth);
-
-      if (!session) {
+      if (!ValidateSession(request, adminAuth)) {
         return NextResponse.json(
           { error: "Unauthorized", session },
           { status: 401 }
         );
       }
-    }
-
-    if (categoria) {
-      const assets = await prisma.asset.findMany({
-        where: { categoria },
-        include: includeParams,
-        skip: page * limit,
-        take: limit,
-        orderBy: { createdAt: "desc" },
-      });
-
-      return NextResponse.json(assets);
     }
 
     if (user_id) {
