@@ -6,7 +6,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 export async function GET(request) {
   try {
     // Leer la cookie "session"
-    const token = request.cookies.get("session")?.value;
+    const token = request.cookies.get("session-jwt")?.value;
 
     if (!token) {
       return NextResponse.json(

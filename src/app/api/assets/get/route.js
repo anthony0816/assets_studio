@@ -26,11 +26,8 @@ export async function POST(request) {
 
     // Comprobar si es free access
     if (!freeAcces) {
-      if (!ValidateSession(request, adminAuth)) {
-        return NextResponse.json(
-          { error: "Unauthorized", session },
-          { status: 401 }
-        );
+      if ((await ValidateSession(request, adminAuth)) == false) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
       }
     }
 

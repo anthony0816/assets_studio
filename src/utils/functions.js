@@ -1,3 +1,5 @@
+import jwt from "jsonwebtoken";
+
 export function fileToBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -24,9 +26,26 @@ export async function VerifySesion(request, adminAuth) {
   }
 }
 
-export async function VerifyJWToken() {
-  const res = await fetch(`${process.env.BASE_URL}api/session/verify-jwt`);
-  return res;
+export function VerifyJWToken(request) {
+  try {
+    // Leer la cookie "session"
+    const token = request.cookies.get("session-jwt")?.value;
+
+    if (!token) {
+      return { error: "No session token found" };
+    }
+
+    // Verificar el token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // Si es válido, devolvemos los datos del payload
+    return {
+      success: true,
+      user: decoded, // aquí estará { email, iat, exp }
+    };
+  } catch (error) {
+    return { error: "Invalid or expired token" };
+  }
 }
 
 export async function CreateAsset(base64, uid, providerId, categoria) {

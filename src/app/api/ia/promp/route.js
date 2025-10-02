@@ -4,7 +4,7 @@ import { ValidateSession } from "@/libs/session";
 
 export async function POST(request) {
   try {
-    if (!ValidateSession(request, adminAuth))
+    if ((await ValidateSession(request, adminAuth)) == false)
       return NextResponse.json(
         { error: "No tiene sesion activa" },
         { status: 500 }

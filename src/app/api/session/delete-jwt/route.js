@@ -9,7 +9,7 @@ export async function POST() {
     });
 
     // Sobrescribir la cookie "session" con expiración inmediata
-    response.cookies.set("session", "", {
+    response.cookies.set("session-jwt", "", {
       httpOnly: true,
       secure: true,
       sameSite: "strict",

@@ -17,7 +17,7 @@ export async function POST(request) {
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
       path: "/",
-      maxAge: 60 * 60 * 3, // 3 hora
+      maxAge: 60 * 60 * 24 * 7, // 3 hora
     });
 
     return Response.json({ message: "Sesión creada", uid: decoded.uid });

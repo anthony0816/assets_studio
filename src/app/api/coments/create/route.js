@@ -5,7 +5,7 @@ import { ValidateSession } from "@/libs/session";
 
 export async function POST(req) {
   try {
-    if (!ValidateSession(req, adminAuth))
+    if ((await ValidateSession(req, adminAuth)) == false)
       return NextResponse.json(
         { messaje: "Session no activa" },
         { status: 401 }

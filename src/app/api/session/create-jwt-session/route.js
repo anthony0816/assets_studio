@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
+import { cookies } from "next/headers";
 
 // Clave secreta (usa process.env.JWT_SECRET en producción)
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -17,13 +18,16 @@ export async function POST(request) {
     // Crear respuesta
     const response = NextResponse.json({ success: true });
 
-    // Setear cookie segura
-    response.cookies.set("session", token, {
-      httpOnly: true, // no accesible desde JS
+    // Guardar cookie HTTP-Only
+    const cookieStore = await cookies();
+    cookieStore.set({
+      name: "session-jwt",
+      value: token,
+      httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+      sameSite: "strict",
       path: "/",
-      maxAge: 60 * 60 * 24 * 7, // 7 días
+      maxAge: 60 * 60 * 24 * 7, // 7 dias
     });
 
     return response;
