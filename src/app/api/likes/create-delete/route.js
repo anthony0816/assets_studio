@@ -28,8 +28,7 @@ export async function POST(request) {
 
 export async function DELETE(request) {
   try {
-    const session = await VerifySesion(request, adminAuth);
-    if (!session)
+    if ((await ValidateSession(request, adminAuth)) == false)
       return NextResponse.json(
         { messaje: "Session no activa" },
         { status: 401 }
