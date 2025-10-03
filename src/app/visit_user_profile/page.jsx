@@ -11,12 +11,13 @@ import { useSize } from "@/context/resizeContext";
 import { FetchUserData } from "@/utils/functions";
 import { useRouter } from "next/navigation";
 import { UserToFirebaseFormatInfo } from "@/utils/functions";
+import ModalDeleteAsset from "@/Components/ModalDeleteAsset";
 
 export default function UserProfile() {
   const storage = useData();
   const [isLoading, setIsLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
-  const [user, setUser] = useState("");
+  const [user, setUser] = useState(null);
   const [assets, setAssets] = useState([]);
   const { currentTheme } = useTheme();
   const auth = useAuth();
@@ -55,8 +56,9 @@ export default function UserProfile() {
 
   useEffect(() => {
     async function LoadUserData() {
+      console.log("ffffffffffffffffff,", storage.userToProfile);
       const { user_id } = storage.userToProfile;
-
+      console.log("user_id:", user_id);
       if (user_id) {
         console.log("success");
         {
@@ -64,6 +66,7 @@ export default function UserProfile() {
         }
         const res = await FetchUserData(user_id);
         const { f_user, error } = await res.json();
+        console.log("aaaaaaaaaaaaaaaaaaa", f_user);
         if (f_user) return setUser(f_user);
 
         {
@@ -204,6 +207,8 @@ export default function UserProfile() {
         }}
       />
 
+      <ModalDeleteAsset />
+
       <div className="flex flex-row overflow-auto h-[100%]">
         <div
           className={` transition-all duration-300 ${
@@ -257,7 +262,7 @@ export default function UserProfile() {
                     <span
                       className={`${currentTheme.colors.buttonGoogle} text-white px-3 py-1 rounded-full text-sm`}
                     >
-                      {user.providerData[0]}
+                      {user.providerData[0]?.providerId}
                     </span>
                   </div>
                 </div>
@@ -274,23 +279,6 @@ export default function UserProfile() {
               </h2>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div
-                  className={`${currentTheme.colors.secondary} p-4 rounded-lg`}
-                >
-                  <p
-                    className={` whitespace-nowrap ${currentTheme.textColor.muted} text-sm`}
-                  >
-                    Provider
-                  </p>
-                  <p
-                    className={` whitespace-nowrap ${currentTheme.textColor.secondary}`}
-                  >
-                    {user.providerData[0] == "local"
-                      ? "Assets Studio"
-                      : user.providerData || "Google"}
-                  </p>
-                </div>
-
                 <div
                   className={`${currentTheme.colors.secondary} p-4 rounded-lg`}
                 >
