@@ -1,10 +1,14 @@
 import { SearchIcon } from "@/Icons/SearchIcon";
+import { useState } from "react";
+import InputSearch from "@/Components/InputSearch";
+import CategorySelector from "@/Components/CategorySelector";
 
 export default function OptionMenuDesktop({
   items,
   show,
   colorContext,
   itemsOnClick,
+  onSearch,
 }) {
   const { color, tcolor } = colorContext;
 
@@ -22,7 +26,10 @@ export default function OptionMenuDesktop({
           } flex flex-row flex-wrap justify-center items-center gap-3 px-4`}
         >
           <li className="w-full max-w-200">
-            <InputSearch onClose={() => setSearching(!searching)} />
+            <InputSearch
+              onSearch={onSearch}
+              onClose={() => setSearching(!searching)}
+            />
           </li>
         </ul>
 

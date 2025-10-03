@@ -1,12 +1,12 @@
 "use client";
 import LazyLoadPage from "@/Components/LazyLoadPageComponent";
-import CategorySelector from "@/Components/CategorySelector";
+
 import { useTheme } from "@/context/themeContext";
 import { useSize } from "@/context/resizeContext";
 import OptionMenuMobile from "@/Components/OptionMenuMobile";
+import OptionMenuDesktop from "@/Components/OptionMenuDesktop";
 import { useState } from "react";
 import { SearchIcon } from "@/Icons/SearchIcon";
-import InputSearch from "@/Components/InputSearch";
 
 export default function AssetsPage() {
   const { currentTheme } = useTheme();
@@ -29,62 +29,23 @@ export default function AssetsPage() {
     setParam(clave);
   };
 
+  function handlesearch(query) {
+    console.log("query:", query);
+  }
+
   return (
     <>
       <div className="overflow-hidden h-[100vh]">
         <section
           className={` py-2  w-[100%] shadow text-center ${color.secondary} rounded `}
         >
-          {!isMobile && (
-            <>
-              {/* Lista con solo el search */}
-              <ul
-                className={` transition-all duration-300 ${
-                  searching
-                    ? "max-h-999 opacity-100 "
-                    : "max-h-0 opacity-0 pointer-events-none"
-                } flex flex-row flex-wrap justify-center items-center gap-3 px-4`}
-              >
-                <li className="w-full max-w-200">
-                  <InputSearch onClose={() => setSearching(!searching)} />
-                </li>
-              </ul>
-
-              {/* Lista de elementos  */}
-              <ul
-                className={` transition-all duration-300 ${
-                  searching
-                    ? "max-h-0 opacity-0 pointer-events-none"
-                    : "max-h-999 opacity-100 "
-                } flex flex-row flex-wrap justify-center items-center gap-3 px-4`}
-              >
-                {items.map((item) => (
-                  <li
-                    onClick={() => handleItemsClick(item.clave)}
-                    key={item.clave}
-                    className={` whitespace-nowrap rounded-xl cursor-pointer p-1 px-3 font-bold ${color.primary} ${tcolor.secondary}`}
-                  >
-                    {item.name}
-                  </li>
-                ))}
-                <li>
-                  <select
-                    onChange={(e) => handleItemsClick(e.target.value)}
-                    className={`  whitespace-nowrap rounded-xl cursor-pointer p-1 px-3 font-bold ${color.primary} ${tcolor.secondary}`}
-                  >
-                    <option value="">Select a category</option>
-                    <CategorySelector />
-                  </select>
-                </li>
-                <li
-                  onClick={() => setSearching(!searching)}
-                  className={` whitespace-nowrap rounded-xl cursor-pointer p-1 px-3 font-bold ${color.primary} ${tcolor.secondary}`}
-                >
-                  <SearchIcon color={color.SearchIcon} />
-                </li>
-              </ul>
-            </>
-          )}
+          <OptionMenuDesktop
+            items={items}
+            show={!isMobile}
+            colorContext={colorContext}
+            itemsOnClick={handleItemsClick}
+            onSearch={handlesearch}
+          />
 
           {/* Menu de opciones para mobiles */}
           <OptionMenuMobile
@@ -92,6 +53,7 @@ export default function AssetsPage() {
             show={isMobile}
             colorContext={colorContext}
             itemsOnClick={handleItemsClick}
+            onSearch={handlesearch}
           />
         </section>
         <div className={`  h-[100%]`}>
