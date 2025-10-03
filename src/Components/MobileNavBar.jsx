@@ -30,15 +30,15 @@ export default function MobileNavBar({ items, router }) {
 
         {/* Opciones simepre visibles  */}
         <div className="w-full flex justify-end space-x-2 px-4">
-          {/* Icono de busqueda */}
+          {/* User Card */}
+          <UserCard isOpen={true} />
+
+          {/* Notificaciones */}
           <div
             className={`  flex items-center ${currentTheme.colors.hover} p-2 transition rounded`}
           >
             <NotificationIcon />
           </div>
-
-          {/* Usuario sin Autenticar */}
-          <UserCard isOpen={true} />
         </div>
 
         {/* Botón menú */}
