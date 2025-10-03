@@ -16,7 +16,6 @@ export default function AssetsPage() {
   const colorContext = { color, tcolor };
 
   const [param, setParam] = useState("");
-  const [searching, setSearching] = useState(true);
 
   const items = [
     { name: "Explore Assets", clave: "explore" },

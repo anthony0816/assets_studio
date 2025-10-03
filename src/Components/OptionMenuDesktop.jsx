@@ -12,7 +12,7 @@ export default function OptionMenuDesktop({
 }) {
   const { color, tcolor } = colorContext;
 
-  const [searching, setSearching] = useState(true);
+  const [searching, setSearching] = useState(false);
 
   if (show)
     return (

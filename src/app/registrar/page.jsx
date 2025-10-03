@@ -27,11 +27,11 @@ export default function Registrar() {
   const [password, setPassword] = useState(null);
   const [confirmPassword, setConfirmPassword] = useState(null);
   const [email, setEmail] = useState(null);
-  const [avatar, setAvatar] = useState("");
+  const [avatar_base64, setAvatar_base64] = useState("");
   const [loading, setLoading] = useState(false);
 
-  function setAvatarURL(url) {
-    setAvatar(url);
+  function setAvatarURL(base64) {
+    setAvatar_base64(base64);
   }
 
   async function handleSubmit(e) {
@@ -63,7 +63,13 @@ export default function Registrar() {
 
   async function handleCreation() {
     setLoading(true);
-    const res = await CreateUser(longName, username, password, email, avatar);
+    const res = await CreateUser(
+      longName,
+      username,
+      password,
+      email,
+      avatar_base64
+    );
     const data = await res.json();
     console.log("Datos:", data);
     const { error, success, user } = data;
@@ -92,126 +98,116 @@ export default function Registrar() {
       />
       <form
         onSubmit={(e) => handleSubmit(e)}
-        className="flex justify-center items-center w-full h-full"
+        className="flex justify-center items-center w-full h-full  overflow-y-auto "
       >
-        <div
-          className={`flex flex-col w-full max-w-md p-6 rounded-lg shadow-lg 
+        <div className="  h-full w-full overflow-y-auto">
+          <div
+            className={`mt-15 mx-auto flex flex-col w-full max-w-md p-6 rounded-lg shadow-lg 
       ${currentTheme.colors.secondary} ${currentTheme.textColor.primary}`}
-        >
-          {errorMessage && (
-            <div
-              className={`p-2 mb-4 rounded text-sm font-medium 
+          >
+            {errorMessage && (
+              <div
+                className={`p-2 mb-4 rounded text-sm font-medium 
           ${currentTheme.colors.errorText} ${currentTheme.colors.third}`}
-            >
-              {errorMessage}
-            </div>
-          )}
+              >
+                {errorMessage}
+              </div>
+            )}
 
-          <label htmlFor="longName" className="mb-1 font-medium">
-            Full Name
-          </label>
-          <input
-            type="text"
-            id="longName"
-            onChange={(e) => setLongName(e.target.value)}
-            required
-            className={`mb-4 p-2 rounded border 
-        ${currentTheme.colors.third} ${currentTheme.textColor.primary} ${currentTheme.colors.border}`}
-          />
-
-          <label htmlFor="userName" className="mb-1 font-medium">
-            Username
-          </label>
-          <input
-            type="text"
-            id="userName"
-            onChange={(e) => setUsername(e.target.value)}
-            required
-            className={`mb-4 p-2 rounded border 
-        ${currentTheme.colors.third} ${currentTheme.textColor.primary} ${currentTheme.colors.border}`}
-          />
-
-          <div className="flex justify-between">
-            <label htmlFor="password" className="mb-1 font-medium">
-              Password
+            <label htmlFor="longName" className="mb-1 font-medium">
+              Full Name
             </label>
-            <div
-              onClick={() => setShowPass(!showPass)}
-              className="cursor-pointer"
-            >
-              {showPass ? <HidePasswordIcon /> : <ShowPasswordIcon />}
-            </div>
-          </div>
-          <input
-            type={`${showPass ? "text" : "password"}`}
-            id="password"
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className={`mb-4 p-2 rounded border 
+            <input
+              type="text"
+              id="longName"
+              onChange={(e) => setLongName(e.target.value)}
+              required
+              className={`mb-4 p-2 rounded border 
         ${currentTheme.colors.third} ${currentTheme.textColor.primary} ${currentTheme.colors.border}`}
-          />
+            />
 
-          <div className="flex justify-between">
-            <label htmlFor="ConfirmPassword" className="mb-1 font-medium">
-              Confirm Password
+            <label htmlFor="userName" className="mb-1 font-medium">
+              Username
             </label>
-            <div
-              onClick={() => setShowPass(!showPass)}
-              className="cursor-pointer"
-            >
-              {showPass ? <HidePasswordIcon /> : <ShowPasswordIcon />}
+            <input
+              type="text"
+              id="userName"
+              onChange={(e) => setUsername(e.target.value)}
+              required
+              className={`mb-4 p-2 rounded border 
+        ${currentTheme.colors.third} ${currentTheme.textColor.primary} ${currentTheme.colors.border}`}
+            />
+
+            <div className="flex justify-between">
+              <label htmlFor="password" className="mb-1 font-medium">
+                Password
+              </label>
+              <div
+                onClick={() => setShowPass(!showPass)}
+                className="cursor-pointer"
+              >
+                {showPass ? <HidePasswordIcon /> : <ShowPasswordIcon />}
+              </div>
             </div>
-          </div>
-          <input
-            type={`${showPass ? "text" : "password"}`}
-            id="ConfirmPassword"
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-            className={`mb-4 p-2 rounded border 
+            <input
+              type={`${showPass ? "text" : "password"}`}
+              id="password"
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className={`mb-4 p-2 rounded border 
         ${currentTheme.colors.third} ${currentTheme.textColor.primary} ${currentTheme.colors.border}`}
-          />
+            />
 
-          <label htmlFor="email" className="mb-1 font-medium">
-            Email
-          </label>
-          <input
-            type="email"
-            id="email"
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className={`mb-4 p-2 rounded border 
+            <div className="flex justify-between">
+              <label htmlFor="ConfirmPassword" className="mb-1 font-medium">
+                Confirm Password
+              </label>
+              <div
+                onClick={() => setShowPass(!showPass)}
+                className="cursor-pointer"
+              >
+                {showPass ? <HidePasswordIcon /> : <ShowPasswordIcon />}
+              </div>
+            </div>
+            <input
+              type={`${showPass ? "text" : "password"}`}
+              id="ConfirmPassword"
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              className={`mb-4 p-2 rounded border 
         ${currentTheme.colors.third} ${currentTheme.textColor.primary} ${currentTheme.colors.border}`}
-          />
+            />
 
-          <p className={`mb-2 ${currentTheme.textColor.secondary}`}>
-            Upload photo for avatar:
-          </p>
-          <div className="mx-auto mb-4">
-            <UploadAvatar onSucces={setAvatarURL} />
-          </div>
+            <label htmlFor="email" className="mb-1 font-medium">
+              Email
+            </label>
+            <input
+              type="email"
+              id="email"
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className={`mb-4 p-2 rounded border 
+        ${currentTheme.colors.third} ${currentTheme.textColor.primary} ${currentTheme.colors.border}`}
+            />
 
-          <button
-            type="submit"
-            className={`px-4 py-2 rounded text-white font-medium 
+            <p className={`mb-2 ${currentTheme.textColor.secondary}`}>
+              Upload photo for avatar:
+            </p>
+            <div className=" w-full mb-4">
+              <UploadAvatar onSucces={setAvatarURL} />
+            </div>
+
+            <button
+              type="submit"
+              className={`px-4 py-2 rounded text-white font-medium 
         ${currentTheme.colors.buttonPrimary} 
         ${currentTheme.colors.buttonPrimaryHover} transition`}
-          >
-            {loading ? <LoadingSpinner color="white" /> : "Create Account"}
-          </button>
+            >
+              {loading ? <LoadingSpinner color="white" /> : "Create Account"}
+            </button>
+          </div>
         </div>
       </form>
     </>
   );
 }
-
-/**model user {
-  uid Int @id @default(autoincrement()) 
-  avatar String
-  longName String
-  username String @unique
-  password String
-  email String @unique
-  roll USER_ROLL @default(cliente)
-  providerId String @default("local")
-  createdAt String
-} */

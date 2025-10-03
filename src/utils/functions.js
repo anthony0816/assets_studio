@@ -1,5 +1,16 @@
 import jwt from "jsonwebtoken";
 
+export async function _POST_(url, data) {
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-type": "Application/json",
+    },
+    body: JSON.stringify(data),
+  });
+  return res;
+}
+
 export function fileToBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -194,7 +205,7 @@ export async function CreateUser(
   username,
   password,
   email,
-  avatar = ""
+  avatar_base64 = ""
 ) {
   const res = await fetch("api/user/create", {
     method: "POST",
@@ -206,7 +217,7 @@ export async function CreateUser(
       username,
       password,
       email,
-      avatar,
+      avatar_base64,
     }),
   });
   return res;

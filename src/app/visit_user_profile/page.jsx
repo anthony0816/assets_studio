@@ -76,6 +76,7 @@ export default function UserProfile() {
           const { p_user, p_error, noUser } = await res.json();
           if (p_user) {
             const formatedUser = UserToFirebaseFormatInfo(p_user);
+            console.log("normalizedUser: ", formatedUser);
             setUser(formatedUser);
             return;
           }
@@ -238,7 +239,7 @@ export default function UserProfile() {
               <div className="flex flex-col md:flex-row items-center">
                 <div className="w-32 h-32 mb-4 md:mb-0 md:mr-6">
                   <img
-                    src={!user.photoURL ? "/favicon.ico" : user.photoURL}
+                    src={!user.photoUrl ? "/favicon.ico" : user.photoUrl}
                     alt="Foto de perfil"
                     className={`w-full h-full object-cover rounded-full border-4 ${currentTheme.colors.border}`}
                   />
