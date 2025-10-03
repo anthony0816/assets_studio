@@ -413,6 +413,33 @@ export async function CreateJWTCookieSession(email) {
   return res;
 }
 
+export function UserToFirebaseFormatInfo(p_user) {
+  const {
+    uid,
+    avatar,
+    longName,
+    name,
+    password,
+    email,
+    roll,
+    providerId,
+    createdAt,
+  } = p_user;
+
+  const f_user = {
+    uid,
+    email,
+    displayName: name,
+    photoUrl: avatar,
+    providerData: ["local"],
+    metadata: {
+      creationTime: createdAt,
+      lastSignInTime: "will be implemented",
+    },
+  };
+  return f_user;
+}
+
 // async function avd(asset_id) {
 //   if (isStarting) return;
 

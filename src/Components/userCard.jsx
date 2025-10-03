@@ -109,7 +109,7 @@ export default function UserCard({ isOpen, OpenNavFunction = null }) {
 
           {/* Menú desplegable */}
           <div
-            className={`absolute overflow-hidden ${
+            className={`absolute overflow-hidden z-50 ${
               currentTheme.colors.secondary
             } rounded-xl p-2 mx-auto w-full flex flex-col space-y-2 justify-center transition ${
               !isOpen

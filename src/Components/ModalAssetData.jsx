@@ -20,6 +20,7 @@ import ReportButton from "@/Icons/ReportButton";
 import { GiveLike } from "@/utils/functions";
 import { useInterface } from "@/context/intercomunicationContext";
 import ReportForm from "./ReportForm";
+import { UserToFirebaseFormatInfo } from "@/utils/functions";
 
 const ModalAssetData = forwardRef((props, ref) => {
   // 🔹 Hooks externos / contextos
@@ -64,10 +65,12 @@ const ModalAssetData = forwardRef((props, ref) => {
   const [isLoadingComents, setIsLoadingComents] = useState(false);
   const [loadingComentsCreation, setLoadingComentsCreation] = useState(false);
   const [fetchingUserError, setfetchingUserError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
   const [loadingLikesInfo, setLoadingLikesInfo] = useState(false);
 
   useImperativeHandle(ref, () => ({
     open: (asset) => {
+      setErrorMessage(null);
       setPage(0);
       setHasMore(true);
       setAsset(asset);
@@ -78,6 +81,7 @@ const ModalAssetData = forwardRef((props, ref) => {
       setReports(asset.reports.length);
     },
     openAndCreateComent: (asset) => {
+      setErrorMessage(null);
       setOpenWithFocus(true);
       setPage(0);
       setHasMore(true);
@@ -292,6 +296,7 @@ const ModalAssetData = forwardRef((props, ref) => {
     setOpenWithFocus(false);
     onClose();
     setReportFormOpen(false);
+    setErrorMessage(null);
   }
 
   useEffect(() => {
@@ -302,14 +307,29 @@ const ModalAssetData = forwardRef((props, ref) => {
 
   async function loadDataFromUser() {
     const res = await GetDataFromUser();
-    if (!res.ok) {
-      console.error("Error a la hora de hacer el fetch", res);
-      setfetchingUserError(true);
-      return;
+    const { f_user, error } = await res.json();
+    if (error) {
+      {
+        /* buscar en la base de datos */
+      }
+      const res = await fetch(`api/user/get-by-uid?uid=${asset.user_id}`);
+      const { p_user, p_error, noUser } = await res.json();
+      if (p_error) {
+        console.error("Error a la hora de hacer el fetch", res);
+        setfetchingUserError(true);
+        return;
+      }
+      if (p_user) {
+        const formatedUser = UserToFirebaseFormatInfo(p_user);
+        setUser(formatedUser);
+        return;
+      }
+      if (noUser) {
+        setfetchingUserError(true);
+        setErrorMessage("deleted acount");
+      }
     }
-    const data = await res.json();
-
-    setUser(data);
+    if (f_user) return setUser(f_user);
   }
 
   async function GetDataFromUser() {
@@ -326,8 +346,8 @@ const ModalAssetData = forwardRef((props, ref) => {
     return res;
   }
 
-  function GoToUserProfile(user) {
-    storage.setUserToProfile(user);
+  function GoToUserProfile(user_id) {
+    storage.setUserToProfile({ user_id: user_id });
     router("/visit_user_profile");
   }
 
@@ -360,12 +380,14 @@ const ModalAssetData = forwardRef((props, ref) => {
           </div>
 
           <span
-            onClick={() => GoToUserProfile(user)}
+            onClick={() => GoToUserProfile(user.uid)}
             className={`hover:text-blue-500 transition  cursor-pointer`}
           >
             {user?.displayName || (
               <span onClick={(e) => e.stopPropagation()}>
-                {fetchingUserError ? (
+                {errorMessage ? (
+                  "Deleted Acount 🗑️"
+                ) : fetchingUserError ? (
                   <span
                     onClick={loadDataFromUser}
                     className="text-red-400 cursor-pointer hover:text-red-500"

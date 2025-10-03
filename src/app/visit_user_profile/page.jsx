@@ -10,6 +10,7 @@ import ModalAssetData from "@/Components/ModalAssetData";
 import { useSize } from "@/context/resizeContext";
 import { FetchUserData } from "@/utils/functions";
 import { useRouter } from "next/navigation";
+import { UserToFirebaseFormatInfo } from "@/utils/functions";
 
 export default function UserProfile() {
   const storage = useData();
@@ -34,14 +35,7 @@ export default function UserProfile() {
 
   const loadAssets = useCallback(async () => {
     setIsLoading(true);
-    const data = await GetAssetsByUserId(
-      user?.uid,
-      user?.id,
-      user?.providerId,
-      page,
-      limit,
-      freeAcces
-    );
+    const data = await GetAssetsByUserId(user?.uid, page, limit, freeAcces);
     console.log("AssetsCard", data);
     const { error } = data;
     if (error) {
@@ -60,19 +54,37 @@ export default function UserProfile() {
   });
 
   useEffect(() => {
-    async function LoadUserData(params) {
-      const user = storage.userToProfile;
-      const { user_id } = user;
+    async function LoadUserData() {
+      const { user_id } = storage.userToProfile;
+
       if (user_id) {
         console.log("success");
+        {
+          /* Buscar entre los usuarios de firebase*/
+        }
         const res = await FetchUserData(user_id);
-        const userData = await res.json();
-        console.log("Datos Perfil visitar el suuario:", userData);
-        if (userData.error) return setloadingUserDataError(true);
-        setUser(userData);
-        return;
+        const { f_user, error } = await res.json();
+        if (f_user) return setUser(f_user);
+
+        {
+          /* Buscar si esta en la base de datos local */
+        }
+        if (error) {
+          const res = await fetch(`api/user/get-by-uid?uid=${user_id}`);
+          const { p_user, p_error } = await res.json();
+          if (p_user) {
+            const formatedUser = UserToFirebaseFormatInfo(p_user);
+            setUser(formatedUser);
+            return;
+          }
+          if (p_error) {
+            setloadingUserDataError(true);
+            console.error("Error cargando el usuario:", p_error);
+            return;
+          }
+          return;
+        }
       }
-      setUser(user);
     }
     LoadUserData();
   }, [storage.userToProfile]);
@@ -218,7 +230,7 @@ export default function UserProfile() {
               <div className="flex flex-col md:flex-row items-center">
                 <div className="w-32 h-32 mb-4 md:mb-0 md:mr-6">
                   <img
-                    src={user.photoURL}
+                    src={!user.photoURL ? "/favicon.ico" : user.photoURL}
                     alt="Foto de perfil"
                     className={`w-full h-full object-cover rounded-full border-4 ${currentTheme.colors.border}`}
                   />
@@ -241,7 +253,7 @@ export default function UserProfile() {
                     <span
                       className={`${currentTheme.colors.buttonGoogle} text-white px-3 py-1 rounded-full text-sm`}
                     >
-                      Google
+                      {user.providerData[0]}
                     </span>
                   </div>
                 </div>
@@ -269,7 +281,9 @@ export default function UserProfile() {
                   <p
                     className={` whitespace-nowrap ${currentTheme.textColor.secondary}`}
                   >
-                    {user.providerData[0]?.providerId || "Google"}
+                    {user.providerData[0] == "local"
+                      ? "Assets Studio"
+                      : user.providerData || "Google"}
                   </p>
                 </div>
 
@@ -284,7 +298,13 @@ export default function UserProfile() {
                   <p
                     className={` whitespace-nowrap ${currentTheme.textColor.secondary}`}
                   >
-                    {user.metadata.creationTime}
+                    {new Date(user.metadata.creationTime).toLocaleString(
+                      "en-US",
+                      {
+                        dateStyle: "medium",
+                        timeStyle: "short",
+                      }
+                    )}
                   </p>
                 </div>
 
@@ -299,7 +319,13 @@ export default function UserProfile() {
                   <p
                     className={` whitespace-nowrap ${currentTheme.textColor.secondary}`}
                   >
-                    {user.metadata.lastSignInTime}
+                    {new Date(user.metadata.lastSignInTime).toLocaleString(
+                      "en-US",
+                      {
+                        dateStyle: "medium",
+                        timeStyle: "short",
+                      }
+                    )}
                   </p>
                 </div>
               </div>
