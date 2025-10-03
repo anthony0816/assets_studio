@@ -441,7 +441,7 @@ export function UserToFirebaseFormatInfo(p_user) {
     uid,
     email,
     displayName: name,
-    photoUrl: avatar,
+    photoURL: avatar,
     providerData: [{ providerId: "Assets Studio" }],
     metadata: {
       creationTime: createdAt,
