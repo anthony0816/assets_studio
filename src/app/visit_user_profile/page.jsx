@@ -96,7 +96,7 @@ export default function UserProfile() {
   }, [storage.userToProfile]);
 
   useEffect(() => {
-    if (user == "") return;
+    if (!user) return;
     loadAssets();
   }, [user]);
 

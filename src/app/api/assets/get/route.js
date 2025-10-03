@@ -16,13 +16,7 @@ export async function GET(params) {
 
 export async function POST(request) {
   try {
-    const {
-      user_id,
-      page,
-      limit,
-
-      freeAcces,
-    } = await request.json();
+    const { user_id, page, limit, freeAcces } = await request.json();
 
     // Comprobar si es free access
     if (!freeAcces) {
