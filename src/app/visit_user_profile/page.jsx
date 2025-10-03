@@ -56,7 +56,6 @@ export default function UserProfile() {
 
   useEffect(() => {
     async function LoadUserData() {
-      console.log("ffffffffffffffffff,", storage.userToProfile);
       const { user_id } = storage.userToProfile;
       console.log("user_id:", user_id);
       if (user_id) {
@@ -66,7 +65,7 @@ export default function UserProfile() {
         }
         const res = await FetchUserData(user_id);
         const { f_user, error } = await res.json();
-        console.log("aaaaaaaaaaaaaaaaaaa", f_user);
+
         if (f_user) return setUser(f_user);
 
         {

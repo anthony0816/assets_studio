@@ -2,6 +2,8 @@
 import { useState } from "react";
 import CategorySelector from "./CategorySelector";
 import { useTheme } from "@/context/themeContext";
+import { SearchIcon } from "@/Icons/SearchIcon";
+import InputSearch from "./InputSearch";
 
 export default function OptionMenuMobile({
   items,
@@ -10,8 +12,12 @@ export default function OptionMenuMobile({
   itemsOnClick,
 }) {
   const { color, tcolor } = colorContext;
-  const [isExpanded, setIsExpanded] = useState(false);
   const { currentTheme } = useTheme();
+  {
+    /* Estados */
+  }
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [searching, setSearching] = useState(false);
 
   if (show)
     return (
@@ -43,7 +49,13 @@ export default function OptionMenuMobile({
             <div>
               <button
                 onClick={() => setIsExpanded(!isExpanded)}
-                className={`whitespace-nowrap rounded-xl cursor-pointer p-1 px-3 font-bold ${color.primary} ${tcolor.secondary} ${currentTheme.colors.hover}`}
+                className={` transition-all  ${
+                  searching
+                    ? "max-w-0 opacity-0 px-0 pointer-events-none"
+                    : "max-w-999 opacity-100"
+                } whitespace-nowrap rounded-xl cursor-pointer p-1 px-3 font-bold ${
+                  color.primary
+                } ${tcolor.secondary} ${currentTheme.colors.hover}`}
               >
                 {isExpanded ? (
                   <svg
@@ -66,16 +78,44 @@ export default function OptionMenuMobile({
                 )}
               </button>
             </div>
-            <div className="flex flex-row ml-5 items-center whitespace-nowrap">
-              <p className={`${tcolor.primary} mr-4`}>Categorias: </p>
-              <select
-                onChange={(e) => itemsOnClick(e.target.value)}
-                className={`whitespace-nowrap rounded-xl cursor-pointer p-1 px-3 font-bold ${color.primary} ${tcolor.secondary} ${currentTheme.colors.hover}`}
+
+            {/* Icono de busqueda */}
+            <div className={`w-full flex justify-end px-4  items-center  `}>
+              <div
+                className={` transition-all duration-300 ${
+                  searching
+                    ? "w-full opacity-100"
+                    : "w-0 opacity-0 pointer-events-none"
+                }`}
               >
-                <option value="">Select</option>
-                <CategorySelector />
-              </select>
+                <InputSearch
+                  onClose={() => setSearching(!searching)}
+                  onSearch={() => console.log("for implementing")}
+                />
+              </div>
+
+              <div
+                onClick={() => setSearching(!searching)}
+                className={`${color.hover} p-1 rounded transition`}
+              >
+                <SearchIcon size={25} color={color.SearchIcon} />
+              </div>
             </div>
+
+            {/* Opciones a seleccionar */}
+            <select
+              onChange={(e) => itemsOnClick(e.target.value)}
+              className={` transition-all ${
+                searching
+                  ? "max-w-0 opacity-0 px-0 pointer-events-none"
+                  : "max-w-999 opacity-100"
+              } whitespace-nowrap rounded-xl cursor-pointer p-1 px-3 font-bold ${
+                color.primary
+              } ${tcolor.secondary} ${currentTheme.colors.hover}`}
+            >
+              <option value="">Select a category</option>
+              <CategorySelector />
+            </select>
           </div>
         </ul>
       </>

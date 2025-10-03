@@ -1,17 +1,16 @@
 "use client";
 import { useState } from "react";
-import { FiMenu, FiX, FiUser } from "react-icons/fi";
+import { FiMenu, FiX } from "react-icons/fi";
 import LogoAS from "./LogoAS";
-import { useSize } from "@/context/resizeContext";
 import { useClickOutside } from "@/utils/hooks";
 import { useRef } from "react";
 import UserCard from "./userCard";
 import { useTheme } from "@/context/themeContext";
 import SettingsMenu from "./SettingsMenu";
+import { NotificationIcon } from "@/Icons/NotificationIcon";
 
 export default function MobileNavBar({ items, router }) {
   const [isOpen, setIsOpen] = useState(false);
-  const { isMobile } = useSize(null);
   const headerRef = useRef(null);
   const { currentTheme } = useTheme();
 
@@ -29,8 +28,18 @@ export default function MobileNavBar({ items, router }) {
           <LogoAS height={49} width={49} onClick={() => router("/")} />
         </div>
 
-        {/* Usuario sin Autenticar */}
-        <UserCard isOpen={true} />
+        {/* Opciones simepre visibles  */}
+        <div className="w-full flex justify-end space-x-2 px-4">
+          {/* Icono de busqueda */}
+          <div
+            className={`  flex items-center ${currentTheme.colors.hover} p-2 transition rounded`}
+          >
+            <NotificationIcon />
+          </div>
+
+          {/* Usuario sin Autenticar */}
+          <UserCard isOpen={true} />
+        </div>
 
         {/* Botón menú */}
         <button

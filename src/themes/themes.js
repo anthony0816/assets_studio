@@ -1,3 +1,5 @@
+import { SearchIcon } from "@/Icons/SearchIcon";
+
 export const Theme = {
   blackTheme: {
     colors: {
@@ -16,6 +18,7 @@ export const Theme = {
       buttonGithub: "bg-gray-700",
       buttonGithubHover: "hover:bg-gray-600",
       buttonReport: " #bbad0f96",
+      SearchIcon: "#eee",
 
       // Estados y textos
       errorText: "text-red-600",
@@ -48,6 +51,7 @@ export const Theme = {
       buttonGithub: "bg-gray-300",
       buttonGithubHover: "hover:bg-gray-400",
       buttonReport: " #bbad0f96",
+      SearchIcon: "#1b1717ff",
 
       // Estados y textos
       errorText: "text-red-600",

@@ -5,6 +5,8 @@ import { useTheme } from "@/context/themeContext";
 import { useSize } from "@/context/resizeContext";
 import OptionMenuMobile from "@/Components/OptionMenuMobile";
 import { useState } from "react";
+import { SearchIcon } from "@/Icons/SearchIcon";
+import InputSearch from "@/Components/InputSearch";
 
 export default function AssetsPage() {
   const { currentTheme } = useTheme();
@@ -12,7 +14,9 @@ export default function AssetsPage() {
   const color = currentTheme.colors;
   const tcolor = currentTheme.textColor;
   const colorContext = { color, tcolor };
+
   const [param, setParam] = useState("");
+  const [searching, setSearching] = useState(true);
 
   const items = [
     { name: "Explore Assets", clave: "explore" },
@@ -32,29 +36,54 @@ export default function AssetsPage() {
           className={` py-2  w-[100%] shadow text-center ${color.secondary} rounded `}
         >
           {!isMobile && (
-            <ul className="flex flex-row flex-wrap justify-center items-center space-x-3 space-y-2 px-4">
-              {items.map((item) => (
-                <li
-                  onClick={() => handleItemsClick(item.clave)}
-                  key={item.clave}
-                  className={` whitespace-nowrap rounded-xl cursor-pointer p-1 px-3 font-bold ${color.primary} ${tcolor.secondary}`}
-                >
-                  {item.name}
+            <>
+              {/* Lista con solo el search */}
+              <ul
+                className={` transition-all duration-300 ${
+                  searching
+                    ? "max-h-999 opacity-100 "
+                    : "max-h-0 opacity-0 pointer-events-none"
+                } flex flex-row flex-wrap justify-center items-center gap-3 px-4`}
+              >
+                <li className="w-full max-w-200">
+                  <InputSearch onClose={() => setSearching(!searching)} />
                 </li>
-              ))}
-              <li>
-                <div className="flex flex-row ml-5  whitespace-nowrap">
-                  <p className={`${tcolor.primary} mr-4 `}>Categorias: </p>
+              </ul>
+
+              {/* Lista de elementos  */}
+              <ul
+                className={` transition-all duration-300 ${
+                  searching
+                    ? "max-h-0 opacity-0 pointer-events-none"
+                    : "max-h-999 opacity-100 "
+                } flex flex-row flex-wrap justify-center items-center gap-3 px-4`}
+              >
+                {items.map((item) => (
+                  <li
+                    onClick={() => handleItemsClick(item.clave)}
+                    key={item.clave}
+                    className={` whitespace-nowrap rounded-xl cursor-pointer p-1 px-3 font-bold ${color.primary} ${tcolor.secondary}`}
+                  >
+                    {item.name}
+                  </li>
+                ))}
+                <li>
                   <select
                     onChange={(e) => handleItemsClick(e.target.value)}
                     className={`  whitespace-nowrap rounded-xl cursor-pointer p-1 px-3 font-bold ${color.primary} ${tcolor.secondary}`}
                   >
-                    <option value="">Select</option>
+                    <option value="">Select a category</option>
                     <CategorySelector />
                   </select>
-                </div>
-              </li>
-            </ul>
+                </li>
+                <li
+                  onClick={() => setSearching(!searching)}
+                  className={` whitespace-nowrap rounded-xl cursor-pointer p-1 px-3 font-bold ${color.primary} ${tcolor.secondary}`}
+                >
+                  <SearchIcon color={color.SearchIcon} />
+                </li>
+              </ul>
+            </>
           )}
 
           {/* Menu de opciones para mobiles */}
