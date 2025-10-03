@@ -71,7 +71,7 @@ export default function UserProfile() {
         }
         if (error) {
           const res = await fetch(`api/user/get-by-uid?uid=${user_id}`);
-          const { p_user, p_error } = await res.json();
+          const { p_user, p_error, noUser } = await res.json();
           if (p_user) {
             const formatedUser = UserToFirebaseFormatInfo(p_user);
             setUser(formatedUser);
@@ -81,6 +81,9 @@ export default function UserProfile() {
             setloadingUserDataError(true);
             console.error("Error cargando el usuario:", p_error);
             return;
+          }
+          if (noUser) {
+            setloadingUserDataError(true);
           }
           return;
         }
@@ -170,7 +173,8 @@ export default function UserProfile() {
         </h2>
 
         <p className={`mb-6 ${currentTheme.textColor.secondary}`}>
-          Please try again later
+          Please try again later. <br />
+          Also this may happen if the acount does not exist anymore
         </p>
 
         <button
