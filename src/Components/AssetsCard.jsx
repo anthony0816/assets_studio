@@ -103,7 +103,7 @@ export default function AssetsCard({
           <AssetCardOptionButton
             asset={asset}
             onDelete={() => setDestroy(true)}
-            currentUser_id={user?.uid}
+            currentUser={user}
             menuColor={currentTheme.colors.primary}
             fontMenuColor={currentTheme.textColor.primary}
           />

@@ -7,12 +7,13 @@ import { useInterface } from "@/context/intercomunicationContext";
 
 export default function AssetCardOptionButton({
   asset,
-  currentUser_id,
+  currentUser,
   menuColor,
   fontMenuColor,
   onDelete,
 }) {
   const asset_user_id = asset.user_id;
+  const currentUser_id = currentUser?.uid;
   const [open, setOpen] = useState(false);
   const menuRef = useRef(null);
 
@@ -44,7 +45,11 @@ export default function AssetCardOptionButton({
     });
   }
 
-  if (String(currentUser_id) !== String(asset_user_id)) return null;
+  if (
+    String(currentUser_id) !== String(asset_user_id) &&
+    currentUser?.roll != "admin"
+  )
+    return null;
 
   return (
     <div className="relative inline-block" ref={menuRef}>
