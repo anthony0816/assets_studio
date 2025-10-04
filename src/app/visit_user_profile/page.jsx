@@ -62,7 +62,7 @@ export default function UserProfile() {
 
       setIsLoading(false);
     },
-    [user]
+    [user, page]
   );
 
   {
