@@ -24,6 +24,7 @@ export async function POST(request) {
         );
     }
 
+    // Tratar los parametros si son de tipo categoria de los assets
     if (param.startsWith("cat-")) {
       const categoria = param.split("-")[1];
       return NextResponse.json(
@@ -34,6 +35,49 @@ export async function POST(request) {
           take: limit,
         })
       );
+    }
+
+    // Tratar parametros de tipo search
+    if (param.startsWith("search-")) {
+      const value = param.split("-")[1];
+      var results = [];
+
+      // funcion para buscar por atributos
+      async function search(atribute, value) {
+        const res = await prisma.asset.findMany({
+          where: { [atribute]: value },
+          include: includeParams,
+          skip: page * limit,
+          take: limit,
+        });
+        return res;
+      }
+
+      // buscar por categoria
+      results = await search("categoria", value);
+
+      // busca por el formato de la imagen
+      if (results.length == 0) {
+        results = await search("format", value);
+      }
+
+      //buscar por nombre de usuario
+      if (results.length == 0) {
+        const { uid } = await prisma.user.findUnique({
+          where: {
+            name: value,
+          },
+          select: {
+            uid: true,
+          },
+        });
+
+        if (uid) {
+          results = await search("user_id", uid);
+        }
+      }
+
+      return NextResponse.json(results);
     }
 
     switch (param) {

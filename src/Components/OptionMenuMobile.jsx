@@ -11,6 +11,7 @@ export default function OptionMenuMobile({
   colorContext,
   itemsOnClick,
   onSearch,
+  onCloseSearch,
 }) {
   const { color, tcolor } = colorContext;
   const { currentTheme } = useTheme();
@@ -90,8 +91,11 @@ export default function OptionMenuMobile({
                 }`}
               >
                 <InputSearch
-                  onClose={() => setSearching(!searching)}
                   onSearch={onSearch}
+                  onClose={() => {
+                    setSearching(!searching);
+                    onCloseSearch();
+                  }}
                 />
               </div>
 

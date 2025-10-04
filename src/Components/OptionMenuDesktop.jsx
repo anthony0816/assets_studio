@@ -9,6 +9,7 @@ export default function OptionMenuDesktop({
   colorContext,
   itemsOnClick,
   onSearch,
+  onCloseSearch,
 }) {
   const { color, tcolor } = colorContext;
 
@@ -28,7 +29,10 @@ export default function OptionMenuDesktop({
           <li className="w-full max-w-200">
             <InputSearch
               onSearch={onSearch}
-              onClose={() => setSearching(!searching)}
+              onClose={() => {
+                setSearching(!searching);
+                onCloseSearch();
+              }}
             />
           </li>
         </ul>

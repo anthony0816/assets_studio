@@ -13,6 +13,12 @@ export default function InputSearch({ onSearch, onClose }) {
     if (onSearch) onSearch(query);
   };
 
+  // limpiar el texto del input
+  function close() {
+    setQuery("");
+    onClose();
+  }
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -26,7 +32,7 @@ export default function InputSearch({ onSearch, onClose }) {
         placeholder="Search by category, username of the owner"
         className={` flex-1 bg-transparent focus:outline-none ${currentTheme.textColor.primary} placeholder:${currentTheme.textColor.muted}`}
       />
-      <div onClick={() => onClose()}>
+      <div onClick={() => close()}>
         <CloseIcon color={currentTheme.colors.SearchIcon} />
       </div>
     </form>

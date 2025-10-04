@@ -6,7 +6,6 @@ import { useSize } from "@/context/resizeContext";
 import OptionMenuMobile from "@/Components/OptionMenuMobile";
 import OptionMenuDesktop from "@/Components/OptionMenuDesktop";
 import { useState } from "react";
-import { SearchIcon } from "@/Icons/SearchIcon";
 
 export default function AssetsPage() {
   const { currentTheme } = useTheme();
@@ -28,8 +27,21 @@ export default function AssetsPage() {
     setParam(clave);
   };
 
-  function handlesearch(query) {
-    console.log("query:", query);
+  // manegar la musqueda de la barar de busqueda
+  function handleSearch(data) {
+    // Eliminar espacios
+    const query = data.trim();
+    // Restablecer los parametros predeterminados si no se escribe nada
+    if (query == "") return setParam("lastest");
+    const param = `search-${query}`;
+    console.log("query:", param);
+    setParam(param);
+  }
+
+  // manegar cuando se cierre la barra de busqueda
+
+  function handleCloseSearch() {
+    return; // no hacer nada por ahora
   }
 
   return (
@@ -43,7 +55,8 @@ export default function AssetsPage() {
             show={!isMobile}
             colorContext={colorContext}
             itemsOnClick={handleItemsClick}
-            onSearch={handlesearch}
+            onSearch={handleSearch}
+            onCloseSearch={handleCloseSearch}
           />
 
           {/* Menu de opciones para mobiles */}
@@ -52,7 +65,8 @@ export default function AssetsPage() {
             show={isMobile}
             colorContext={colorContext}
             itemsOnClick={handleItemsClick}
-            onSearch={handlesearch}
+            onSearch={handleSearch}
+            onCloseSearch={handleCloseSearch}
           />
         </section>
         <div className={`  h-[100%]`}>
