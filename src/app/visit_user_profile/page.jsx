@@ -360,15 +360,16 @@ export default function UserProfile() {
               Assets
             </h2>
             <div className="grid gap-6 p-4  [grid-template-columns:repeat(auto-fit,minmax(250px,1fr))]">
-              {assets.map((asset) => (
-                <AssetsCard
-                  key={asset.id}
-                  asset={asset}
-                  currentUserId={auth.user?.uid}
-                  onClickBar={() => onClickBar(asset)}
-                  onClickPhoto={onClickPhoto}
-                />
-              ))}
+              {assets &&
+                assets.map((asset) => (
+                  <AssetsCard
+                    key={asset.id}
+                    asset={asset}
+                    currentUserId={auth.user?.uid}
+                    onClickBar={() => onClickBar(asset)}
+                    onClickPhoto={onClickPhoto}
+                  />
+                ))}
             </div>
             {hasMore ? (
               <div
