@@ -121,7 +121,7 @@ export default function UserProfile() {
   async function RestetAndGetAssetsInUserChange(user) {
     setPage(0);
     setHasMore(true);
-    setAssets(null);
+    setAssets([]);
     await loadAssets(user);
   }
 
