@@ -52,7 +52,7 @@ export default function UserProfile() {
     if (data.length < limit) setHasMore(false);
 
     setIsLoading(false);
-  });
+  }, [user]);
 
   useEffect(() => {
     async function LoadUserData() {
