@@ -15,10 +15,18 @@ import ModalDeleteAsset from "@/Components/ModalDeleteAsset";
 
 export default function UserProfile() {
   const storage = useData();
+
+  {
+    /* Estados principales */
+  }
   const [isLoading, setIsLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
   const [user, setUser] = useState(null);
   const [assets, setAssets] = useState([]);
+
+  {
+    /* Otras declaraciones */
+  }
   const { currentTheme } = useTheme();
   const auth = useAuth();
   const [page, setPage] = useState(0);
@@ -34,25 +42,32 @@ export default function UserProfile() {
   const loadingRef = useRef();
   const { isMobile } = useSize();
 
-  const loadAssets = useCallback(async () => {
-    setIsLoading(true);
-    const data = await GetAssetsByUserId(user?.uid, page, limit, freeAcces);
-    console.log("AssetsCard", data);
-    const { error } = data;
-    if (error) {
-      setIsLoading(false);
-      return console.error("error", error, error.messaje || "unknown");
-    }
-    setAssets((prev) => {
-      const ids = new Set(prev.map((a) => a.id));
-      const nuevos = data.filter((a) => !ids.has(a.id));
-      return [...prev, ...nuevos];
-    });
-    setPage((prev) => prev + 1);
-    if (data.length < limit) setHasMore(false);
+  const loadAssets = useCallback(
+    async (user) => {
+      setIsLoading(true);
+      const data = await GetAssetsByUserId(user?.uid, page, limit, freeAcces);
+      console.log("AssetsCard", data);
+      const { error } = data;
+      if (error) {
+        setIsLoading(false);
+        return console.error("error", error, error.messaje || "unknown");
+      }
+      setAssets((prev) => {
+        const ids = new Set(prev.map((a) => a.id));
+        const nuevos = data.filter((a) => !ids.has(a.id));
+        return [...prev, ...nuevos];
+      });
+      setPage((prev) => prev + 1);
+      if (data.length < limit) setHasMore(false);
 
-    setIsLoading(false);
-  }, [user]);
+      setIsLoading(false);
+    },
+    [user]
+  );
+
+  {
+    /* Escuchar cambio de user por contexto */
+  }
 
   useEffect(() => {
     async function LoadUserData() {
@@ -66,7 +81,11 @@ export default function UserProfile() {
         const res = await FetchUserData(user_id);
         const { f_user, error } = await res.json();
 
-        if (f_user) return setUser(f_user);
+        if (f_user) {
+          setUser(f_user);
+          await RestetAndGetAssetsInUserChange(f_user);
+          return;
+        }
 
         {
           /* Buscar si esta en la base de datos local */
@@ -78,6 +97,7 @@ export default function UserProfile() {
             const formatedUser = UserToFirebaseFormatInfo(p_user);
             console.log("normalizedUser: ", formatedUser);
             setUser(formatedUser);
+            await RestetAndGetAssetsInUserChange(formatedUser);
             return;
           }
           if (p_error) {
@@ -95,11 +115,19 @@ export default function UserProfile() {
     LoadUserData();
   }, [storage.userToProfile]);
 
-  useEffect(() => {
-    if (!user) return;
-    loadAssets();
-  }, [user]);
+  {
+    /* Funcion para resetear los Assets En cambio de usuario */
+  }
+  async function RestetAndGetAssetsInUserChange(user) {
+    setPage(0);
+    setHasMore(true);
+    setAssets(null);
+    await loadAssets(user);
+  }
 
+  {
+    /* Observer */
+  }
   useEffect(() => {
     if (!loadingRef.current) return;
     const observer = new IntersectionObserver(
