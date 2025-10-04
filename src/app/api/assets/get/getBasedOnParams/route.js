@@ -63,7 +63,7 @@ export async function POST(request) {
 
       //buscar por nombre de usuario
       if (results.length == 0) {
-        const { uid } = await prisma.user.findUnique({
+        const uid = await prisma.user.findUnique({
           where: {
             name: value,
           },
@@ -73,7 +73,7 @@ export async function POST(request) {
         });
 
         if (uid) {
-          results = await search("user_id", uid);
+          results = await search("user_id", uid.uid);
         }
       }
 
