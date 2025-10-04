@@ -84,7 +84,6 @@ export async function POST(request) {
           const searchPromises = uids.map((uid) => search("user_id", uid.uid));
           const searchResults = await Promise.all(searchPromises);
 
-          // searchResults es un array de arrays: [[...], [...], ...]
           searchResults.forEach((result) => {
             results.push(...result); // Desempaca cada sub-array
           });

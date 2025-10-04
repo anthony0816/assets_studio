@@ -112,6 +112,7 @@ export default function UserProfile() {
         }
       }
     }
+    setHasMore(true);
     LoadUserData();
   }, [storage.userToProfile]);
 
