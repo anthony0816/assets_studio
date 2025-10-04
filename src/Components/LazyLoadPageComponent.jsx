@@ -38,7 +38,6 @@ export default function LazyLoadPage({
   const ModalAssetOptionsRef = useRef();
 
   function verifyAcces() {
-    const access = false;
     if (user != "await" && user != null) return true;
     if (freeAcces) return true;
   }
@@ -90,6 +89,41 @@ export default function LazyLoadPage({
     modal.backwards(assets[prevIndex]);
   }
 
+  {
+    /* Funcion para obtener los assets */
+  }
+  const Get = useCallback(async () => {
+    if (param != "") {
+      console.log("Params from lazy:", param);
+      const assets = await GetByParam(param, page, limit, freeAcces);
+      return assets;
+    }
+
+    if (ByCurrentUser) {
+      const userAssets = await GetAssetsByUserId(
+        user?.uid,
+        page,
+        limit,
+        freeAcces
+      );
+      return userAssets;
+    }
+    if (category) {
+      const byCategoryAssets = await GetAssetsByCategoria(
+        page,
+        limit,
+        category
+      );
+      return byCategoryAssets;
+    }
+    const assets = await GetAssets(page, limit, freeAcces);
+    return assets;
+  }, [page, limit, user, param, ByCurrentUser, category, freeAcces]);
+
+  {
+    /* Funcion para cargar las dependencias */
+  }
+
   const LoadAssets = useCallback(async () => {
     setIsLoading(true);
     setError(false);
@@ -131,7 +165,7 @@ export default function LazyLoadPage({
       setIsLoading(false);
       router("/login");
     }
-  }, [hasMore, isLoading, page, limit, user, param]);
+  }, [Get]);
 
   useEffect(() => {
     setHasMore(true);
@@ -158,34 +192,6 @@ export default function LazyLoadPage({
     if (loaderRef.current) observer.observe(loaderRef.current);
     return () => observer.disconnect();
   }, [isLoading, hasMore, LoadAssets]);
-
-  async function Get() {
-    if (param != "") {
-      console.log("Params from lazy:", param);
-      const assets = await GetByParam(param, page, limit, freeAcces);
-      return assets;
-    }
-
-    if (ByCurrentUser) {
-      const userAssets = await GetAssetsByUserId(
-        user?.uid,
-        page,
-        limit,
-        freeAcces
-      );
-      return userAssets;
-    }
-    if (category) {
-      const byCategoryAssets = await GetAssetsByCategoria(
-        page,
-        limit,
-        category
-      );
-      return byCategoryAssets;
-    }
-    const assets = await GetAssets(page, limit, freeAcces);
-    return assets;
-  }
 
   if (error) {
     return (
@@ -275,7 +281,7 @@ export default function LazyLoadPage({
             <div
               className={`py-6 text-center text-sm ${currentTheme.colors.mutedText}`}
             >
-              No more items to load
+              No more items to load <strong>{assets.length} items</strong>
             </div>
           )}
         </div>
