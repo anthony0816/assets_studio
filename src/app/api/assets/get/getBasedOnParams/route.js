@@ -45,7 +45,12 @@ export async function POST(request) {
       // funcion para buscar por atributos
       async function search(atribute, value) {
         const res = await prisma.asset.findMany({
-          where: { [atribute]: value },
+          where: {
+            [atribute]: {
+              equals: value,
+              mode: "insensitive",
+            },
+          },
           include: includeParams,
           skip: page * limit,
           take: limit,
@@ -63,17 +68,26 @@ export async function POST(request) {
 
       //buscar por nombre de usuario
       if (results.length == 0) {
-        const uid = await prisma.user.findUnique({
+        const uids = await prisma.user.findMany({
           where: {
-            name: value,
+            name: {
+              equals: value,
+              mode: "insensitive", // ignonar minusculas y mayusculas
+            },
           },
           select: {
             uid: true,
           },
         });
+        console.log("resultados", uids);
+        if (uids.length > 0) {
+          const searchPromises = uids.map((uid) => search("user_id", uid.uid));
+          const searchResults = await Promise.all(searchPromises);
 
-        if (uid) {
-          results = await search("user_id", uid.uid);
+          // searchResults es un array de arrays: [[...], [...], ...]
+          searchResults.forEach((result) => {
+            results.push(...result); // Desempaca cada sub-array
+          });
         }
       }
 
