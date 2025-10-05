@@ -1,4 +1,7 @@
 import { forwardRef, useImperativeHandle, useState } from "react";
+import { DownloadIcon } from "@/Icons/DownloadIcon";
+import { DowloadCloudinaryAsset } from "@/utils/functions";
+
 const ModalShowPicture = forwardRef((props, ref) => {
   const [isOpen, setIsOpen] = useState(false);
   const [asset, setAsset] = useState(null);
@@ -29,6 +32,14 @@ const ModalShowPicture = forwardRef((props, ref) => {
             className="fixed top-4 right-4 text-gray-300 hover:text-gray-800 dark:hover:text-gray-200 transition text-4xl leading-none"
           >
             ✕
+          </button>
+
+          {/* Boton Descargar Asset */}
+          <button
+            onClick={() => DowloadCloudinaryAsset(asset.src)}
+            className="fixed top-4 right-20 text-gray-300 hover:text-gray-800 dark:hover:text-gray-200 transition text-4xl leading-none"
+          >
+            <DownloadIcon size={40} />
           </button>
 
           <div className="relative w-full flex items-center justify-center">
