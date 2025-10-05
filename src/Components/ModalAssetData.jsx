@@ -21,6 +21,8 @@ import { GiveLike } from "@/utils/functions";
 import { useInterface } from "@/context/intercomunicationContext";
 import ReportForm from "./ReportForm";
 import { UserToFirebaseFormatInfo } from "@/utils/functions";
+import { DownloadIcon } from "@/Icons/DownloadIcon";
+import { DowloadCloudinaryAsset } from "@/utils/functions";
 
 const ModalAssetData = forwardRef((props, ref) => {
   // 🔹 Hooks externos / contextos
@@ -401,7 +403,7 @@ const ModalAssetData = forwardRef((props, ref) => {
             )}
           </span>
 
-          {/* Likes y Reports */}
+          {/* Likes , Reports y descargar*/}
           <div className="flex gap-4 text-sm mt-2">
             <span
               onClick={() => handleCreateLike()}
@@ -423,6 +425,12 @@ const ModalAssetData = forwardRef((props, ref) => {
                 color={currentTheme.colors.buttonReport}
                 strokeWidth="3"
               />
+            </span>
+            <span
+              onClick={() => DowloadCloudinaryAsset(asset.src)}
+              className={`${currentTheme.textColor.muted}  flex items-center cursor-pointer`}
+            >
+              <DownloadIcon />
             </span>
           </div>
         </div>

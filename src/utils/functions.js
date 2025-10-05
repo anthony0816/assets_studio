@@ -1,5 +1,17 @@
 import jwt from "jsonwebtoken";
 
+export function DowloadCloudinaryAsset(url) {
+  fetch(url)
+    .then((res) => res.blob())
+    .then((blob) => {
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "asset.png"; // nombre del archivo al guardar
+      link.click();
+      URL.revokeObjectURL(link.href);
+    });
+}
+
 export async function _POST_(url, data) {
   const res = await fetch(url, {
     method: "POST",
@@ -450,64 +462,3 @@ export function UserToFirebaseFormatInfo(p_user) {
   };
   return f_user;
 }
-
-// async function avd(asset_id) {
-//   if (isStarting) return;
-
-//   if (!liked) {
-//     const res = await fetch("api/likes/create-delete", {
-//       method: "POST",
-//       headers: {
-//         "Content-type": "Application/json",
-//       },
-//       body: JSON.stringify({
-//         user_id: currentUserId,
-//         asset_id,
-//       }),
-//     });
-
-//     if (!res.ok) {
-//       if (res.status == 401) {
-//         return router("/login");
-//       }
-//     }
-//     const data = await res.json();
-//     const { id } = data;
-//     if (id) {
-//       setLiked(true);
-//       setLikes(likes + 1);
-//     }
-//     console.log("data from liked asset", data);
-//     return;
-//   }
-//   if (liked) {
-//     const res = await fetch("api/likes/create-delete", {
-//       method: "DELETE",
-//       headers: {
-//         "Content-type": "Application/json",
-//       },
-//       body: JSON.stringify({
-//         user_id: currentUserId,
-//         asset_id,
-//       }),
-//     });
-//     const data = await res.json();
-//     const { count } = data;
-//     console.log("FROM delete:", data);
-//     if (count) {
-//       setLiked(false);
-//       setLikes(likes - 1);
-//       return;
-//     }
-//   }
-// }
-
-/*
- id Int @id @default(autoincrement())
-  user_id String
-  asset Asset @relation(fields: [asset_id], references: [id], onDelete: Cascade)
-  asset_id Int
-  content  String
-  createdAt DateTime @default(now())
-  likes ComentLike[] 
- */
