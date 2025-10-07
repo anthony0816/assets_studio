@@ -38,7 +38,7 @@ export default function Login() {
       <div
         className={`${currentTheme.colors.third} p-8 rounded-lg shadow-lg w-full max-w-sm space-y-6`}
       >
-        <h1 className="text-2xl font-bold text-center">Wellcome</h1>
+        <h1 className="text-2xl font-bold text-center">Welcome</h1>
 
         {error ? (
           <div className="text-center text-red-600">
