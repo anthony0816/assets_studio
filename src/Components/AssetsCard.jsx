@@ -8,6 +8,11 @@ import ComentsIcon from "@/Icons/ComentsIcon";
 import ReportButton from "@/Icons/ReportButton";
 import AssetCardOptionButton from "./AssetCardOptionButton";
 import { useAuth } from "@/context/authContext";
+import {
+  CreateNotification,
+  GiveLikeNotifiacionMessage,
+  UnsetLikeNotificationMessage,
+} from "@/utils/notifications";
 
 export default function AssetsCard({
   asset,
@@ -84,10 +89,24 @@ export default function AssetsCard({
     if (id) {
       console.log("data from liked asset", data);
       setLikeInterface({ asset_id: asset.id, liked_status: 1 });
+      CreateNotification(
+        asset.user_id,
+        "/my-assets",
+        GiveLikeNotifiacionMessage(user.name)
+      ).then(async (res) =>
+        console.log("Notificacion- Estado del Like:", await res.json())
+      );
       return;
     }
     if (count) {
       setLikeInterface({ asset_id: asset.id, liked_status: -1 });
+      CreateNotification(
+        asset.user_id,
+        "/my-assets",
+        UnsetLikeNotificationMessage(user.name)
+      ).then(async (res) =>
+        console.log("Notificacion- Estado del Like:", await res.json())
+      );
       return;
     }
   }

@@ -23,6 +23,10 @@ import ReportForm from "./ReportForm";
 import { UserToFirebaseFormatInfo } from "@/utils/functions";
 import { DownloadIcon } from "@/Icons/DownloadIcon";
 import { DowloadCloudinaryAsset } from "@/utils/functions";
+import {
+  CreateNotification,
+  ComentAssetNotificationMessage,
+} from "@/utils/notifications";
 
 const ModalAssetData = forwardRef((props, ref) => {
   // 🔹 Hooks externos / contextos
@@ -263,6 +267,15 @@ const ModalAssetData = forwardRef((props, ref) => {
     setComents((prev) => [data, ...prev]);
     setContent("");
     setLoadingComentsCreation(false);
+
+    // Crear uan notificacion al Creador del Asset
+    CreateNotification(
+      asset.user_id,
+      "/my-assets",
+      ComentAssetNotificationMessage(auth.user.name)
+    ).then(async (res) =>
+      console.log("Estado de Notificacion de comentarios:", await res.json())
+    );
   }
 
   async function handleCreateLike() {

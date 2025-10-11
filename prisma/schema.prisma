@@ -55,7 +55,6 @@ model user {
   roll USER_ROLL @default(client)
   providerId String @default("local")
   createdAt DateTime @default(now())
-  notifications Notifications[]
 }
 
 model Asset{
@@ -121,6 +120,5 @@ model Notifications{
   createdAt DateTime @default(now())
   message String
   redirectionUrl String
-  user user @relation(fields: [user_id], references: [uid], onDelete: Cascade)
   user_id String
 }

@@ -9,6 +9,7 @@ import { useTheme } from "@/context/themeContext";
 import LogoAssetsStudio from "./LogoAssetsStudio";
 import MobileNavBar from "./MobileNavBar";
 import SettingsMenu from "./SettingsMenu";
+import NotificationsModule from "./NotificationsModule";
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(true);
@@ -47,16 +48,25 @@ export default function NavBar() {
          relative border ${currentTheme.colors.border}`
         }
       >
-        {/* Botón de expansión */}
         <div
-          className={`flex justify-end p-4 sticky top-0 ${currentTheme.colors.primary}`}
+          className={`flex flex-${
+            isOpen ? "row" : "col"
+          } items-center justify-between`}
         >
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className={`focus:outline-none ${currentTheme.colors.hover} p-2 rounded transition`}
+          {/* Modulo de Notificaciones  */}
+          <NotificationsModule />
+          {/* Botón de expansión */}
+
+          <div
+            className={`flex justify-end p-4 sticky top-0 ${currentTheme.colors.primary}`}
           >
-            {isOpen ? <FiX size={20} /> : <FiMenu size={20} />}
-          </button>
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className={`focus:outline-none ${currentTheme.colors.hover} p-2 rounded transition`}
+            >
+              {isOpen ? <FiX size={20} /> : <FiMenu size={20} />}
+            </button>
+          </div>
         </div>
 
         {/* LOGO */}
