@@ -55,6 +55,7 @@ model user {
   roll USER_ROLL @default(client)
   providerId String @default("local")
   createdAt DateTime @default(now())
+  notifications Notifications[]
 }
 
 model Asset{
@@ -113,4 +114,13 @@ model VerificationCode{
   expiresAt DateTime
   createdAt DateTime
   used Boolean @default(false)
+}
+
+model Notifications{
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  message String
+  redirectionUrl String
+  user user @relation(fields: [user_id], references: [uid], onDelete: Cascade)
+  user_id String
 }

@@ -7,7 +7,8 @@ import { useRef } from "react";
 import UserCard from "./userCard";
 import { useTheme } from "@/context/themeContext";
 import SettingsMenu from "./SettingsMenu";
-import { NotificationIcon } from "@/Icons/NotificationIcon";
+
+import NotificationsModule from "./NotificationsModule";
 
 export default function MobileNavBar({ items, router }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -34,10 +35,8 @@ export default function MobileNavBar({ items, router }) {
           <UserCard isOpen={true} />
 
           {/* Notificaciones */}
-          <div
-            className={`  flex items-center ${currentTheme.colors.hover} p-2 transition rounded`}
-          >
-            <NotificationIcon />
+          <div className={`  flex items-center`}>
+            <NotificationsModule />
           </div>
         </div>
 
