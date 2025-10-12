@@ -46,7 +46,7 @@ export function GiveFormatToNotification(notification) {
 
     let copy = { ...notification };
     const type = message.split(",")[0].split(":")[1];
-    console.log("Type:", type);
+
     if (
       type == NOTIFI_TYPES.like ||
       type == NOTIFI_TYPES.dislike ||
@@ -55,12 +55,7 @@ export function GiveFormatToNotification(notification) {
       const user_who_acts = message.split(",")[1].split(":")[1];
       const user_who_acts_name = message.split(",")[2].split(":")[1];
       const assetTarget = message.split(",")[3].split(":")[1];
-      console.log(
-        "Credentials:",
-        user_who_acts,
-        user_who_acts_name,
-        assetTarget
-      );
+
       copy.type = type;
       copy.user_who_acts = user_who_acts;
       copy.user_who_acts_name = user_who_acts_name;
@@ -69,7 +64,6 @@ export function GiveFormatToNotification(notification) {
       copy = StikMessage(copy, type);
     }
 
-    console.log("From GiveFormatToNotifications", copy);
     return copy;
   } catch (error) {
     console.error("Error formatenando las notificaciones:", error);
