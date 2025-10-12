@@ -1,11 +1,30 @@
 import { useTheme } from "@/context/themeContext";
 import NotificationsStatesIcon from "@/Icons/NotificationsStatesIcon";
 import { GiveFormatToNotification, NOTIFI_TYPES } from "@/utils/notifications";
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import LoadingSpinner from "./LoadingSpiner";
 
 export default function NotificationCard({ notificacion }) {
   const { currentTheme } = useTheme();
+  const [avatar, setAvatar] = useState("/vercel.svg");
+  const [loadingAvatar, setLoadingAvatar] = useState(false);
 
   notificacion = GiveFormatToNotification(notificacion);
+
+  // Cargar el avatar del usuario
+  useEffect(() => {
+    setLoadingAvatar(true);
+    fetch(
+      `api/notifications/get-user-avatar-on-uid/${notificacion.user_who_acts}`
+    )
+      .then((res) => res.json())
+      .then(({ avatar, error }) => {
+        if (avatar) setAvatar(avatar);
+        if (error) console.error("Error Cargando el Avatar");
+        setLoadingAvatar(false);
+      });
+  }, []);
 
   // Función para formatear la fecha de forma bonita
   const formatDate = (dateString) => {
@@ -55,8 +74,8 @@ export default function NotificationCard({ notificacion }) {
           />
         )}
 
-        {/* Icono */}
-        <div className="flex items-start gap-3">
+        {/* Avatar */}
+        <div className="flex items-center gap-3">
           <div
             className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center mt-1"
             style={{
@@ -64,9 +83,22 @@ export default function NotificationCard({ notificacion }) {
               color: currentTheme.colors.primary,
             }}
           >
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" />
-            </svg>
+            <div className=" flex items-center justify-center w-30 h-10 relative rounded-xl overflow-hidden bg-black">
+              {loadingAvatar ? (
+                <LoadingSpinner color="white" />
+              ) : (
+                <Image
+                  src={avatar}
+                  alt="Profile Photo"
+                  fill
+                  sizes="24px"
+                  priority
+                  className={
+                    avatar == "vercel.svg" ? "object-contain" : "object-cover"
+                  }
+                />
+              )}
+            </div>
           </div>
 
           <div className="flex-1 min-w-0">
