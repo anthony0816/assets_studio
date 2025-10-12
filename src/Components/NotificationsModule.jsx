@@ -18,19 +18,15 @@ export default function NotificationsModule() {
   const [fetchError, setFetchError] = useState(false);
 
   const [loading, setLoading] = useState(false);
-  const [observerLoading, setObserverLoading] = useState(false);
 
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(0);
   const limit = 10;
   const { user } = useAuth();
 
-  const LoadingRef = useInfiniteScroll(
-    handleObserverAcction,
-    hasMore,
-    observerLoading,
-    { threshold: 1 }
-  );
+  const LoadingRef = useInfiniteScroll(loadNotifications, hasMore, {
+    threshold: 1,
+  });
 
   // buscar las notifiaciones
   useEffect(() => {
@@ -44,6 +40,7 @@ export default function NotificationsModule() {
   }, [isModalOpen]);
 
   async function loadNotifications() {
+    setFetchError(false);
     await GetNotificationsByUserId(user.uid, page, limit)
       .then(async (res) => await res.json())
       .then(({ notifications, error }) => {
@@ -57,11 +54,6 @@ export default function NotificationsModule() {
         setPage((prev) => prev + 1);
         setLoading(false);
       });
-  }
-
-  function handleObserverAcction() {
-    setObserverLoading(true);
-    loadNotifications().then(setObserverLoading(false));
   }
 
   function close() {
@@ -96,11 +88,7 @@ export default function NotificationsModule() {
             </div>
 
             {/* Notificaciones */}
-            {fetchError ? (
-              <div className=" flex flex-1 flex-col overflow-y-auto  space-y-10 w-full h-full ">
-                Error, try later
-              </div>
-            ) : loading ? (
+            {loading ? (
               <div className="  flex flex-col  overflow-y-auto  space-y-10  overflow-y-hidden w-full h-full">
                 {Array.from({ length: 10 }).map((_, i) => (
                   <SkeletonNotification key={i} />
@@ -112,14 +100,23 @@ export default function NotificationsModule() {
                   <NotificationCard key={n.createdAt} notificacion={n} />
                 ))}
                 <div ref={LoadingRef} className="text-center">
-                  {hasMore ? <LoadingSpinner /> : "no more to load "}
+                  {fetchError ? (
+                    <button onClick={loadNotifications}>
+                      Error, try again
+                    </button>
+                  ) : hasMore ? (
+                    <LoadingSpinner />
+                  ) : notifications.length == 0 ? (
+                    "Empty"
+                  ) : (
+                    "no more to load "
+                  )}
                 </div>
               </div>
             )}
             <div
-              className={`flex items-center justify-between px-5 h-20 ${currentTheme.colors.primary}`}
+              className={`flex items-center justify-end px-5 h-20 ${currentTheme.colors.primary}`}
             >
-              <button onClick={loadNotifications}>load More</button>
               <button onClick={close}>close</button>
             </div>
           </div>
