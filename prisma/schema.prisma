@@ -121,4 +121,5 @@ model Notifications{
   message String
   redirectionUrl String
   user_id String
+  read Boolean @default(false)
 }

@@ -23,10 +23,7 @@ import ReportForm from "./ReportForm";
 import { UserToFirebaseFormatInfo } from "@/utils/functions";
 import { DownloadIcon } from "@/Icons/DownloadIcon";
 import { DowloadCloudinaryAsset } from "@/utils/functions";
-import {
-  CreateNotification,
-  ComentAssetNotificationMessage,
-} from "@/utils/notifications";
+import { CreateNotification, NOTIFI_TYPES } from "@/utils/notifications";
 
 const ModalAssetData = forwardRef((props, ref) => {
   // 🔹 Hooks externos / contextos
@@ -272,7 +269,7 @@ const ModalAssetData = forwardRef((props, ref) => {
     CreateNotification(
       asset.user_id,
       "/my-assets",
-      ComentAssetNotificationMessage(auth.user.name)
+      `type:${NOTIFI_TYPES.coment},user_who_acts:${auth.user.uid},user_who_acts_name:${auth.user.name},assetTarget:${asset.id}`
     ).then(async (res) =>
       console.log("Estado de Notificacion de comentarios:", await res.json())
     );

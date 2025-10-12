@@ -8,11 +8,7 @@ import ComentsIcon from "@/Icons/ComentsIcon";
 import ReportButton from "@/Icons/ReportButton";
 import AssetCardOptionButton from "./AssetCardOptionButton";
 import { useAuth } from "@/context/authContext";
-import {
-  CreateNotification,
-  GiveLikeNotifiacionMessage,
-  UnsetLikeNotificationMessage,
-} from "@/utils/notifications";
+import { CreateNotification, NOTIFI_TYPES } from "@/utils/notifications";
 
 export default function AssetsCard({
   asset,
@@ -92,7 +88,7 @@ export default function AssetsCard({
       CreateNotification(
         asset.user_id,
         "/my-assets",
-        GiveLikeNotifiacionMessage(user.name)
+        `type:${NOTIFI_TYPES.like},user_who_acts:${user.uid},user_who_acts_name:${user.name},assetTarget:${asset.id}`
       ).then(async (res) =>
         console.log("Notificacion- Estado del Like:", await res.json())
       );
@@ -103,7 +99,7 @@ export default function AssetsCard({
       CreateNotification(
         asset.user_id,
         "/my-assets",
-        UnsetLikeNotificationMessage(user.name)
+        `type:${NOTIFI_TYPES.dislike},user_who_acts:${user.uid},user_who_acts_name:${user.name},assetTarget:${asset.id}`
       ).then(async (res) =>
         console.log("Notificacion- Estado del Like:", await res.json())
       );

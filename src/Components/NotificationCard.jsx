@@ -1,94 +1,129 @@
 import { useTheme } from "@/context/themeContext";
+import NotificationsStatesIcon from "@/Icons/NotificationsStatesIcon";
+import { GiveFormatToNotification, NOTIFI_TYPES } from "@/utils/notifications";
 
 export default function NotificationCard({ notificacion }) {
   const { currentTheme } = useTheme();
 
-  return (
-    <div
-      className={`
+  notificacion = GiveFormatToNotification(notificacion);
+
+  // Función para formatear la fecha de forma bonita
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffTime = Math.abs(now - date);
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
+    const diffMinutes = Math.floor(diffTime / (1000 * 60));
+
+    if (diffMinutes < 1) {
+      return "Ahora mismo";
+    } else if (diffMinutes < 60) {
+      return `Hace ${diffMinutes} minuto${diffMinutes > 1 ? "s" : ""}`;
+    } else if (diffHours < 24) {
+      return `Hace ${diffHours} hora${diffHours > 1 ? "s" : ""}`;
+    } else if (diffDays < 7) {
+      return `Hace ${diffDays} día${diffDays > 1 ? "s" : ""}`;
+    } else {
+      return date.toLocaleDateString("es-ES", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      });
+    }
+  };
+
+  if (notificacion)
+    return (
+      <div
+        className={`
         relative p-4 rounded-xl border-l-4 transition-all duration-300 
         hover:shadow-lg transform hover:-translate-y-0.5
         ${currentTheme.colors.border} ${currentTheme.colors.secondary}
         group cursor-pointer
       `}
-      style={{
-        borderLeftColor: currentTheme.colors.primary || "#3B82F6",
-        background: `linear-gradient(135deg, ${currentTheme.colors.secondary} 0%, ${currentTheme.colors.primary}15 100%)`,
-      }}
-    >
-      {/* Indicador de estado */}
-      {!notificacion.read && (
-        <div
-          className="absolute -left-2 top-1/2 transform -translate-y-1/2 w-3 h-3 rounded-full animate-pulse"
-          style={{ backgroundColor: currentTheme.colors.primary }}
-        />
-      )}
-
-      {/* Icono */}
-      <div className="flex items-start gap-3">
-        <div
-          className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center mt-1"
-          style={{
-            backgroundColor: `${currentTheme.colors.primary}20`,
-            color: currentTheme.colors.primary,
-          }}
-        >
-          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" />
-          </svg>
-        </div>
-
-        <div className="flex-1 min-w-0">
-          {/* Mensaje */}
+        style={{
+          borderLeftColor: currentTheme.colors.primary || "#3B82F6",
+          background: `linear-gradient(135deg, ${currentTheme.colors.secondary} 0%, ${currentTheme.colors.primary}15 100%)`,
+        }}
+      >
+        {/* Indicador de estado */}
+        {!notificacion.read && (
           <div
-            className={`font-medium leading-6 ${currentTheme.textColor.primary} group-hover:underline`}
+            className="absolute -left-2 top-1/2 transform -translate-y-1/2 w-3 h-3 rounded-full animate-pulse"
+            style={{ backgroundColor: currentTheme.colors.primary }}
+          />
+        )}
+
+        {/* Icono */}
+        <div className="flex items-start gap-3">
+          <div
+            className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center mt-1"
+            style={{
+              backgroundColor: `${currentTheme.colors.primary}20`,
+              color: currentTheme.colors.primary,
+            }}
           >
-            {notificacion.message}
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" />
+            </svg>
           </div>
 
-          {/* Metadata */}
-          <div className="flex items-center gap-2 mt-2">
+          <div className="flex-1 min-w-0">
+            {/* Mensaje - ahora usando content */}
             <div
-              className={`text-xs ${currentTheme.textColor.muted} flex items-center gap-1`}
+              className={`font-medium leading-6 ${currentTheme.textColor.primary} group-hover:underline`}
             >
-              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              {notificacion.createdAt}
+              {notificacion.content || notificacion.message}
             </div>
 
-            {notificacion.type && (
-              <span
-                className="px-2 py-1 text-xs rounded-full font-medium"
-                style={{
-                  backgroundColor: `${currentTheme.colors.primary}20`,
-                  color: currentTheme.colors.primary,
-                }}
+            {/* Metadata */}
+            <div className="flex items-center gap-2 mt-2">
+              <div
+                className={`text-xs ${currentTheme.textColor.muted} flex items-center gap-1`}
               >
-                {notificacion.type}
-              </span>
-            )}
-          </div>
-        </div>
+                <svg
+                  className="w-3 h-3"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                {formatDate(notificacion.createdAt)}
+              </div>
 
-        {/* Botón de acción */}
-        <button
-          className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1 rounded-full hover:bg-black hover:bg-opacity-10"
-          style={{ color: currentTheme.colors.primary }}
-        >
-          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              fillRule="evenodd"
-              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-              clipRule="evenodd"
-            />
-          </svg>
-        </button>
+              {notificacion.type && (
+                <span
+                  className="px-2 py-1 text-xs rounded-full font-medium"
+                  style={{
+                    backgroundColor: `${currentTheme.colors.primary}20`,
+                    color: currentTheme.colors.primary,
+                  }}
+                >
+                  <NotificationsStatesIcon type={notificacion.type} />
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Botón de acción */}
+          <button
+            className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1 rounded-full hover:bg-black hover:bg-opacity-10"
+            style={{ color: currentTheme.colors.primary }}
+          >
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fillRule="evenodd"
+                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </button>
+        </div>
       </div>
-    </div>
-  );
+    );
 }

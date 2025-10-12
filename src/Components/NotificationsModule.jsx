@@ -21,7 +21,7 @@ export default function NotificationsModule() {
 
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(0);
-  const limit = 10;
+  const limit = 5;
   const { user } = useAuth();
 
   const LoadingRef = useInfiniteScroll(loadNotifications, hasMore, {
