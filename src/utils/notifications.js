@@ -26,7 +26,9 @@ export async function DeleteNotification(id) {
   return res;
 }
 
-export async function GetNotificationsByUserId(user_id) {
-  const res = await fetch(`/api/notifications/user/${user_id}`);
+export async function GetNotificationsByUserId(user_id, page, limit) {
+  const res = await fetch(
+    `/api/notifications/user/${user_id}?page=${page}&limit=${limit}`
+  );
   return res;
 }

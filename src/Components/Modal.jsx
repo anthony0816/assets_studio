@@ -13,7 +13,7 @@ export default function Modal({
         >
           {showButtomnClose && (
             <button
-              onClick={() => onClose()}
+              onClick={onClose}
               className="fixed top-4 right-4 text-gray-300 hover:text-gray-800 dark:hover:text-gray-200 transition text-4xl leading-none"
             >
               ✕
