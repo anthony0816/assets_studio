@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { adminAuth } from "@/libs/firebase-admin";
+import { prisma } from "@/libs/prisma";
 
 export async function GET(request, { params }) {
   try {
