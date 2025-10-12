@@ -21,7 +21,7 @@ export default function NotificationCard({ notificacion }) {
       .then((res) => res.json())
       .then(({ avatar, error }) => {
         if (avatar) setAvatar(avatar);
-        if (error) console.error("Error Cargando el Avatar");
+        if (error) console.error("Error Cargando el Avatar", error);
         setLoadingAvatar(false);
       });
   }, []);
