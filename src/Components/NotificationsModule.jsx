@@ -16,6 +16,7 @@ export default function NotificationsModule() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [fetchError, setFetchError] = useState(false);
+  const [countNotificaciones, SetCountNotificaciones] = useState(null);
 
   const [loading, setLoading] = useState(false);
 
@@ -27,6 +28,23 @@ export default function NotificationsModule() {
   const LoadingRef = useInfiniteScroll(loadNotifications, hasMore, {
     threshold: 1,
   });
+
+  // bsucar cantidad de notificaciones nuevas
+  useEffect(() => {
+    if (user == "await" || user == null) return;
+    fetch(`api/notifications/user/${user.uid}/count`)
+      .then((res) => res.json())
+      .then(({ count, error }) => {
+        if (error)
+          console.error("Error a la hora de contar notificacioes nuevas");
+        if (count) {
+          console.log("contado con exito", count);
+          if (count == 0) return SetCountNotificaciones(null);
+          if (count > 9) return SetCountNotificaciones("9+");
+          SetCountNotificaciones(count);
+        }
+      });
+  }, [user]);
 
   // buscar las notifiaciones
   useEffect(() => {
@@ -61,6 +79,25 @@ export default function NotificationsModule() {
     setPage(0);
     setIsModalOpen(false);
     setHasMore(true);
+    SetCountNotificaciones(null);
+    const ids = notifications.filter((n) => !n.read).map((n) => n.id);
+    if (ids.length == 0) return;
+    fetch("api/notifications/mask-as-read", {
+      method: "PUT",
+      headers: { "Content-type": "Application/json" },
+      body: JSON.stringify({
+        ids,
+      }),
+    })
+      .then((res) => res.json())
+      .then(({ count, error }) => {
+        if (error)
+          console.log(
+            "Error al actualizar estado de leído de las notificaciones ",
+            error
+          );
+        if (count) return console.log("Exito", count);
+      });
   }
 
   if (user != "await" && user != null)
@@ -68,9 +105,15 @@ export default function NotificationsModule() {
       <>
         <div
           onClick={() => setIsModalOpen(!isModalOpen)}
-          className={` p-2  transition rounded ${currentTheme.colors.hover}`}
+          className={` p-2 flex items-center transition rounded ${currentTheme.colors.hover}`}
         >
           <NotificationIcon />
+          <div
+            className="text-center text-black font-bold px-1 rounded-xl "
+            style={{ backgroundColor: "#10d3ddff" }}
+          >
+            {countNotificaciones}
+          </div>
         </div>
         {/* Modal Para mostrar las notificaciones */}
         <Modal onClose={close} isOpen={isModalOpen} showButtomnClose={false}>

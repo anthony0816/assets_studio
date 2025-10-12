@@ -1,6 +1,6 @@
 import { useTheme } from "@/context/themeContext";
 import NotificationsStatesIcon from "@/Icons/NotificationsStatesIcon";
-import { GiveFormatToNotification, NOTIFI_TYPES } from "@/utils/notifications";
+import { GiveFormatToNotification } from "@/utils/notifications";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import LoadingSpinner from "./LoadingSpiner";
@@ -66,16 +66,16 @@ export default function NotificationCard({ notificacion }) {
           background: `linear-gradient(135deg, ${currentTheme.colors.secondary} 0%, ${currentTheme.colors.primary}15 100%)`,
         }}
       >
-        {/* Indicador de estado */}
-        {!notificacion.read && (
-          <div
-            className="absolute -left-2 top-1/2 transform -translate-y-1/2 w-3 h-3 rounded-full animate-pulse"
-            style={{ backgroundColor: currentTheme.colors.primary }}
-          />
-        )}
-
         {/* Avatar */}
         <div className="flex items-center gap-3">
+          {/* Indicador de estado */}
+          {!notificacion.read && (
+            <div
+              className="  w-3 h-3 rounded-full animate-pulse"
+              style={{ backgroundColor: "#0defebff" }}
+            />
+          )}
+
           <div
             className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center mt-1"
             style={{
@@ -144,7 +144,7 @@ export default function NotificationCard({ notificacion }) {
 
           {/* Botón de acción */}
           <button
-            className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1 rounded-full hover:bg-black hover:bg-opacity-10"
+            className="transition-opacity duration-200 p-1 rounded-full hover:bg-black hover:bg-opacity-10"
             style={{ color: currentTheme.colors.primary }}
           >
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
