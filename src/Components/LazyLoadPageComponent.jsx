@@ -32,6 +32,7 @@ export default function LazyLoadPage({
   const [error, setError] = useState(null);
   const [hasMore, setHasMore] = useState(true);
   const [ModalAssetsDataisOpen, setModalAssetsDataisOpen] = useState(false);
+  const [ModalAssetDataReady, setModalAssetDataReady] = useState(false);
   const [hideAssets, setHideAssets] = useState(false);
   const { isMobile } = useSize();
   const loaderRef = useRef(null);
@@ -43,7 +44,7 @@ export default function LazyLoadPage({
     useInterface();
 
   useEffect(() => {
-    if (!openModalAssetsDataWithAssetId) return;
+    if (!openModalAssetsDataWithAssetId || !ModalAssetDataReady) return;
     const { asset_id } = openModalAssetsDataWithAssetId;
     console.log("Asset_id:", asset_id);
     fetch(`api/assets/${asset_id}`)
@@ -51,14 +52,21 @@ export default function LazyLoadPage({
       .then(({ asset, error }) => {
         console.log("estado:", asset, error);
         if (error) console.error("Error cargando el asset", error);
-        setTimeout(() => {
-          if (asset) onClickBar(asset);
-          console.log("cargando asset");
-          console.log("estado del modal", ModalAssetOptionsRef.current);
-        }, 5000);
+
+        if (asset) onClickBar(asset);
+        console.log("cargando asset");
+        console.log("estado del modal", ModalAssetOptionsRef.current);
+
+        setOpenModalAssetsDataWithAssetId(null);
       });
-    return () => setOpenModalAssetsDataWithAssetId(null);
-  }, [openModalAssetsDataWithAssetId]);
+    // return () => setOpenModalAssetsDataWithAssetId(null);
+  }, [openModalAssetsDataWithAssetId, ModalAssetDataReady]);
+
+  // CApturar el momento exacto en el que El ModalAssetData se encuentra listo
+  function setModalAssetOptionsRef(node) {
+    ModalAssetOptionsRef.current = node;
+    setModalAssetDataReady(true);
+  }
 
   function verifyAcces() {
     if (user != "await" && user != null) return true;
@@ -254,7 +262,7 @@ export default function LazyLoadPage({
           } `}
         >
           <ModalAssetData
-            ref={ModalAssetOptionsRef}
+            ref={setModalAssetOptionsRef}
             onClose={() => {
               setHideAssets(false);
               setModalAssetsDataisOpen(false);
