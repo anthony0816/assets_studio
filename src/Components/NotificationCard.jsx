@@ -4,11 +4,19 @@ import { GiveFormatToNotification } from "@/utils/notifications";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import LoadingSpinner from "./LoadingSpiner";
+import { formatDate } from "@/utils/date";
+import { useInterface } from "@/context/intercomunicationContext";
+import { useLoadingRouter } from "./LoadingRouterProvider";
 
-export default function NotificationCard({ notificacion }) {
+export default function NotificationCard({ notificacion, onRedirect }) {
   const { currentTheme } = useTheme();
   const [avatar, setAvatar] = useState("/vercel.svg");
   const [loadingAvatar, setLoadingAvatar] = useState(false);
+
+  /* const [openModalAssetsDataWithAssetId,setOpenModalAssetsDataWithAssetId ] = useState(null) */
+  const { setOpenModalAssetsDataWithAssetId } = useInterface();
+
+  const { router } = useLoadingRouter();
 
   notificacion = GiveFormatToNotification(notificacion);
 
@@ -26,40 +34,23 @@ export default function NotificationCard({ notificacion }) {
       });
   }, []);
 
-  // Función para formatear la fecha de forma bonita
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffTime = Math.abs(now - date);
-    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-    const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
-    const diffMinutes = Math.floor(diffTime / (1000 * 60));
-
-    if (diffMinutes < 1) {
-      return "Ahora mismo";
-    } else if (diffMinutes < 60) {
-      return `Hace ${diffMinutes} minuto${diffMinutes > 1 ? "s" : ""}`;
-    } else if (diffHours < 24) {
-      return `Hace ${diffHours} hora${diffHours > 1 ? "s" : ""}`;
-    } else if (diffDays < 7) {
-      return `Hace ${diffDays} día${diffDays > 1 ? "s" : ""}`;
-    } else {
-      return date.toLocaleDateString("es-ES", {
-        day: "numeric",
-        month: "short",
-        year: "numeric",
-      });
-    }
-  };
+  function handleRedirrection() {
+    const url = notificacion.redirectionUrl;
+    const asset_id = notificacion.assetTarget;
+    setOpenModalAssetsDataWithAssetId({ asset_id: asset_id });
+    onRedirect();
+    router(url);
+  }
 
   if (notificacion)
     return (
       <div
+        onClick={handleRedirrection}
         className={`
         relative p-4 rounded-xl border-l-4 transition-all duration-300 
         hover:shadow-lg transform hover:-translate-y-0.5
         ${currentTheme.colors.border} ${currentTheme.colors.secondary}
-        group cursor-pointer
+        group cursor-pointer 
       `}
         style={{
           borderLeftColor: currentTheme.colors.primary || "#3B82F6",

@@ -14,6 +14,7 @@ import ModalShowPicture from "./ModalShowPicture";
 import ModalAssetData from "./ModalAssetData";
 import { useSize } from "@/context/resizeContext";
 import ModalDeleteAsset from "./ModalDeleteAsset";
+import { useInterface } from "@/context/intercomunicationContext";
 
 export default function LazyLoadPage({
   ByCurrentUser = false,
@@ -37,6 +38,28 @@ export default function LazyLoadPage({
   const ModalShowPictueRef = useRef();
   const ModalAssetOptionsRef = useRef();
 
+  /* const [openModalAssetsDataWithAssetId,setOpenModalAssetsDataWithAssetId ] = useState(null) */
+  const { openModalAssetsDataWithAssetId, setOpenModalAssetsDataWithAssetId } =
+    useInterface();
+
+  useEffect(() => {
+    if (!openModalAssetsDataWithAssetId) return;
+    const { asset_id } = openModalAssetsDataWithAssetId;
+    console.log("Asset_id:", asset_id);
+    fetch(`api/assets/${asset_id}`)
+      .then((res) => res.json())
+      .then(({ asset, error }) => {
+        console.log("estado:", asset, error);
+        if (error) console.error("Error cargando el asset", error);
+        setTimeout(() => {
+          if (asset) onClickBar(asset);
+          console.log("cargando asset");
+          console.log("estado del modal", ModalAssetOptionsRef.current);
+        }, 5000);
+      });
+    return () => setOpenModalAssetsDataWithAssetId(null);
+  }, [openModalAssetsDataWithAssetId]);
+
   function verifyAcces() {
     if (user != "await" && user != null) return true;
     if (freeAcces) return true;
@@ -48,7 +71,9 @@ export default function LazyLoadPage({
     }
   }
   function onClickBar(asset) {
+    console.log("entrando 1");
     if (ModalAssetOptionsRef.current) {
+      console.log("entrando 2");
       const modal = ModalAssetOptionsRef.current;
       setModalAssetsDataisOpen(true);
       if (isMobile) {

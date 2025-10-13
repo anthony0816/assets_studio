@@ -151,7 +151,11 @@ export default function NotificationsModule() {
             ) : (
               <div className=" flex flex-col overflow-y-auto  space-y-10 h-full">
                 {notifications.map((n) => (
-                  <NotificationCard key={n.createdAt} notificacion={n} />
+                  <NotificationCard
+                    key={n.createdAt}
+                    notificacion={n}
+                    onRedirect={close}
+                  />
                 ))}
                 <div ref={LoadingRef} className="text-center">
                   {fetchError ? (
