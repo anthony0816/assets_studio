@@ -79,9 +79,7 @@ export default function LazyLoadPage({
     }
   }
   function onClickBar(asset) {
-    console.log("entrando 1");
     if (ModalAssetOptionsRef.current) {
-      console.log("entrando 2");
       const modal = ModalAssetOptionsRef.current;
       setModalAssetsDataisOpen(true);
       if (isMobile) {

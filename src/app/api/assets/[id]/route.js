@@ -8,6 +8,11 @@ export async function GET(request, { params }) {
       where: {
         id: Number(id),
       },
+      include: {
+        reports: true,
+        coments: true,
+        likes: true,
+      },
     });
     return NextResponse.json({ asset });
   } catch (error) {
@@ -16,3 +21,6 @@ export async function GET(request, { params }) {
     });
   }
 }
+/**likes Like[]
+  reports Report[]
+  coments Coment[] */
