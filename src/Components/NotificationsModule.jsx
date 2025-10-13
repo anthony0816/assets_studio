@@ -31,19 +31,28 @@ export default function NotificationsModule() {
 
   // bsucar cantidad de notificaciones nuevas
   useEffect(() => {
-    if (user == "await" || user == null) return;
-    fetch(`api/notifications/user/${user.uid}/count`)
-      .then((res) => res.json())
-      .then(({ count, error }) => {
-        if (error)
-          console.error("Error a la hora de contar notificacioes nuevas");
-        if (count) {
-          console.log("contado con exito", count);
-          if (count == 0) return SetCountNotificaciones(null);
-          if (count > 9) return SetCountNotificaciones("9+");
-          SetCountNotificaciones(count);
-        }
-      });
+    function loadNewNotifications() {
+      if (user == "await" || user == null) return;
+      fetch(`api/notifications/user/${user.uid}/count`)
+        .then((res) => res.json())
+        .then(({ count, error }) => {
+          if (error)
+            console.error("Error a la hora de contar notificacioes nuevas");
+          if (count) {
+            if (count == 0) return SetCountNotificaciones(null);
+            if (count > 9) return SetCountNotificaciones("9+");
+            SetCountNotificaciones(count);
+          }
+        });
+    }
+    // ejecutar por primera vez rapido
+    loadNewNotifications();
+    // seguir ejecutando cada 30 seg
+    const interval_id = setInterval(() => {
+      loadNewNotifications();
+    }, 30000);
+    // limpiar la subscripcion
+    return () => clearInterval(interval_id);
   }, [user]);
 
   // buscar las notifiaciones
