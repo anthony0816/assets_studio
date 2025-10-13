@@ -109,7 +109,9 @@ export default function NotificationsModule() {
         >
           <NotificationIcon />
           <div
-            className="text-center text-black font-bold px-1 rounded-xl "
+            className={`text-center text-black font-bold px-1 rounded-xl  ${
+              !countNotificaciones ? "hidden" : ""
+            }`}
             style={{ backgroundColor: "#10d3ddff" }}
           >
             {countNotificaciones}

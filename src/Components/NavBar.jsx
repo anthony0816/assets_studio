@@ -51,7 +51,7 @@ export default function NavBar() {
         <div
           className={`flex flex-${
             isOpen ? "row" : "col"
-          } items-center justify-between`}
+          } items-center justify-between mt-5`}
         >
           {/* Modulo de Notificaciones  */}
           <NotificationsModule />
