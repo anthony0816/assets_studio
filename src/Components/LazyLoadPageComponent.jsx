@@ -39,10 +39,10 @@ export default function LazyLoadPage({
   const ModalShowPictueRef = useRef();
   const ModalAssetOptionsRef = useRef();
 
-  /* const [openModalAssetsDataWithAssetId,setOpenModalAssetsDataWithAssetId ] = useState(null) */
   const { openModalAssetsDataWithAssetId, setOpenModalAssetsDataWithAssetId } =
     useInterface();
 
+  // Revisar El contexto de interfaz por si hay un asset que abrir en el ModalAssetData
   useEffect(() => {
     if (!openModalAssetsDataWithAssetId || !ModalAssetDataReady) return;
     const { asset_id } = openModalAssetsDataWithAssetId;
@@ -54,8 +54,6 @@ export default function LazyLoadPage({
         if (error) console.error("Error cargando el asset", error);
 
         if (asset) onClickBar(asset);
-        console.log("cargando asset");
-        console.log("estado del modal", ModalAssetOptionsRef.current);
 
         setOpenModalAssetsDataWithAssetId(null);
       });
