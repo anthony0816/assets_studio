@@ -81,26 +81,29 @@ export default function NotificationCard({ notificacion, onRedirect }) {
                 <LoadingSpinner color="white" />
               ) : (
                 <>
-                  <Image
-                    src={avatar}
-                    alt="Profile Photo"
-                    fill
-                    sizes="24px"
-                    priority
-                    className={
-                      avatar == "vercel.svg" ? "object-contain" : "object-cover"
-                    }
-                    onError={() => setImageError(true)}
-                  />
-
-                  {/* Manegar el error de la tag Image de next */}
-                  {imageError && (
-                    <img
+                  {!imageError ? (
+                    <Image
                       src={avatar}
                       alt="Profile Photo"
-                      width="24"
-                      height="24"
+                      fill
+                      sizes="24px"
+                      priority
+                      className={
+                        avatar == "vercel.svg"
+                          ? "object-contain"
+                          : "object-cover"
+                      }
+                      onError={() => setImageError(true)}
                     />
+                  ) : (
+                    <>
+                      {/* Manegar el error de la tag Image de next */}
+                      <img
+                        src={avatar}
+                        alt="Profile Photo"
+                        className="object-cover"
+                      />
+                    </>
                   )}
                 </>
               )}
