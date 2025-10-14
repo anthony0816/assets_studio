@@ -13,6 +13,8 @@ export default function NotificationCard({ notificacion, onRedirect }) {
   const [avatar, setAvatar] = useState("/vercel.svg");
   const [loadingAvatar, setLoadingAvatar] = useState(false);
 
+  const [imageError, setImageError] = useState(false);
+
   /* const [openModalAssetsDataWithAssetId,setOpenModalAssetsDataWithAssetId ] = useState(null) */
   const { setOpenModalAssetsDataWithAssetId } = useInterface();
 
@@ -78,18 +80,29 @@ export default function NotificationCard({ notificacion, onRedirect }) {
               {loadingAvatar ? (
                 <LoadingSpinner color="white" />
               ) : (
-                // <Image
-                //   src={avatar}
-                //   alt="Profile Photo"
-                //   fill
-                //   sizes="24px"
-                //   priority
-                //   className={
-                //     avatar == "vercel.svg" ? "object-contain" : "object-cover"
-                //   }
-                // />
+                <>
+                  <Image
+                    src={avatar}
+                    alt="Profile Photo"
+                    fill
+                    sizes="24px"
+                    priority
+                    className={
+                      avatar == "vercel.svg" ? "object-contain" : "object-cover"
+                    }
+                    onError={() => setImageError(true)}
+                  />
 
-                <img src={avatar} alt="" />
+                  {/* Manegar el error de la tag Image de next */}
+                  {imageError && (
+                    <img
+                      src={avatar}
+                      alt="Profile Photo"
+                      width="24"
+                      height="24"
+                    />
+                  )}
+                </>
               )}
             </div>
           </div>
