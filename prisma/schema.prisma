@@ -123,3 +123,9 @@ model Notifications{
   user_id String
   read Boolean @default(false)
 }
+
+
+model user_avatar_cache {
+  user_id String @id
+  avatarUrl String
+}
