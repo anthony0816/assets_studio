@@ -18,7 +18,8 @@ export async function GET(request, { params }) {
 
     // Comprobar si el usuario es de Firebase
     const { photoURL } = await adminAuth.getUser(user_id);
-    if (photoURL) return NextResponse.json({ avatar: photoURL });
+    console.log("=>", photoURL);
+    return NextResponse.json({ avatar: photoURL });
   } catch (error) {
     return NextResponse.json({ error: error.message || "Error Desconocido" });
   }

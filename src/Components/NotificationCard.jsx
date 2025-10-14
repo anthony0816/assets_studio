@@ -78,16 +78,18 @@ export default function NotificationCard({ notificacion, onRedirect }) {
               {loadingAvatar ? (
                 <LoadingSpinner color="white" />
               ) : (
-                <Image
-                  src={avatar}
-                  alt="Profile Photo"
-                  fill
-                  sizes="24px"
-                  priority
-                  className={
-                    avatar == "vercel.svg" ? "object-contain" : "object-cover"
-                  }
-                />
+                // <Image
+                //   src={avatar}
+                //   alt="Profile Photo"
+                //   fill
+                //   sizes="24px"
+                //   priority
+                //   className={
+                //     avatar == "vercel.svg" ? "object-contain" : "object-cover"
+                //   }
+                // />
+
+                <img src={avatar} alt="" />
               )}
             </div>
           </div>
