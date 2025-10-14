@@ -29,7 +29,8 @@ export default function NotificationCard({ notificacion, onRedirect }) {
       `api/notifications/get-user-avatar-on-uid/${notificacion.user_who_acts}`
     )
       .then((res) => res.json())
-      .then(({ avatar, error }) => {
+      .then(({ avatar, error, from_cache }) => {
+        if (from_cache) alert("From cache");
         if (avatar) setAvatar(avatar);
         if (error) console.error("Error Cargando el Avatar", error);
         setLoadingAvatar(false);
