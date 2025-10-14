@@ -30,7 +30,7 @@ export default function NotificationCard({ notificacion, onRedirect }) {
     )
       .then((res) => res.json())
       .then(({ avatar, error, from_cache }) => {
-        if (from_cache) alert("From cache");
+        // if (from_cache)alert("From cache");
         if (avatar) setAvatar(avatar);
         if (error) console.error("Error Cargando el Avatar", error);
         setLoadingAvatar(false);
