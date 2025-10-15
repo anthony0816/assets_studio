@@ -1,19 +1,21 @@
 import { useTheme } from "@/context/themeContext";
 import NotificationsStatesIcon from "@/Icons/NotificationsStatesIcon";
 import { GiveFormatToNotification } from "@/utils/notifications";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import LoadingSpinner from "./LoadingSpiner";
 import { formatDate } from "@/utils/date";
 import { useInterface } from "@/context/intercomunicationContext";
 import { useLoadingRouter } from "./LoadingRouterProvider";
 
-export default function NotificationCard({ notificacion, onRedirect }) {
+export default function NotificationCard({ notificacion, onRedirect, abort }) {
   const { currentTheme } = useTheme();
   const [avatar, setAvatar] = useState("/vercel.svg");
   const [loadingAvatar, setLoadingAvatar] = useState(false);
 
   const [imageError, setImageError] = useState(false);
+  // controlador para abortar lso fetch
+  const controllerRef = useRef(null);
 
   /* const [openModalAssetsDataWithAssetId,setOpenModalAssetsDataWithAssetId ] = useState(null) */
   const { setOpenModalAssetsDataWithAssetId } = useInterface();
@@ -24,9 +26,14 @@ export default function NotificationCard({ notificacion, onRedirect }) {
 
   // Cargar el avatar del usuario
   useEffect(() => {
+    // preparar la señal para abortar
+    controllerRef.current = new AbortController();
+    const signal = controllerRef.current.signal;
+
     setLoadingAvatar(true);
     fetch(
-      `${window.location.origin}/api/notifications/get-user-avatar-on-uid/${notificacion.user_who_acts}`
+      `${window.location.origin}/api/notifications/get-user-avatar-on-uid/${notificacion.user_who_acts}`,
+      { signal }
     )
       .then((res) => res.json())
       .then(({ avatar, error, from_cache }) => {
@@ -34,8 +41,28 @@ export default function NotificationCard({ notificacion, onRedirect }) {
         if (avatar) setAvatar(avatar);
         if (error) console.error("Error Cargando el Avatar", error);
         setLoadingAvatar(false);
+      })
+      .catch((error) => {
+        if (error.name !== "AbortError") {
+          console.error("Error en el fetch");
+        }
       });
+
+    // desuscribirse
+    return () => {
+      if (controllerRef.current) {
+      }
+      controllerRef.current.abort();
+    };
   }, []);
+
+  // useEffect oara abortar la peticion de los avatares si se cierra el modal de notificaciones
+  useEffect(() => {
+    if (abort && controllerRef.current) {
+      controllerRef.current.abort();
+      console.log("Abortando Cargado de Avatares");
+    }
+  }, [abort]);
 
   function handleRedirrection() {
     const url = notificacion.redirectionUrl;

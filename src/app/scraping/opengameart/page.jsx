@@ -2,16 +2,17 @@
 import { useEffect, useState } from "react";
 import Paginator from "@/Components/Paginator";
 import { useTheme } from "@/context/themeContext";
-import LoadingAnimation from "@/Components/LoadingAnimation";
 import SkeletonAnimationGrid from "@/skeletons/SkeletonAnimationGrid";
 import { useRouter } from "next/navigation";
 import NavegateIcon from "@/Icons/NavegateIcon";
+import ModalOpengameart from "@/Components/ModalOpengameart";
 
 export default function Scraping() {
   const [ref, setref] = useState(false);
   const [content, setContent] = useState([]);
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [initialModalData, setInitialModalData] = useState(null);
   const router = useRouter();
 
   const { currentTheme } = useTheme();
@@ -31,6 +32,9 @@ export default function Scraping() {
   }, [ref, page]);
   return (
     <>
+      {/* Modal para mostrar los datos expandidos */}
+      <ModalOpengameart initialData={initialModalData} />
+
       <div className={` h-full flex flex-col ${tcolor.primary}`}>
         {/* boton retroceder */}
         <div
@@ -49,10 +53,13 @@ export default function Scraping() {
                 key={c.titulo}
                 className={` flex flex-col  justify-center ${color.secondary} rounded-xl h-[150px] overflow-hidden`}
               >
-                {/* <h2 className="break-words overflow-wrap-break-word">
-                  {c.titulo}
-                </h2> */}
-                <img src={c.imagen} className="object-contain" />
+                <img
+                  src={c.imagen}
+                  className="object-contain"
+                  onClick={() =>
+                    setInitialModalData({ title: c.titulo, url: c.enlace })
+                  }
+                />
               </div>
             ))
           )}

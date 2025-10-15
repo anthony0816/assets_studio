@@ -19,6 +19,7 @@ export default function NotificationsModule() {
   const [countNotificaciones, SetCountNotificaciones] = useState(null);
 
   const [loading, setLoading] = useState(false);
+  const [abortLoadAvarat, setAbortLoadAvatar] = useState(false);
 
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(0);
@@ -85,12 +86,18 @@ export default function NotificationsModule() {
       });
   }
 
+  function open() {
+    setAbortLoadAvatar(false);
+    setIsModalOpen(!isModalOpen);
+  }
+
   function close() {
     setNotifications([]);
     setPage(0);
     setIsModalOpen(false);
     setHasMore(true);
     SetCountNotificaciones(null);
+    setAbortLoadAvatar(true);
     const ids = notifications.filter((n) => !n.read).map((n) => n.id);
     if (ids.length == 0) return;
     fetch("api/notifications/mask-as-read", {
@@ -115,7 +122,7 @@ export default function NotificationsModule() {
     return (
       <>
         <div
-          onClick={() => setIsModalOpen(!isModalOpen)}
+          onClick={open}
           className={` p-2 flex items-center transition rounded ${currentTheme.colors.hover}`}
         >
           <NotificationIcon />
@@ -157,6 +164,7 @@ export default function NotificationsModule() {
                     key={n.createdAt}
                     notificacion={n}
                     onRedirect={close}
+                    abort={abortLoadAvarat}
                   />
                 ))}
                 <div ref={LoadingRef} className="text-center">
