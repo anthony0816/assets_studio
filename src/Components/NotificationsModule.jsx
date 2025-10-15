@@ -33,7 +33,9 @@ export default function NotificationsModule() {
   useEffect(() => {
     function loadNewNotifications() {
       if (user == "await" || user == null) return;
-      fetch(`api/notifications/user/${user.uid}/count`)
+      fetch(
+        `${window.location.origin}/api/notifications/user/${user.uid}/count`
+      )
         .then((res) => res.json())
         .then(({ count, error }) => {
           if (error)

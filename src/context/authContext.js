@@ -19,15 +19,18 @@ export default function AuthContextProvaider({ children }) {
   useEffect(() => {
     async function exe() {
       if (user == null) {
-        const res = await fetch("/api/session/verify-jwt", {
-          method: "GET",
-          credentials: "include",
-        });
+        const res = await fetch(
+          `${window.location.origin}/api/session/verify-jwt`,
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
         const data = await res.json();
         const { success, error, user } = data;
         if (success) {
           const res = await fetch(
-            `api/user/get-local-user?email=${user.email}`
+            `${window.location.origin}/api/user/get-local-user?email=${user.email}`
           );
           const { currentUser, error } = await res.json();
           if (currentUser) return setUser(currentUser);

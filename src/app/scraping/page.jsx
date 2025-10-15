@@ -1,54 +1,63 @@
 "use client";
-import { useEffect, useState } from "react";
-import Paginator from "@/Components/Paginator";
+
+import LoadingSpinner from "@/Components/LoadingSpiner";
 import { useTheme } from "@/context/themeContext";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
-export default function Scraping() {
-  const [ref, setref] = useState(false);
-  const [content, setContent] = useState([]);
-  const [page, setPage] = useState(0);
+export default function ScrapingPage() {
+  const router = useRouter();
+  const [loading, setLoading] = useState({});
 
+  const items = [
+    { name: "Open Game Art", route: "/scraping/opengameart" },
+    // { name: "swrgnurwn", route: "/my-assets" },
+    // { name: "evg", route: "/login" },
+    // { name: "rbhet" },
+    // { name: "rbrw" },
+    // { name: "rbgrwhwr" },
+    // { name: "rnernetjet" },
+  ];
   const { currentTheme } = useTheme();
   const tcolor = currentTheme.textColor;
   const color = currentTheme.colors;
 
-  useEffect(() => {
-    console.log("procesando...");
-    fetch(`api/scraping/opengameart/2d?page=${page}`)
-      .then((res) => res.json())
-      .then((content) => {
-        console.log("HTML:", content);
-        setContent(content);
-      });
-  }, [ref, page]);
+  function navegate(route) {
+    let stop = false;
+    Object.keys(loading).forEach((key) => {
+      if (loading[key]) {
+        stop = loading[key];
+      }
+    });
+    if (stop) return;
+    setLoading((prev) => ({ ...prev, [route]: true }));
+    router.push(route);
+  }
+
   return (
     <>
-      <div className={` h-full flex flex-col ${tcolor.primary}`}>
-        <div className=" flex-1 grid gap-6 p-4 [grid-template-columns:repeat(auto-fit,minmax(150px,1fr))]  overflow-y-auto ">
-          {content.length > 0 &&
-            content.map((c) => (
-              <div
-                key={c.titulo}
-                className={` flex flex-col  justify-center ${color.secondary} rounded-xl h-[150px] overflow-hidden`}
-              >
-                {/* <h2 className="break-words overflow-wrap-break-word">
-                  {c.titulo}
-                </h2> */}
-                <img src={c.imagen} className="object-contain" />
-              </div>
-            ))}
+      <main className="max-w-200 mx-auto ">
+        <h2
+          className={`${tcolor.secondary} mt-4 text-center font-bold text-xl `}
+        >
+          AVIABLE PAGES
+        </h2>
+        <div className=" mt-10  gap-3 grid [grid-template-columns:repeat(auto-fit,minmax(150px,1fr))]  ">
+          {items.map((item) => (
+            <div
+              onClick={() => navegate(item.route)}
+              className={`h-25 mx-auto w-full max-w-100  flex justify-center items-center rounded ${color.secondary}  ${tcolor.secondary}  font-bold ${color.hover} transition duration-300 active:scale-95`}
+              key={item.name}
+            >
+              {loading[item.route] ? (
+                <LoadingSpinner />
+              ) : (
+                <div> {item.name}</div>
+              )}
+            </div>
+          ))}
         </div>
-        {/* Paginacion */}
-
-        <Paginator
-          onNext={() => setPage(page + 1)}
-          onPrev={() => setPage(page - 1)}
-          onLast={() => setPage(660)}
-          onFirst={() => setPage(0)}
-          page={page}
-          onClikPage={(page) => setPage(Number(page))}
-        />
-      </div>
+      </main>
     </>
   );
 }

@@ -26,7 +26,7 @@ export default function NotificationCard({ notificacion, onRedirect }) {
   useEffect(() => {
     setLoadingAvatar(true);
     fetch(
-      `api/notifications/get-user-avatar-on-uid/${notificacion.user_who_acts}`
+      `${window.location.origin}/api/notifications/get-user-avatar-on-uid/${notificacion.user_who_acts}`
     )
       .then((res) => res.json())
       .then(({ avatar, error, from_cache }) => {
