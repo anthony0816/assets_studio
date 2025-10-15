@@ -28,6 +28,7 @@ export default function NavBar() {
   }, []);
 
   const items = [
+    { name: "3th party Assets", route: "/scraping", fl: "3th" },
     { name: "Discover Assets", route: "/allAssets", fl: "DA" },
     { name: "Create with IA", route: "/IA-Creator", fl: "CR" },
     { name: "Upload Asset", route: "/upload-asset", fl: "UP" },
