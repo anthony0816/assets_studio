@@ -36,13 +36,13 @@ export default function ScrapingPage() {
 
   return (
     <>
-      <main className="max-w-200 mx-auto ">
+      <main className="max-w-200  mx-auto ">
         <h2
           className={`${tcolor.secondary} mt-4 text-center font-bold text-xl `}
         >
           AVIABLE PAGES
         </h2>
-        <div className=" mt-10  gap-3 grid [grid-template-columns:repeat(auto-fit,minmax(150px,1fr))]  ">
+        <div className=" mt-10 px-2 gap-3 grid [grid-template-columns:repeat(auto-fit,minmax(150px,1fr))]  ">
           {items.map((item) => (
             <div
               onClick={() => navegate(item.route)}

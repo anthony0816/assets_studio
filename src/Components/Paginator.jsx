@@ -1,14 +1,7 @@
 import { useTheme } from "@/context/themeContext";
-import { useState } from "react";
+import NavegateIcon from "@/Icons/NavegateIcon";
 
-export default function Paginator({
-  onNext,
-  onPrev,
-  onFirst,
-  onLast,
-  page,
-  onClikPage,
-}) {
+export default function Paginator({ onNext, onPrev, page }) {
   const { currentTheme } = useTheme();
   const tcolor = currentTheme.textColor;
   const color = currentTheme.colors;
@@ -18,63 +11,23 @@ export default function Paginator({
   return (
     <>
       <div
-        className={`${tcolor.primary} ${color.secondary}  gap-x-4  p-2 flex flex-wrap items-center justify-center  mx-auto rounded `}
+        className={`${tcolor.primary} ${color.secondary}  gap-x-4  p-2 flex flex-wrap items-center justify-center  mx-auto rounded-xl `}
       >
         <div className=" mx-auto flex gap-3 justify-center  ">
           <div
-            className={`${color.primary} p-3 rounded-xl cursor-pointer`}
-            onClick={() => onFirst()}
-          >
-            first
-          </div>
-          <div
-            className={`${color.primary} p-3 rounded-xl cursor-pointer`}
+            className={`${color.primary} p-3 rounded-xl cursor-pointer active:scale-90 transition duration-300`}
             onClick={() => onPrev()}
           >
-            prev
+            <NavegateIcon direcction={-1} />
           </div>
         </div>
-        <div className="flex gap-3 items-center  ">
-          {Array.from({ length: 5 }, (_, i) => {
-            prevPage = prevPage - 1;
-            if (prevPage >= 0)
-              return (
-                <div
-                  onClick={(e) => onClikPage(e.target.textContent)}
-                  className="border px-1 rounded cursor-pointer"
-                >
-                  {prevPage}
-                </div>
-              );
-          }).reverse()}
-          {/* Pagina actual */}
-          <div className={`${color.primary} p-1 rounded-xl`}>{page}</div>
-          {/* Siguientes */}
-          {Array.from({ length: 5 }, (_, i) => {
-            nextPage = nextPage + 1;
-            if (nextPage <= 660)
-              return (
-                <div
-                  onClick={(e) => onClikPage(e.target.textContent)}
-                  className="border px-1 rounded cursor-pointer "
-                >
-                  {nextPage}
-                </div>
-              );
-          })}
-        </div>
+        <div className={`${color.primary} p-1 rounded-xl`}>{page}</div>
         <div className="flex gap-3 justify-center   ">
           <div
-            className={`${color.primary} p-3 rounded-xl cursor-pointer`}
+            className={`${color.primary} p-3 rounded-xl cursor-pointer active:scale-90 transition  duration-300`}
             onClick={() => onNext()}
           >
-            next
-          </div>
-          <div
-            className={`${color.primary} p-3 rounded-xl cursor-pointer`}
-            onClick={() => onLast()}
-          >
-            last
+            <NavegateIcon direcction={+1} />
           </div>
         </div>
       </div>

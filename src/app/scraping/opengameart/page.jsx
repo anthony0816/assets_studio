@@ -4,12 +4,15 @@ import Paginator from "@/Components/Paginator";
 import { useTheme } from "@/context/themeContext";
 import LoadingAnimation from "@/Components/LoadingAnimation";
 import SkeletonAnimationGrid from "@/skeletons/SkeletonAnimationGrid";
+import { useRouter } from "next/navigation";
+import NavegateIcon from "@/Icons/NavegateIcon";
 
 export default function Scraping() {
   const [ref, setref] = useState(false);
   const [content, setContent] = useState([]);
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const { currentTheme } = useTheme();
   const tcolor = currentTheme.textColor;
@@ -29,7 +32,13 @@ export default function Scraping() {
   return (
     <>
       <div className={` h-full flex flex-col ${tcolor.primary}`}>
-        <div className={`${tcolor.secondary} p-3 `}>back</div>
+        {/* boton retroceder */}
+        <div
+          onClick={() => router.back()}
+          className={`${tcolor.secondary} p-3 flex `}
+        >
+          <NavegateIcon direcction={-1} /> <p>back</p>
+        </div>
         <div className=" flex-1  gap-6 p-4 grid [grid-template-columns:repeat(auto-fit,minmax(150px,1fr))]  overflow-y-auto ">
           {loading ? (
             <SkeletonAnimationGrid gap={18} cellCount={24} h={150} />
@@ -53,10 +62,7 @@ export default function Scraping() {
         <Paginator
           onNext={() => setPage(page + 1)}
           onPrev={() => setPage(page - 1)}
-          onLast={() => setPage(660)}
-          onFirst={() => setPage(0)}
           page={page}
-          onClikPage={(page) => setPage(Number(page))}
         />
       </div>
     </>
