@@ -84,9 +84,10 @@ export default function ModalOpengameart({ initialData, isMobile = false }) {
                       src={row.url}
                       alt={`Asset de ${initialData?.title}`}
                       onError={() =>
-                        setLoadPhotoError((prev) => {
-                          [...prev, row.url];
-                        })
+                        setLoadPhotoError((prev) => ({
+                          ...prev,
+                          [row.url]: true,
+                        }))
                       }
                     />
                   </div>
