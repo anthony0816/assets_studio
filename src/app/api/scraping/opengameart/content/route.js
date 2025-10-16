@@ -18,7 +18,7 @@ export async function GET(request) {
         urls.push({ url: $(elem).attr("href") });
       });
     });
-    return NextResponse.json(urls);
+    return NextResponse.json({ urls });
   } catch (error) {
     return NextResponse.json({ error: error.message || "error desconocido" });
   }

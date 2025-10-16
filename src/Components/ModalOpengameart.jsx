@@ -26,9 +26,10 @@ export default function ModalOpengameart({ initialData, isMobile = false }) {
       `${window.location.origin}/api/scraping/opengameart/content?url=${initialData.url}`
     )
       .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        setUrls(data);
+      .then(({ urls, error }) => {
+        console.log(urls, "error:", error);
+        if (error) return;
+        setUrls(urls);
         setLoading(false);
       });
   }, [initialData]);
@@ -80,7 +81,7 @@ export default function ModalOpengameart({ initialData, isMobile = false }) {
                       </div>
                     )}
                     <img
-                      className={`w-full h-full`}
+                      className={`w-full h-full  min-h-100 `}
                       src={row.url}
                       alt={`Asset de ${initialData?.title}`}
                       onError={() =>

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Paginator from "@/Components/Paginator";
 import { useTheme } from "@/context/themeContext";
 import SkeletonAnimationGrid from "@/skeletons/SkeletonAnimationGrid";
@@ -9,29 +9,46 @@ import ModalOpengameart from "@/Components/ModalOpengameart";
 import { useSize } from "@/context/resizeContext";
 
 export default function Scraping() {
-  const [ref, setref] = useState(false);
   const [content, setContent] = useState([]);
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
   const [initialModalData, setInitialModalData] = useState(null);
-  const router = useRouter();
 
+  const controllerRef = useRef(null);
+  const scrollRef = useRef(null);
+
+  const router = useRouter();
   const { currentTheme } = useTheme();
   const { isMobile } = useSize();
   const tcolor = currentTheme.textColor;
   const color = currentTheme.colors;
 
   useEffect(() => {
+    // reiniciar el scroll hasta el inicio
+    scrollRef.current.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+    controllerRef.current = new AbortController();
+    const signal = controllerRef.current.signal;
     console.log("procesando...");
     setLoading(true);
-    fetch(`${window.location.origin}/api/scraping/opengameart/2d?page=${page}`)
+    fetch(
+      `${window.location.origin}/api/scraping/opengameart/2d?page=${page}`,
+      { signal }
+    )
       .then((res) => res.json())
       .then((content) => {
         console.log("HTML:", content);
         setContent(content);
         setLoading(false);
+      })
+      .catch((error) => {
+        if (error.name !== "AbortError")
+          return console.log("Error trayendo imagenes", error.message);
       });
-  }, [ref, page]);
+    return () => controllerRef.current.abort();
+  }, [page]);
   return (
     <>
       {/* Modal para mostrar los datos expandidos */}
@@ -45,7 +62,10 @@ export default function Scraping() {
         >
           <NavegateIcon direcction={-1} /> <p>back</p>
         </div>
-        <div className=" flex-1  gap-6 p-4 grid [grid-template-columns:repeat(auto-fit,minmax(150px,1fr))]  overflow-y-auto ">
+        <div
+          ref={scrollRef}
+          className=" flex-1  gap-6 p-4 grid [grid-template-columns:repeat(auto-fit,minmax(150px,1fr))]  overflow-y-auto "
+        >
           {loading ? (
             <SkeletonAnimationGrid gap={18} cellCount={24} h={150} />
           ) : (
