@@ -58,14 +58,14 @@ export default function ModalOpengameart({ initialData, isMobile = false }) {
           <div className=" overflow-y-auto h-[80%] ">
             <div className="flex flex-col justify-center gap-10 rounded mt-10">
               {loading ? (
-                <div className="w-[90%] mx-auto">
+                <div className="w-[90%] mx-auto ">
                   <SkeletonAnimationGrid cellCount={1} h={400} />
                 </div>
               ) : (
                 urls.map((row) => (
                   <div
                     key={row.url}
-                    className={` ${color.third} w-[90%] mx-auto relative `}
+                    className={` ${color.third} flex items-center  w-[90%] min-h-50 mx-auto relative rounded-xl `}
                   >
                     {!loadPhotoError[row.url] && (
                       <div className=" absolute top-2 right-2 space-x-4 ">
@@ -81,7 +81,7 @@ export default function ModalOpengameart({ initialData, isMobile = false }) {
                       </div>
                     )}
                     <img
-                      className={`w-full h-full  min-h-100 `}
+                      className={`w-full h-full  object-contain `}
                       src={row.url}
                       alt={`Asset de ${initialData?.title}`}
                       onError={() =>
