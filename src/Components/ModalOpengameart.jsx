@@ -3,6 +3,9 @@ import Modal from "./Modal";
 import { useTheme } from "@/context/themeContext";
 import CloseIcon from "@/Icons/CloseIcon";
 import SkeletonAnimationGrid from "@/skeletons/SkeletonAnimationGrid";
+import { SaveIcon } from "@/Icons/SaveIcon";
+import { DownloadIcon } from "@/Icons/DownloadIcon";
+import { downloadPhotoFromUrl } from "@/utils/functions";
 
 export default function ModalOpengameart({ initialData, isMobile = false }) {
   const { currentTheme } = useTheme();
@@ -12,6 +15,7 @@ export default function ModalOpengameart({ initialData, isMobile = false }) {
   const [urls, setUrls] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loadPhotoError, setLoadPhotoError] = useState({});
 
   useEffect(() => {
     if (!initialData) return;
@@ -60,12 +64,30 @@ export default function ModalOpengameart({ initialData, isMobile = false }) {
                 urls.map((row) => (
                   <div
                     key={row.url}
-                    className={` ${color.third} w-[90%] mx-auto`}
+                    className={` ${color.third} w-[90%] mx-auto relative `}
                   >
+                    {!loadPhotoError[row.url] && (
+                      <div className=" absolute top-2 right-2 space-x-4 ">
+                        <button className="bg-black/80 p-2 rounded-xl ">
+                          <SaveIcon />
+                        </button>
+                        <button
+                          onClick={() => downloadPhotoFromUrl(row.url)}
+                          className="bg-black/80 p-2 rounded-xl "
+                        >
+                          <DownloadIcon />
+                        </button>
+                      </div>
+                    )}
                     <img
                       className={`w-full h-full`}
                       src={row.url}
                       alt={`Asset de ${initialData?.title}`}
+                      onError={() =>
+                        setLoadPhotoError((prev) => {
+                          [...prev, row.url];
+                        })
+                      }
                     />
                   </div>
                 ))

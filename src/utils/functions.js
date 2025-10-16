@@ -12,6 +12,26 @@ export function DowloadCloudinaryAsset(url) {
     });
 }
 
+export async function downloadPhotoFromUrl(url, filename = "download") {
+  try {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const blobUrl = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = blobUrl;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // Limpiar
+    URL.revokeObjectURL(blobUrl);
+  } catch (error) {
+    console.error("Download failed:", error);
+  }
+}
+
 export async function _POST_(url, data) {
   const res = await fetch(url, {
     method: "POST",
@@ -30,6 +50,23 @@ export function fileToBase64(file) {
     reader.onload = () => resolve(reader.result); // Devuelve el string Base64
     reader.onerror = (error) => reject(error);
   });
+}
+
+export async function urlToBase64(imageUrl) {
+  try {
+    const response = await fetch(imageUrl);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const blob = await response.blob();
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.onerror = () =>
+        reject(new Error("Failed to convert blob to Base64"));
+      reader.readAsDataURL(blob);
+    });
+  } catch (error) {
+    return { error: error.message };
+  }
 }
 
 export async function VerifySesion(request, adminAuth) {
