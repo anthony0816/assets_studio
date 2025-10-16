@@ -6,6 +6,7 @@ import SkeletonAnimationGrid from "@/skeletons/SkeletonAnimationGrid";
 import { useRouter } from "next/navigation";
 import NavegateIcon from "@/Icons/NavegateIcon";
 import ModalOpengameart from "@/Components/ModalOpengameart";
+import { useSize } from "@/context/resizeContext";
 
 export default function Scraping() {
   const [ref, setref] = useState(false);
@@ -16,6 +17,7 @@ export default function Scraping() {
   const router = useRouter();
 
   const { currentTheme } = useTheme();
+  const { isMobile } = useSize();
   const tcolor = currentTheme.textColor;
   const color = currentTheme.colors;
 
@@ -33,7 +35,7 @@ export default function Scraping() {
   return (
     <>
       {/* Modal para mostrar los datos expandidos */}
-      <ModalOpengameart initialData={initialModalData} />
+      <ModalOpengameart initialData={initialModalData} isMobile={isMobile} />
 
       <div className={` h-full flex flex-col ${tcolor.primary}`}>
         {/* boton retroceder */}
