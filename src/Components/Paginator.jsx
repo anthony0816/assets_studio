@@ -6,8 +6,6 @@ export default function Paginator({ onNext, onPrev, page }) {
   const tcolor = currentTheme.textColor;
   const color = currentTheme.colors;
 
-  let prevPage = page;
-  let nextPage = page;
   return (
     <>
       <div

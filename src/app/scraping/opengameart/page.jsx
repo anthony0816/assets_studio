@@ -96,10 +96,31 @@ export default function Scraping() {
       });
   }
 
+  // navegacion del modal
+  function modalOnNext() {
+    const row = content.filter((r) => r.titulo == initialModalData.title);
+    const index = content.indexOf(row[0]);
+    const next = content[(index + 1) % content.length];
+    setInitialModalData({ title: next.titulo, url: next.enlace });
+  }
+
+  // navegacion del modal
+  function modalOnPrev() {
+    const row = content.filter((r) => r.titulo == initialModalData.title);
+    const index = content.indexOf(row[0]);
+    const next = content[(index - 1 + content.length) % content.length];
+    setInitialModalData({ title: next.titulo, url: next.enlace });
+  }
+
   return (
     <>
       {/* Modal para mostrar los datos expandidos */}
-      <ModalOpengameart initialData={initialModalData} isMobile={isMobile} />
+      <ModalOpengameart
+        initialData={initialModalData}
+        isMobile={isMobile}
+        onNext={modalOnNext}
+        onPrev={modalOnPrev}
+      />
 
       <div className={` h-full flex flex-col ${tcolor.primary}`}>
         {/* bloque de navegacion y buscar */}
@@ -161,8 +182,14 @@ export default function Scraping() {
         {/* Paginacion */}
 
         <Paginator
-          onNext={() => setPage(page + 1)}
-          onPrev={() => setPage(page - 1)}
+          onNext={() => {
+            if (page == 660) return;
+            setPage(page + 1);
+          }}
+          onPrev={() => {
+            if (page == 0) return;
+            setPage(page - 1);
+          }}
           page={page}
         />
       </div>

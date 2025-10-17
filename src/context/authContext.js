@@ -53,12 +53,15 @@ export default function AuthContextProvaider({ children }) {
   };
 
   const logoutJWT = async () => {
-    const res = await fetch("api/session/delete-jwt", {
-      method: "POST",
-      headers: {
-        "Content-type": "Application/json",
-      },
-    });
+    const res = await fetch(
+      `${window.location.origin}/api/session/delete-jwt`,
+      {
+        method: "POST",
+        headers: {
+          "Content-type": "Application/json",
+        },
+      }
+    );
     if (res.ok) setUser(null);
     return res;
   };

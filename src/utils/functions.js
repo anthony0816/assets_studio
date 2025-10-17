@@ -14,21 +14,49 @@ export function DowloadCloudinaryAsset(url) {
 
 export async function downloadPhotoFromUrl(url, filename = "download") {
   try {
-    const response = await fetch(url);
+    const response = await fetch(
+      `${window.location.origin}/api/scraping/opengameart/download`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url }),
+      }
+    );
+
     const blob = await response.blob();
     const blobUrl = URL.createObjectURL(blob);
 
     const link = document.createElement("a");
     link.href = blobUrl;
     link.download = filename;
-    document.body.appendChild(link);
     link.click();
-    document.body.removeChild(link);
 
-    // Limpiar
     URL.revokeObjectURL(blobUrl);
   } catch (error) {
     console.error("Download failed:", error);
+  }
+}
+
+export async function AssetToBase64FromOpengameart(url, filename = "download") {
+  try {
+    const response = await fetch(
+      `${window.location.origin}/api/scraping/opengameart/download`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url }),
+      }
+    );
+    const blob = await response.blob();
+
+    const base64 = await new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.readAsDataURL(blob);
+    });
+    return { base64 };
+  } catch (error) {
+    return { error: error.message || "error desconocido" };
   }
 }
 
@@ -109,7 +137,7 @@ export function VerifyJWToken(request) {
 }
 
 export async function CreateAsset(base64, uid, providerId, categoria) {
-  const res = await fetch("api/assets/upload", {
+  const res = await fetch(`${window.location.origin}/api/assets/upload`, {
     method: "POST",
     headers: {
       "Content-Type": "Application/json",
