@@ -2,3 +2,6 @@ export const TWO_D_ASSETS_BASE_URL =
   "https://opengameart.org/art-search-advanced?keys=&field_art_type_tid%5B%5D=9&sort_by=count&sort_order=DESC"; // &page=1 para acceder a diferentes paginas 1 2 3 4 de paginacion
 
 export const TWO_D_CONTENT_BASE_URL = "https://opengameart.org";
+
+export const OPEN_ART_GAME_BASE_PREVIEW_IMG_URL =
+  "https://opengameart.org/sites/default/files/styles/thumbnail/public/";

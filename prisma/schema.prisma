@@ -125,7 +125,21 @@ model Notifications{
 }
 
 
+
+
+
 model user_avatar_cache {
   user_id String @id
   avatarUrl String
+}
+
+model opengameart_title_url{
+  url String @id 
+  title String
+  title_es String
+  preview_file_name String // se usa para referenciar la preview de la busqueda 
+}
+
+model opengameart_title_url_cached_page{
+  numPage Int @id
 }
