@@ -124,7 +124,7 @@ export default function Scraping() {
 
       <div className={` h-full flex flex-col ${tcolor.primary}`}>
         {/* bloque de navegacion y buscar */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between px-1">
           {/* boton retroceder */}
           <div
             onClick={() => router.back()}
@@ -133,7 +133,7 @@ export default function Scraping() {
             <NavegateIcon direcction={-1} /> <p>back</p>
           </div>
           {/* buscar */}
-          <div className=" flex justify-center flex-1  p-2 w-full  ">
+          <div className=" flex justify-center flex-1  ">
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -147,11 +147,15 @@ export default function Scraping() {
                 className="w-full border border-gray-400 rounded-xl p-1 px-3 transition-all  "
                 placeholder="Search"
               />
-              {inputSearch && (
-                <div onClick={search} className=" px-2 p-1">
-                  <SearchIcon />
-                </div>
-              )}
+
+              <div
+                onClick={() => inputSearch && search()}
+                className={`px-2 p-1 ${
+                  !inputSearch ? "opacity-30" : "opacity-100"
+                }`}
+              >
+                <SearchIcon />
+              </div>
             </form>
           </div>
         </div>
