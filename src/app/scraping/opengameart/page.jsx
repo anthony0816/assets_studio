@@ -122,7 +122,7 @@ export default function Scraping() {
         onPrev={modalOnPrev}
       />
 
-      <div className={` h-full flex flex-col ${tcolor.primary}`}>
+      <div className={` relative h-full flex flex-col ${tcolor.primary}`}>
         {/* bloque de navegacion y buscar */}
         <div className="flex items-center justify-between px-1">
           {/* boton retroceder */}
@@ -195,6 +195,7 @@ export default function Scraping() {
             setPage(page - 1);
           }}
           page={page}
+          onChange={(value) => setPage(Number(value))}
         />
       </div>
     </>
