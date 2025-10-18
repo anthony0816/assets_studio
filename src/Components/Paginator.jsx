@@ -15,6 +15,7 @@ export default function Paginator({ onNext, onPrev, page, onChange }) {
   const [inputSearch, setInputSearch] = useState("");
 
   useEffect(() => {
+    if (!modalOpen) return;
     let id;
     if (inputRef.current) {
       id = setTimeout(() => {

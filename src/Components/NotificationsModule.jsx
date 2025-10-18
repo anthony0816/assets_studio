@@ -139,7 +139,7 @@ export default function NotificationsModule() {
         <Modal onClose={close} isOpen={isModalOpen} showButtomnClose={false}>
           <div
             onClick={(e) => e.stopPropagation()}
-            className={`   w-full max-w-100 flex flex-col justify-between  h-[90%] overflow-y-auto rounded-xl ${currentTheme.colors.primary}`}
+            className={`   w-full max-w-100 flex flex-col justify-between  h-[90%] overflow-y-auto rounded-xl ${currentTheme.colors.primary}  `}
           >
             <div
               className={`flex items-center justify-between px-5 h-20 ${currentTheme.colors.primary}`}
