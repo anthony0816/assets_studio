@@ -1,7 +1,7 @@
 import { useTheme } from "@/context/themeContext";
 import NavegateIcon from "@/Icons/NavegateIcon";
 import Modal from "./Modal";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import CloseIcon from "@/Icons/CloseIcon";
 
 export default function Paginator({ onNext, onPrev, page, onChange }) {
@@ -9,10 +9,20 @@ export default function Paginator({ onNext, onPrev, page, onChange }) {
   const tcolor = currentTheme.textColor;
   const color = currentTheme.colors;
   // referencias
-
+  const inputRef = useRef(null);
   // estados
   const [modalOpen, setModalOpen] = useState(false);
   const [inputSearch, setInputSearch] = useState("");
+
+  useEffect(() => {
+    let id;
+    if (inputRef.current) {
+      id = setTimeout(() => {
+        inputRef.current.focus();
+      }, 300);
+    }
+    return () => clearTimeout(id);
+  }, [modalOpen]);
 
   return (
     <>
@@ -70,7 +80,7 @@ export default function Paginator({ onNext, onPrev, page, onChange }) {
               }}
             >
               <input
-                ref={(node) => node?.focus()}
+                ref={inputRef}
                 onChange={(e) => setInputSearch(e.target.value)}
                 type="number"
                 className="w-full max-w-50 border border-gray-400 rounded-xl p-1 px-3 transition-all  "
@@ -84,6 +94,7 @@ export default function Paginator({ onNext, onPrev, page, onChange }) {
           >
             {Array.from({ length: 661 }, (_, i) => (
               <div
+                key={i}
                 onClick={() => {
                   onChange(i);
                   setModalOpen(false);
