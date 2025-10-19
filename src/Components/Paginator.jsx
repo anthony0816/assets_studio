@@ -25,13 +25,6 @@ export default function Paginator({ onNext, onPrev, page, onChange }) {
     return () => clearTimeout(id);
   }, [modalOpen]);
 
-  useEffect(() => {
-    const id = setInterval(() => {
-      onNext();
-    }, 4500);
-    return () => clearInterval(id);
-  }, [onNext]);
-
   return (
     <>
       <div
