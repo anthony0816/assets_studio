@@ -1,5 +1,5 @@
 import { useClickOutside } from "@/utils/hooks";
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 export default function Modal({
   children,
   isOpen = false,
@@ -8,7 +8,22 @@ export default function Modal({
   modalAbsolute,
 }) {
   const modalRef = useRef(null);
-  useClickOutside(modalRef, onClose);
+  // que solo se ejecute el onClose si es que esta abireto el modal
+  useClickOutside(modalRef, () => isOpen && onClose());
+
+  const [showChildren, setShowChildren] = useState(true);
+
+  useEffect(() => {
+    let id;
+    if (isOpen) setShowChildren(true);
+    if (!isOpen) {
+      id = setTimeout(() => {
+        setShowChildren(false);
+      }, 300);
+    }
+    return () => clearTimeout(id);
+  }, [isOpen]);
+
   return (
     <>
       <div
@@ -28,7 +43,7 @@ export default function Modal({
             ✕
           </button>
         )}
-        {children}
+        {showChildren ? children : ""}
       </div>
     </>
   );

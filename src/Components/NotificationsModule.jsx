@@ -161,7 +161,7 @@ export default function NotificationsModule() {
               <div className=" flex flex-col overflow-y-auto  space-y-10 h-full">
                 {notifications.map((n) => (
                   <NotificationCard
-                    key={n.createdAt}
+                    key={n.id}
                     notificacion={n}
                     onRedirect={close}
                     abort={abortLoadAvarat}
