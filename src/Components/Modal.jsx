@@ -1,3 +1,6 @@
+import { useClickOutside } from "@/utils/hooks";
+import { useRef } from "react";
+
 export default function Modal({
   children,
   isOpen = false,
@@ -5,10 +8,13 @@ export default function Modal({
   showButtomnClose = true,
   modalAbsolute,
 }) {
+  const modalRef = useRef(null);
+  useClickOutside(modalRef, () => isOpen && onClose());
   if (isOpen)
     return (
       <>
         <div
+          ref={modalRef}
           onClick={onClose}
           className={`${
             modalAbsolute ? "absolute" : "fixed"
