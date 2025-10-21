@@ -1,6 +1,7 @@
 import { forwardRef, useImperativeHandle, useState } from "react";
 import { DownloadIcon } from "@/Icons/DownloadIcon";
 import { DowloadCloudinaryAsset } from "@/utils/functions";
+import Modal from "./Modal";
 
 const ModalShowPicture = forwardRef((props, ref) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,17 +24,12 @@ const ModalShowPicture = forwardRef((props, ref) => {
   if (!isOpen) return null;
   return (
     <>
-      <div className="fixed inset-0 flex items-center justify-center bg-black/80 z-50">
+      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
         {/* Contenedor del modal */}
-        <div className="relative bg-white dark:bg-gray-900 rounded-lg shadow-lg p-6 max-w-5xl w-full flex flex-col items-center">
-          {/* Botón cerrar grande */}
-          <button
-            onClick={() => setIsOpen(false)}
-            className="fixed top-4 right-4 text-gray-300 hover:text-gray-800 dark:hover:text-gray-200 transition text-4xl leading-none"
-          >
-            ✕
-          </button>
-
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="relative bg-white dark:bg-gray-900 rounded-lg shadow-lg p-6 max-w-5xl w-full flex flex-col items-center"
+        >
           {/* Boton Descargar Asset */}
           <button
             onClick={() => DowloadCloudinaryAsset(asset.src)}
@@ -69,7 +65,7 @@ const ModalShowPicture = forwardRef((props, ref) => {
             </button>
           </div>
         </div>
-      </div>
+      </Modal>
     </>
   );
 });
