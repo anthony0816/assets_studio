@@ -16,9 +16,9 @@ export default function Modal({
         <div
           ref={modalRef}
           onClick={onClose}
-          className={`${
+          className={`animate-[fadeIn_0.3s_ease-in-out] ${
             modalAbsolute ? "absolute" : "fixed"
-          } inset-0 flex items-center justify-center z-50 bg-black/80 transition-all duration-300 `}
+          } inset-0 flex items-center justify-center z-50 bg-black/80`}
         >
           {showButtomnClose && (
             <button
