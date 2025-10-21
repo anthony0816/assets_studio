@@ -24,6 +24,12 @@ export default function Paginator({ onNext, onPrev, page, onChange }) {
       inputRef.current.focus();
     }
     if (modalCurrentPageRef.current && modalPagesContinerRef.current) {
+      // Darle un estilo diferente a las otras paginas para saber que estamos en esa
+      const page = modalCurrentPageRef.current;
+      page.classList.add(`${color.primary}`);
+      page.classList.add(`border`);
+
+      // proceder a centrar el elemento
       useCenterElement(
         modalPagesContinerRef.current,
         modalCurrentPageRef.current,
@@ -115,8 +121,6 @@ export default function Paginator({ onNext, onPrev, page, onChange }) {
                 }}
                 className={` ${color.secondary}  ${color.hover} ${
                   i == 0 ? "mt-10" : ""
-                } ${
-                  page == i ? `${color.primary} border` : ""
                 } flex justify-between px-4 py-2 mx-3   transition rounded-xl cursor-pointer`}
               >
                 <div>page</div>
