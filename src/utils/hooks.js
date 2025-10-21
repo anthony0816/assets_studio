@@ -14,7 +14,7 @@ export function useClickOutside(ref, handler) {
   }, [ref, handler]);
 }
 
-export function useCenterElement(container, target) {
+export function useCenterElement(container, target, behavior = "smooth") {
   if (container && target) {
     const offset = -60; // píxeles extra hacia arriba
     const top =
@@ -26,7 +26,7 @@ export function useCenterElement(container, target) {
 
     container.scrollTo({
       top,
-      behavior: "smooth", // animación suave
+      behavior: behavior, // animación suave o instantanea
     });
   }
 }

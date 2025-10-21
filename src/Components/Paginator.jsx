@@ -3,6 +3,7 @@ import NavegateIcon from "@/Icons/NavegateIcon";
 import Modal from "./Modal";
 import { useState, useRef, useEffect } from "react";
 import CloseIcon from "@/Icons/CloseIcon";
+import { useCenterElement } from "@/utils/hooks";
 
 export default function Paginator({ onNext, onPrev, page, onChange }) {
   const { currentTheme } = useTheme();
@@ -10,19 +11,25 @@ export default function Paginator({ onNext, onPrev, page, onChange }) {
   const color = currentTheme.colors;
   // referencias
   const inputRef = useRef(null);
+  const modalCurrentPageRef = useRef(null);
+  const modalPagesContinerRef = useRef(null);
   // estados
   const [modalOpen, setModalOpen] = useState(false);
   const [inputSearch, setInputSearch] = useState("");
 
   useEffect(() => {
     if (!modalOpen) return;
-    let id;
+    // enfocar el inputnumber
     if (inputRef.current) {
-      id = setTimeout(() => {
-        inputRef.current.focus();
-      }, 300);
+      inputRef.current.focus();
     }
-    return () => clearTimeout(id);
+    if (modalCurrentPageRef.current && modalPagesContinerRef.current) {
+      useCenterElement(
+        modalPagesContinerRef.current,
+        modalCurrentPageRef.current,
+        "instant"
+      );
+    }
   }, [modalOpen]);
 
   return (
@@ -91,10 +98,16 @@ export default function Paginator({ onNext, onPrev, page, onChange }) {
           </header>
 
           <div
+            ref={modalPagesContinerRef}
             className={` ${color.primary}  space-y-3 flex-1 h-full overflow-y-auto`}
           >
             {Array.from({ length: 661 }, (_, i) => (
               <div
+                ref={(node) => {
+                  if (page == i) {
+                    modalCurrentPageRef.current = node;
+                  }
+                }}
                 key={i}
                 onClick={() => {
                   onChange(i);
@@ -102,6 +115,8 @@ export default function Paginator({ onNext, onPrev, page, onChange }) {
                 }}
                 className={` ${color.secondary}  ${color.hover} ${
                   i == 0 ? "mt-10" : ""
+                } ${
+                  page == i ? `${color.primary} border` : ""
                 } flex justify-between px-4 py-2 mx-3   transition rounded-xl cursor-pointer`}
               >
                 <div>page</div>
