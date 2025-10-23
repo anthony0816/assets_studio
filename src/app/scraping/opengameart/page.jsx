@@ -233,7 +233,7 @@ export default function Scraping() {
               {/* Loader para el scroll infinito */}
               {showInputSearchLoader &&
                 hasMore &&
-                Array.from({ length: 8 }, (_, i) => {
+                Array.from({ length: 24 }, (_, i) => {
                   return (
                     <div
                       key={i}
