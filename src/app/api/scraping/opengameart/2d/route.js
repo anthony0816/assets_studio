@@ -35,7 +35,7 @@ export async function GET(request, { params }) {
       });
     });
 
-    return NextResponse.json(resultados);
+    return NextResponse.json({ content: resultados });
   } catch (error) {
     return NextResponse.json({ error: error.message || "Error desconocido" });
   }

@@ -10,6 +10,7 @@ import { useSize } from "@/context/resizeContext";
 import { _POST_ } from "@/utils/functions";
 import { SearchIcon } from "@/Icons/SearchIcon";
 import { OPEN_ART_GAME_BASE_PREVIEW_IMG_URL } from "@/scraping/urls";
+import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 
 export default function Scraping() {
   const [content, setContent] = useState([]);
@@ -18,6 +19,17 @@ export default function Scraping() {
   const [initialModalData, setInitialModalData] = useState(null);
   const [inputSearch, setInputSearch] = useState("");
   const [refreshPage, setRefreshPage] = useState(false);
+
+  // paginacion del buscador
+  const limit = 24;
+  const [finderPage, setFinderPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [showInputSearchLoader, setShowInputSearchLoader] = useState(false);
+  const inputSearchLoaderRef = useInfiniteScroll(
+    // infiniteScrollLoadMore,
+    async () => await search({ loader: false }),
+    hasMore
+  );
 
   const controllerRef = useRef(null);
   const scrollRef = useRef(null);
@@ -30,6 +42,8 @@ export default function Scraping() {
 
   // buscar por paginas
   useEffect(() => {
+    // Reiniciar las configuraciones de busqueda por input
+    RestartInputSearchConfig();
     // reiniciar el scroll hasta el inicio
     scrollRef.current.scrollTo({
       top: 0,
@@ -44,10 +58,15 @@ export default function Scraping() {
       { signal }
     )
       .then((res) => res.json())
-      .then((content) => {
-        console.log("HTML:", content);
-        setContent(content);
-        setLoading(false);
+      .then(({ content, error }) => {
+        if (content) {
+          console.log("HTML:", content);
+          setContent(content);
+          setLoading(false);
+        }
+        if (error) {
+          console.error("Ocurrio un error buscando assets: ", error);
+        }
       })
       .catch((error) => {
         if (error.name !== "AbortError")
@@ -76,11 +95,30 @@ export default function Scraping() {
       .then((res) => console.log("Cacheo de paginas:", res));
   }, [content]);
 
-  function search() {
+  function handleSubmit(e) {
+    e.preventDefault();
+    // reiniciar el scroll hasta el inicio
+    scrollRef.current.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+    setContent([]);
+    setHasMore(true);
+    setFinderPage(0);
+    search({ loader: true, firstPage: true });
+  }
+
+  // buscar por parametros del text area
+  async function search({ loader = true, firstPage = false }) {
+    if (finderPage == 0) setContent([]);
     if (inputSearch == "") return setRefreshPage(!refreshPage);
-    setLoading(true);
-    fetch(
-      `${window.location.origin}/api/scraping/opengameart/finder?param=${inputSearch}`
+    loader && setLoading(true);
+    await fetch(
+      `${
+        window.location.origin
+      }/api/scraping/opengameart/finder?param=${inputSearch}&limit=${limit}&page=${
+        firstPage ? 0 : finderPage
+      }`
     )
       .then((res) => res.json())
       .then(({ results, error }) => {
@@ -91,9 +129,19 @@ export default function Scraping() {
           titulo: r.title,
         }));
         console.log("formateado:", content);
-        setContent(content);
-        setLoading(false);
+        setContent((prev) => [...prev, ...content]);
+        if (content.length < limit) setHasMore(false);
+        setFinderPage((prev) => prev + 1);
+        loader && setLoading(false);
+        setShowInputSearchLoader(true);
       });
+  }
+
+  function RestartInputSearchConfig() {
+    setShowInputSearchLoader(false);
+    setFinderPage(0);
+    setContent([]);
+    setHasMore(true);
   }
 
   // navegacion del modal
@@ -135,10 +183,7 @@ export default function Scraping() {
           {/* buscar */}
           <div className=" flex justify-center flex-1  ">
             <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                search();
-              }}
+              onSubmit={(e) => handleSubmit(e)}
               className=" mx-auto flex items-center space-x-3 w-full max-w-100 px-2"
             >
               <input
@@ -161,42 +206,64 @@ export default function Scraping() {
         </div>
         <div
           ref={scrollRef}
-          className=" flex-1  gap-6 p-4 grid [grid-template-columns:repeat(auto-fit,minmax(150px,1fr))]  overflow-y-auto "
+          className=" flex-1 p-4 overflow-y-auto   gap-6  grid [grid-template-columns:repeat(auto-fit,minmax(150px,1fr))] "
         >
           {loading ? (
             <SkeletonAnimationGrid gap={18} cellCount={24} h={150} />
           ) : (
-            content.length > 0 &&
-            content.map((c) => (
-              <div
-                key={c.titulo}
-                className={` flex flex-col  justify-center ${color.secondary} rounded-xl h-[150px] overflow-hidden`}
-              >
-                <img
-                  src={c.imagen}
-                  className="object-contain"
-                  onClick={() =>
-                    setInitialModalData({ title: c.titulo, url: c.enlace })
-                  }
-                />
-              </div>
-            ))
+            <>
+              {content.length > 0 &&
+                content.map((c) => (
+                  <div
+                    key={c.enlace}
+                    className={` flex flex-col  justify-center ${color.secondary} rounded-xl h-[150px] overflow-hidden`}
+                  >
+                    <img
+                      src={c.imagen}
+                      className="object-contain"
+                      onClick={() =>
+                        setInitialModalData({
+                          title: c.titulo,
+                          url: c.enlace,
+                        })
+                      }
+                    />
+                  </div>
+                ))}
+              {/* Loader para el scroll infinito */}
+              {showInputSearchLoader &&
+                hasMore &&
+                Array.from({ length: 8 }, (_, i) => {
+                  return (
+                    <div
+                      key={i}
+                      ref={(node) => {
+                        if (i == 0) inputSearchLoaderRef(node);
+                      }}
+                    >
+                      <SkeletonAnimationGrid key={i} cellCount={1} h={150} />
+                    </div>
+                  );
+                })}
+            </>
           )}
         </div>
-        {/* Paginacion */}
 
-        <Paginator
-          onNext={() => {
-            if (page == 660) return;
-            setPage(page + 1);
-          }}
-          onPrev={() => {
-            if (page == 0) return;
-            setPage(page - 1);
-          }}
-          page={page}
-          onChange={(value) => setPage(Number(value))}
-        />
+        {/* Paginacion */}
+        {!inputSearch && (
+          <Paginator
+            onNext={() => {
+              if (page == 660) return;
+              setPage(page + 1);
+            }}
+            onPrev={() => {
+              if (page == 0) return;
+              setPage(page - 1);
+            }}
+            page={page}
+            onChange={(value) => setPage(Number(value))}
+          />
+        )}
       </div>
     </>
   );
