@@ -134,12 +134,10 @@ export default function AssetsCard({
             <div className="flex flex-row space-x-1 w-full ">
               <span
                 onClick={async (e) => handleGiveLike(e)}
-                className="cursor-pointer flex flex-row  items-center px-2 rounded-xl  "
+                className="cursor-pointer flex flex-row  items-center  rounded-xl  "
               >
                 <LikeIcon liked={liked} />
-                <span
-                  className={`text-sm ml-2 ${currentTheme.textColor.primary}`}
-                >
+                <span className={`text-sm  ${currentTheme.textColor.primary}`}>
                   {likes}
                 </span>
               </span>
@@ -150,7 +148,7 @@ export default function AssetsCard({
               >
                 <div className="flex flex-row  items-center">
                   <ComentsIcon />
-                  <span className="ml-1">{coments} </span>
+                  <span className="">{coments} </span>
                 </div>
               </span>
             </div>

@@ -273,7 +273,13 @@ export default function LazyLoadPage({
             ModalAssetsDataisOpen ? (isMobile ? "w-0" : "w-full") : "w-full"
           } `}
         >
-          <div className="grid gap-6 p-4 [grid-template-columns:repeat(auto-fit,minmax(250px,1fr))]">
+          <div
+            className={`grid ${
+              isMobile ? "gap-1 p-1" : "gap-6 p-4"
+            }  [grid-template-columns:repeat(auto-fit,minmax(${
+              isMobile ? "150px" : "200px"
+            },1fr))]`}
+          >
             {assets?.map((asset) => (
               <AssetsCard
                 key={asset.id}
