@@ -236,8 +236,8 @@ export default function UserProfile() {
                   Array.from({ length: 8 }).map((_, i) => (
                     <div key={i} ref={(node) => i == 0 && LoaderRef(node)}>
                       <SkeletonAnimationGrid
-                        minCellWidth={350}
-                        gap={10}
+                        minCellWidth={250}
+                        gap={1}
                         cellCount={1}
                         h={250}
                       />
