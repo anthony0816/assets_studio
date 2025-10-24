@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from "react";
 import { OptionsDots } from "@/Icons/OptionDocsIcon";
 import DeleteIcon from "@/Icons/DeleteIcon";
 import { DeleteAsset_AlsoCloudnary } from "@/utils/functions";
-import LoadingSpinner from "./LoadingSpiner";
 import { useInterface } from "@/context/intercomunicationContext";
 
 export default function AssetCardOptionButton({

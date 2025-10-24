@@ -154,16 +154,19 @@ export async function CreateAsset(base64, uid, providerId, categoria) {
 }
 
 export async function DeleteAsset_AlsoCloudnary(id, public_id) {
-  const res = await fetch("api/assets/delete/deleteAlsoCloud", {
-    method: "POST",
-    headers: {
-      "Content-type": "Application/json",
-    },
-    body: JSON.stringify({
-      id,
-      public_id,
-    }),
-  });
+  const res = await fetch(
+    `${window.location.origin}/api/assets/delete/deleteAlsoCloud`,
+    {
+      method: "POST",
+      headers: {
+        "Content-type": "Application/json",
+      },
+      body: JSON.stringify({
+        id,
+        public_id,
+      }),
+    }
+  );
   return res;
 }
 
