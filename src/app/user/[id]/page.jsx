@@ -1,10 +1,7 @@
 "use client";
 import { useParams } from "next/navigation";
-
-import { useData } from "@/context/GlobalDataAccesContext";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useTheme } from "@/context/themeContext";
-import { useAuth } from "@/context/authContext";
 import AssetsCard from "@/Components/AssetsCard";
 import { GetAssetsByUserId } from "@/utils/functions";
 import ModalShowPicture from "@/Components/ModalShowPicture";
@@ -328,9 +325,9 @@ export default function UserProfile() {
             {assets === undefined ? (
               <div className="p-3">
                 <SkeletonAnimationGrid
-                  minCellWidth={350}
+                  minCellWidth={250}
                   gap={10}
-                  cellCount={2}
+                  cellCount={5}
                   h={250}
                 />
               </div>
@@ -365,19 +362,6 @@ export default function UserProfile() {
             )}
           </section>
         </section>
-        {/*
-           const f_user = {
-    uid,
-    email,
-    displayName: name,
-    photoURL: avatar,
-    providerData: [{ providerId: "Assets Studio" }],
-    metadata: {
-      creationTime: createdAt,
-      lastSignInTime: "will be implemented",
-    },
-  };
-          */}
       </main>
     </>
   );
