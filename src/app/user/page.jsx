@@ -69,6 +69,7 @@ export default function UserProfile() {
     /* Escuchar cambio de user por contexto */
   }
 
+  // Buscar el usuario
   useEffect(() => {
     async function LoadUserData() {
       const { user_id } = storage.userToProfile;

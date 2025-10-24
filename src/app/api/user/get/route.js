@@ -23,11 +23,9 @@ export async function POST(req) {
     // Puedes devolver todo el objeto o solo lo que necesites
     return NextResponse.json({ f_user });
   } catch (error) {
-    console.error("Error obteniendo usuario:", error, error.message);
     return NextResponse.json(
       {
-        error: "No se pudo obtener el usuario",
-        message: error.message,
+        error: error.message || "Error desconocido",
       },
       { status: 500 }
     );

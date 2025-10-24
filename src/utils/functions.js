@@ -186,7 +186,7 @@ export async function getUserByUid(uid, adminAuth) {
 }
 
 export async function GetAssetsByUserId(uid, page, limit, freeAcces = false) {
-  const res = await fetch("api/assets/get", {
+  const res = await fetch(`${window.location.origin}/api/assets/get`, {
     method: "POST",
     headers: {
       "Content-type": "Application/json",
@@ -363,7 +363,7 @@ export async function CreateReport(asset_id, user_id, type, description) {
 }
 
 export async function FetchUserData(user_id) {
-  const res = await fetch("api/user/get", {
+  const res = await fetch(`${window.location.origin}/api/user/get`, {
     method: "POST",
     headers: {
       "Content-type": "Application/json",

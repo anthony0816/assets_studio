@@ -360,7 +360,7 @@ const ModalAssetData = forwardRef((props, ref) => {
 
   function GoToUserProfile(user_id) {
     storage.setUserToProfile({ user_id: user_id });
-    router("/visit_user_profile");
+    router(`/user/${user_id}`);
   }
 
   if (!isOpen) return;
