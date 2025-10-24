@@ -21,7 +21,8 @@ export default function UserProfile() {
   const { id } = useParams();
   const [user, setUser] = useState(undefined);
   const [assets, setAssets] = useState(undefined);
-
+  // size
+  const { isMobile } = useSize();
   //tema
   const { currentTheme } = useTheme();
   const color = currentTheme.colors;
@@ -36,6 +37,12 @@ export default function UserProfile() {
   const LoaderRef = useInfiniteScroll(SearchAssets, hasMore, {
     threshold: 0.1,
   });
+  // referencias
+  const ModalAssetDataRef = useRef(null);
+  const ModalShowPictueRef = useRef(null);
+
+  // Modales
+  const [openModalAssetData, setOpenModalAssetData] = useState(false);
 
   // Cargar los datos del usuario
   useEffect(() => {
@@ -97,8 +104,45 @@ export default function UserProfile() {
     });
   }
 
-  console.log("Usuario:", user);
-  console.log("Assets", assets);
+  // Logica de AssetCard y ModalAssetData
+  function handleOnClickBar(asset) {
+    console.log("Asset:", asset);
+    if (ModalAssetDataRef.current) {
+      const modal = ModalAssetDataRef.current;
+      modal.open(asset);
+      setOpenModalAssetData(true);
+    }
+  }
+  function handleOnClickPhoto(asset) {
+    if (ModalShowPictueRef.current) {
+      ModalShowPictueRef.current.open(asset);
+    }
+  }
+
+  function handleOnClinkComent(asset) {
+    if (ModalAssetDataRef.current) {
+      const modal = ModalAssetDataRef.current;
+      modal.openAndCreateComent(asset);
+      setOpenModalAssetData(true);
+    }
+  }
+
+  // Logica ModalShowPicture
+  function nextAsset() {
+    const modal = ModalShowPictueRef.current;
+    const currentAsset = modal.currentAsset();
+    const index = assets.indexOf(currentAsset);
+    const nextIndex = (index + 1) % assets.length;
+    modal.foward(assets[nextIndex]);
+  }
+
+  function prevAsset() {
+    const modal = ModalShowPictueRef.current;
+    const currentAsset = modal.currentAsset();
+    const index = assets.indexOf(currentAsset);
+    const prevIndex = (index - 1 + assets.length) % assets.length;
+    modal.backwards(assets[prevIndex]);
+  }
 
   // html
 
@@ -133,122 +177,195 @@ export default function UserProfile() {
 
   return (
     <>
-      <main className="space-y-4 h-full overflow-y-auto ">
-        {/* Imagen de perfil */}
+      <ModalDeleteAsset />
+      <ModalShowPicture
+        ref={ModalShowPictueRef}
+        nextAsset={() => {
+          nextAsset();
+        }}
+        prevAsset={() => {
+          prevAsset();
+        }}
+      />
+      <main className="flex ">
+        <section
+          className={` transition-all duration-300 h-[100vh] overflow-y-auto ${
+            openModalAssetData ? "w-full" : "w-0"
+          } `}
+        >
+          <ModalAssetData
+            ref={ModalAssetDataRef}
+            onClose={() => setOpenModalAssetData(false)}
+          />
+        </section>
+        <section
+          className={`  ${
+            openModalAssetData ? (isMobile ? "w-0" : "w-full") : "w-full"
+          } space-y-4 h-[100vh] overflow-y-auto`}
+        >
+          {/* Imagen de perfil */}
 
-        <section className=" bg-blue-400 mt-2 gap-3 flex flex-wrap items-center p-2 w-full max-w-[700px] h-full max-h-60 mx-auto rounded-xl ">
-          <div className=" border  w-full max-w-40 h-full max-h-40 mx-auto overflow-hidden rounded-full">
-            {user === undefined ? (
-              <>
-                <div>carga</div>
-              </>
+          <section
+            className={`${color.third} ${tcolor.primary} mt-2 gap-3 flex flex-wrap items-center p-2 w-full max-w-[700px] mx-auto rounded-xl`}
+          >
+            <div className=" border  w-full max-w-40 h-full max-h-40 mx-auto overflow-hidden rounded-full">
+              {user === undefined ? (
+                <>
+                  <div className="w-full h-full">
+                    <SkeletonAnimationGrid cellCount={1} h={999} />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <img
+                    src={
+                      user.photoURL != "" ? `${user.photoURL}` : "/vercel.svg"
+                    }
+                    alt="Profile photo"
+                    className={` ${color.border} object-contain w-full h-full`}
+                  />
+                </>
+              )}
+            </div>
+            {/* Informacion de la cuenta */}
+            <div
+              className={`${color.third} text-center min-[405px]:text-left gap-4 flex-1 flex flex-col`}
+            >
+              {/* Nombre */}
+              <span className={`text-[30px] font-bold`}>
+                {user === undefined ? (
+                  <div className="mx-auto w-[80%]">
+                    <SkeletonAnimationGrid cellCount={1} />
+                  </div>
+                ) : (
+                  user.displayName
+                )}
+              </span>
+              {/* Correo*/}
+              <span className={`${tcolor.muted}`}>
+                {user === undefined ? (
+                  <div className="mx-auto w-[70%]">
+                    <SkeletonAnimationGrid cellCount={1} />
+                  </div>
+                ) : (
+                  user.email
+                )}
+              </span>
+              {/* Proveedor */}
+              {user === undefined ? (
+                <div className="flex justify-center gap-3 w-[50%] mx-auto overflow-hidden rounded-xl ">
+                  <SkeletonAnimationGrid cellCount={1} />
+                  <SkeletonAnimationGrid cellCount={1} />
+                </div>
+              ) : (
+                <div className="space-x-3  ">
+                  <span
+                    className={` ${tcolor.secondary} ${color.secondary}  px-2 py-1 rounded-xl`}
+                  >
+                    Provider
+                  </span>
+                  <span
+                    className={` whitespace-nowrap bg-red-500/80 px-2 py-1 rounded-xl`}
+                  >
+                    {user.providerData[0].providerId}
+                  </span>
+                </div>
+              )}
+            </div>
+          </section>
+
+          {/* Metadata de la Cuenta */}
+          <section
+            className={` ${color.third} ${tcolor.primary} mt-2 gap-3 flex flex-col flex-wrap items-center p-4 w-full max-w-[700px] mx-auto rounded-xl`}
+          >
+            <h2 className={`font-bold text-center ${tcolor.primary}`}>Info</h2>
+            {/* Datos  */}
+            <div className=" gap-3 flex flex-row flex-wrap justify-around w-full">
+              <div
+                className={` ${color.secondary} min-w-50 flex-1 flex flex-col  px-4 py-2 `}
+              >
+                <span className={`${tcolor.muted}`}>Created at</span>
+                <span>
+                  {user === undefined ? (
+                    <SkeletonAnimationGrid cellCount={1} />
+                  ) : (
+                    new Date(user.metadata.creationTime).toLocaleString(
+                      "en-US",
+                      {
+                        dateStyle: "medium",
+                        timeStyle: "short",
+                      }
+                    )
+                  )}
+                </span>
+              </div>
+              <div
+                className={` ${color.secondary} min-w-50 flex-1 flex flex-col px-4 py-2`}
+              >
+                <span className={`${tcolor.muted}`}>Last seen</span>
+                <span>
+                  {user === undefined ? (
+                    <SkeletonAnimationGrid cellCount={1} />
+                  ) : (
+                    new Date(user.metadata.lastSignInTime).toLocaleString(
+                      "en-US",
+                      {
+                        dateStyle: "medium",
+                        timeStyle: "short",
+                      }
+                    )
+                  )}
+                </span>
+              </div>
+            </div>
+          </section>
+          <section>
+            <h2
+              className={` font-bold text-center ${tcolor.primary} ${color.third}  w-full max-w-[700px] mx-auto p-3 rounded-xl`}
+            >
+              ASSETS
+            </h2>
+            {assets === undefined ? (
+              <div className="p-3">
+                <SkeletonAnimationGrid
+                  minCellWidth={350}
+                  gap={10}
+                  cellCount={2}
+                  h={250}
+                />
+              </div>
+            ) : assets === "error" ? (
+              "error"
             ) : (
               <>
-                <img
-                  src={user.photoURL != "" ? `${user.photoURL}` : "/vercel.svg"}
-                  alt="Profile photo"
-                  className="object-contain w-full h-full "
-                />
+                <div className=" mb-40 grid gap-6 p-4  [grid-template-columns:repeat(auto-fit,minmax(250px,1fr))]">
+                  {assets.map((asset) => (
+                    <AssetsCard
+                      key={asset.id}
+                      asset={asset}
+                      currentUserId={user?.uid}
+                      onClickBar={() => handleOnClickBar(asset)}
+                      onClickPhoto={handleOnClickPhoto}
+                      onClickComents={() => handleOnClinkComent(asset)}
+                    />
+                  ))}
+                  {hasMore &&
+                    Array.from({ length: 8 }).map((_, i) => (
+                      <div key={i} ref={(node) => i == 0 && LoaderRef(node)}>
+                        <SkeletonAnimationGrid
+                          minCellWidth={250}
+                          gap={1}
+                          cellCount={1}
+                          h={250}
+                        />
+                      </div>
+                    ))}
+                </div>
               </>
             )}
-          </div>
-          {/* Informacion de la cuenta */}
-          <div className="bg-red-200 px-4  flex-1 flex flex-col ">
-            {/* Nombre */}
-            <span>
-              {user === undefined ? "Cargando nombre" : user.displayName}
-            </span>
-            {/* Correp */}
-            <span>{user === undefined ? "carando correo" : user.email}</span>
-            {/* Proveedor */}
-            <div className="space-x-3">
-              <span>Provider</span>
-              <span>
-                {user === undefined
-                  ? "cargando proveedor"
-                  : user.providerData[0].providerId}
-              </span>
-            </div>
-          </div>
+          </section>
         </section>
-
-        {/* Metadata de la Cuenta */}
-        <section className="bg-blue-400  mt-2 gap-3 flex flex-col flex-wrap items-center p-4 w-full max-w-[700px] h-full max-h-60 mx-auto rounded-xl  ">
-          <h2>Info</h2>
-          {/* Datos  */}
-          <div className=" gap-3 flex flex-row flex-wrap justify-around w-full">
-            <div className="  min-w-50 flex-1 flex flex-col bg-gray-400 px-4 py-2 ">
-              <span>Created at</span>
-              <span>
-                {user === undefined
-                  ? "cargando fecha"
-                  : new Date(user.metadata.creationTime).toLocaleString(
-                      "en-US",
-                      {
-                        dateStyle: "medium",
-                        timeStyle: "short",
-                      }
-                    )}
-              </span>
-            </div>
-            <div className="min-w-50 flex-1 flex flex-col bg-gray-400 px-4 py-2">
-              <span>Last seen</span>
-              <span>
-                {user === undefined
-                  ? "cargando fecha"
-                  : new Date(user.metadata.lastSignInTime).toLocaleString(
-                      "en-US",
-                      {
-                        dateStyle: "medium",
-                        timeStyle: "short",
-                      }
-                    )}
-              </span>
-            </div>
-          </div>
-        </section>
-        <section className="bg-blue-400  ">
-          <h2 className="text-center"> Assets</h2>
-          {assets === undefined ? (
-            <div className="p-3">
-              <SkeletonAnimationGrid
-                minCellWidth={350}
-                gap={10}
-                cellCount={2}
-                h={250}
-              />
-            </div>
-          ) : assets === "error" ? (
-            "error"
-          ) : (
-            <>
-              <div className="grid gap-6 p-4  [grid-template-columns:repeat(auto-fit,minmax(250px,1fr))]">
-                {assets.map((asset) => (
-                  <AssetsCard
-                    key={asset.id}
-                    asset={asset}
-                    currentUserId={user?.uid}
-                    onClickBar={() => null}
-                    onClickPhoto={() => null}
-                  />
-                ))}
-                {hasMore &&
-                  Array.from({ length: 8 }).map((_, i) => (
-                    <div key={i} ref={(node) => i == 0 && LoaderRef(node)}>
-                      <SkeletonAnimationGrid
-                        minCellWidth={250}
-                        gap={1}
-                        cellCount={1}
-                        h={250}
-                      />
-                    </div>
-                  ))}
-              </div>
-            </>
-          )}
-        </section>
-      </main>
-      {/*
+        {/*
            const f_user = {
     uid,
     email,
@@ -261,6 +378,7 @@ export default function UserProfile() {
     },
   };
           */}
+      </main>
     </>
   );
 }

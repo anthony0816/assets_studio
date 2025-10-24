@@ -16,7 +16,7 @@ export default function ComentCard({ coment }) {
         className=" mb-3 cursor-pointer flex items-center gap-2"
         onClick={() => {
           storage.setUserToProfile({ user_id: coment.user_id });
-          router("/visit_user_profile");
+          router(`/user/${coment.user_id}`);
         }}
       >
         <img

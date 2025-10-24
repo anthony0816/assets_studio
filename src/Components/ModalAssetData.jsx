@@ -157,7 +157,9 @@ const ModalAssetData = forwardRef((props, ref) => {
     async function loadLikesInformation() {
       if (!asset) return;
       setLoadingLikesInfo(true);
-      const res = await fetch(`api/assets/get/getLikes/${asset.id}`);
+      const res = await fetch(
+        `${window.location.origin}/api/assets/get/getLikes/${asset.id}`
+      );
       const From_db_Likes = await res.json();
 
       let boolean = false;
@@ -324,7 +326,9 @@ const ModalAssetData = forwardRef((props, ref) => {
       {
         /* buscar en la base de datos */
       }
-      const res = await fetch(`api/user/get-by-uid?uid=${asset.user_id}`);
+      const res = await fetch(
+        `${window.location.origin}/api/user/get-by-uid?uid=${asset.user_id}`
+      );
       const { p_user, p_error, noUser } = await res.json();
       if (p_error) {
         console.error("Error a la hora de hacer el fetch", res);
@@ -346,7 +350,7 @@ const ModalAssetData = forwardRef((props, ref) => {
 
   async function GetDataFromUser() {
     setfetchingUserError(false);
-    const res = await fetch("api/user/get", {
+    const res = await fetch(`${window.location.origin}/api/user/get`, {
       method: "POST",
       headers: {
         "Content-type": "Application/json",

@@ -301,53 +301,62 @@ export async function CreateUser(
 }
 
 export async function GetComentByAsset(asset_id, page, limit) {
-  const res = await fetch("/api/coments/get/asset_id", {
-    method: "POST",
-    headers: {
-      "Content-type": "Application/json",
-    },
-    body: JSON.stringify({
-      asset_id,
-      page,
-      limit,
-    }),
-  });
-  return res;
-}
-
-export async function GiveLike(asset_id, liked, currentUserId) {
-  if (!liked) {
-    const res = await fetch("api/likes/create-delete", {
+  const res = await fetch(
+    `${window.location.origin}/api/coments/get/asset_id`,
+    {
       method: "POST",
       headers: {
         "Content-type": "Application/json",
       },
       body: JSON.stringify({
-        user_id: currentUserId,
         asset_id,
+        page,
+        limit,
       }),
-    });
+    }
+  );
+  return res;
+}
+
+export async function GiveLike(asset_id, liked, currentUserId) {
+  if (!liked) {
+    const res = await fetch(
+      `${window.location.origin}/api/likes/create-delete`,
+      {
+        method: "POST",
+        headers: {
+          "Content-type": "Application/json",
+        },
+        body: JSON.stringify({
+          user_id: currentUserId,
+          asset_id,
+        }),
+      }
+    );
 
     return res;
   }
 
   if (liked) {
-    const res = await fetch("api/likes/create-delete", {
-      method: "DELETE",
-      headers: {
-        "Content-type": "Application/json",
-      },
-      body: JSON.stringify({
-        user_id: currentUserId,
-        asset_id,
-      }),
-    });
+    const res = await fetch(
+      `${window.location.origin}/api/likes/create-delete`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-type": "Application/json",
+        },
+        body: JSON.stringify({
+          user_id: currentUserId,
+          asset_id,
+        }),
+      }
+    );
     return res;
   }
 }
 
 export async function CreateReport(asset_id, user_id, type, description) {
-  const res = await fetch("api/reports/create", {
+  const res = await fetch(`${window.location.origin}/api/reports/create`, {
     method: "POST",
     headers: {
       "Content-type": "Application/json",
