@@ -39,8 +39,8 @@ export default function ModalOpengameart({
 
   // Escuchar la navegacion d
   useEventListener("keydown", (e) => {
-    if (e.key === "ArrowLeft") return onPrev();
-    if (e.key === "ArrowRight") return onNext();
+    if (e.key === "ArrowLeft" && isOpen) return onPrev();
+    if (e.key === "ArrowRight" && isOpen) return onNext();
   });
 
   useEffect(() => {
@@ -48,7 +48,6 @@ export default function ModalOpengameart({
     const signal = controlleRef.current.signal;
 
     if (!initialData) return;
-    console.log("Ejecutando modal", initialData);
     setIsOpen(true);
     setLoading(true);
     fetch(
