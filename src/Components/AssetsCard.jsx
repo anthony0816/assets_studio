@@ -9,6 +9,7 @@ import ReportButton from "@/Icons/ReportButton";
 import AssetCardOptionButton from "./AssetCardOptionButton";
 import { useAuth } from "@/context/authContext";
 import { CreateNotification, NOTIFI_TYPES } from "@/utils/notifications";
+import Image from "next/image";
 
 export default function AssetsCard({
   asset,
@@ -123,12 +124,19 @@ export default function AssetsCard({
             fontMenuColor={currentTheme.textColor.primary}
           />
         </div>
-        <img
-          onClick={() => onClickPhoto(asset)}
-          src={asset.src}
-          alt={`Asset ${asset.id}`}
-          className="w-full h-48 object-cover"
-        />
+
+        <div className="w-full h-48 relative">
+          <Image
+            onClick={() => onClickPhoto(asset)}
+            src={asset.src}
+            alt={`Asset ${asset.id}`}
+            fill
+            sizes="150px"
+            className="object-cover"
+            placeholder="blur" // Opcional: efecto mientras carga
+            blurDataURL="data:image/jpeg;base64,..." // Opcional
+          />
+        </div>
         <div onClick={() => onClickBar()} className="p-3 flex flex-col gap-1">
           <div className={`flex flex-row justify-between items-center   `}>
             <div className="flex flex-row space-x-1 w-full ">
