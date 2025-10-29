@@ -16,3 +16,79 @@ export const ReportSelectorOptions = [
   { name: "Fraud", value: "Fraud" },
   { name: "Other", value: "other" },
 ];
+
+export const keyWords = [
+  // Personajes y roles
+  "personaje",
+  "soldado",
+  "guerrero",
+  "explorador",
+  "comandante",
+  "enemigo",
+  "aliado",
+  "mercenario",
+  "espía",
+  "líder",
+
+  // Terreno y entorno
+  "terreno",
+  "bosque",
+  "desierto",
+  "pantano",
+  "montaña",
+  "ciudad",
+  "puente",
+  "cueva",
+  "fortaleza",
+  "río",
+  "playa",
+
+  // Objetos y estructuras
+  "caracol",
+  "torreta",
+  "búnker",
+  "vehículo",
+  "drone",
+  "mina",
+  "barrera",
+  "puerta",
+  "sensor",
+  "antena",
+  "refugio",
+
+  // Acciones y eventos
+  "ataque",
+  "defensa",
+  "emboscada",
+  "reconocimiento",
+  "patrulla",
+  "rescate",
+  "infiltración",
+  "explosión",
+  "refuerzo",
+  "retirada",
+
+  // Condiciones y estados
+  "herido",
+  "oculto",
+  "visible",
+  "alerta",
+  "agotado",
+  "camuflado",
+  "desarmado",
+  "acorazado",
+  "inmóvil",
+  "en movimiento",
+
+  // Clima y tiempo
+  "lluvia",
+  "noche",
+  "niebla",
+  "tormenta",
+  "amanecer",
+  "atardecer",
+  "viento",
+  "calor",
+  "frío",
+  "oscuridad",
+];

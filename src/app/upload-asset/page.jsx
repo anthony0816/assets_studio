@@ -7,17 +7,22 @@ import LoadingSpinner from "@/Components/LoadingSpiner";
 import { useLoadingRouter } from "@/Components/LoadingRouterProvider";
 import CategorySelector from "@/Components/CategorySelector";
 import DeleteIcon from "@/Icons/DeleteIcon";
-
+import { keyWords } from "@/utils/consts";
 import { fileToBase64 } from "@/utils/functions";
 
 export default function UploadAsset() {
   const { currentTheme } = useTheme();
+  const color = currentTheme.colors;
+  const tcolor = currentTheme.textColor;
   const [file, setFile] = useState(null);
   const [categoria, setCategoria] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [preview, setPreview] = useState(null);
   const { user } = useAuth();
   const { router } = useLoadingRouter();
+
+  // Palabras clave que se van seleccionando
+  const [selectedKeyWords, setSelectedKeyWords] = useState([]);
 
   useEffect(() => {
     if (!file) return;
@@ -39,7 +44,8 @@ export default function UploadAsset() {
       base64file,
       user?.uid,
       user?.providerId,
-      categoria
+      categoria,
+      selectedKeyWords
     );
     setFile(null);
     setIsLoading(false);
@@ -47,13 +53,26 @@ export default function UploadAsset() {
     console.log("BAckend Create Asset", data);
   }
 
+  function VerifySelected(word) {
+    return selectedKeyWords.some((key) => key == word);
+  }
+  function SelectKeyWord(word) {
+    if (selectedKeyWords.some((keyWords) => keyWords == word)) return;
+    setSelectedKeyWords((prev) => [...prev, word]);
+  }
+  function RemoveSelectedKeyWord(word) {
+    setSelectedKeyWords((prev) => {
+      return prev.filter((dato) => dato != word);
+    });
+  }
+
   return (
     <div className="h-[100%] overflow-y-auto">
       <div
-        className={`min-h-screen  ${currentTheme.colors.primary} ${currentTheme.textColor.primary} flex items-center justify-center p-6`}
+        className={`min-h-screen  ${color.primary} ${tcolor.primary} flex items-center justify-center p-6`}
       >
         <div
-          className={`${currentTheme.colors.third} rounded-lg shadow-lg w-full max-w-lg p-8 space-y-6`}
+          className={`${color.third} rounded-lg shadow-lg w-full max-w-lg p-8 space-y-6`}
         >
           <h1 className="text-2xl font-bold text-center">Upload Asset</h1>
 
@@ -62,7 +81,7 @@ export default function UploadAsset() {
             <div className="w-full flex text-center">
               {!file && (
                 <label
-                  className={`w-full border ${currentTheme.colors.border} ${currentTheme.textColor.primary} font-medium py-2 px-4 h-40 rounded-lg transition cursor-pointer flex items-center justify-center`}
+                  className={`w-full border ${color.border} ${tcolor.primary} font-medium py-2 px-4 h-40 rounded-lg transition cursor-pointer flex items-center justify-center`}
                 >
                   find your asset in local store
                   <input
@@ -97,11 +116,63 @@ export default function UploadAsset() {
                   }
                   setCategoria(e.target.value);
                 }}
-                className={`w-[90%] whitespace-nowrap rounded-xl cursor-pointer p-1 px-3 font-bold ${currentTheme.colors.primary} ${currentTheme.textColor.secondary}`}
+                className={`w-[90%] whitespace-nowrap rounded-xl cursor-pointer p-1 px-3 font-bold ${color.primary} ${tcolor.secondary}`}
               >
                 <option value="">Select a category</option>
                 <CategorySelector />
               </select>
+            </div>
+
+            {/* Palabras Clave */}
+            <div className="space-y-4">
+              <h2 className={`text-center border-b p-2 ${color.border}`}>
+                Key Words
+              </h2>
+              {/* Seleccionados */}
+              {selectedKeyWords.length > 0 && (
+                <div className={`border-b ${color.border}`}>
+                  <h3>Selected:</h3>
+                  <div className="flex flex-wrap gap-1 py-2 ">
+                    <>
+                      {selectedKeyWords.map((word) => (
+                        <div
+                          onClick={() => RemoveSelectedKeyWord(word)}
+                          key={word}
+                          className={` transition  border ${color.border} ${color.primary} p-2 rounded-xl hover:scale-95 cursor-pointer `}
+                        >
+                          {word}
+                        </div>
+                      ))}
+                      <div
+                        onClick={() => setSelectedKeyWords([])}
+                        className={`flex items-center transition p-2 bg-red-400/70 border ${color.border} hover:bg-red-400 rounded-xl cursor-pointer`}
+                      >
+                        <p> Remove All</p>
+                        <DeleteIcon />{" "}
+                      </div>
+                    </>
+                  </div>
+                </div>
+              )}
+              <div
+                className={`flex flex-wrap justify-center gap-2 md:gap-3 max-h-50 overflow-y-auto `}
+              >
+                {keyWords.map((word) => (
+                  <div
+                    onClick={() => SelectKeyWord(word)}
+                    key={word}
+                    className={` transition duration-300 ${
+                      color.primary
+                    } border ${
+                      color.border
+                    }    p-2 hover:scale-95   rounded-xl cursor-pointer ${
+                      VerifySelected(word) ? "bg-green-500" : ""
+                    } `}
+                  >
+                    {word}
+                  </div>
+                ))}
+              </div>
             </div>
 
             {/* Botón */}
@@ -109,8 +180,8 @@ export default function UploadAsset() {
               <button
                 disabled={file == null || isLoading}
                 type="submit"
-                className={`w-full ${currentTheme.colors.buttonPrimary} ${
-                  currentTheme.colors.buttonPrimaryHover
+                className={`w-full ${color.buttonPrimary} ${
+                  color.buttonPrimaryHover
                 } text-white font-medium py-2 px-4 rounded-lg transition ${
                   !file && "opacity-50"
                 }`}

@@ -136,7 +136,13 @@ export function VerifyJWToken(request) {
   }
 }
 
-export async function CreateAsset(base64, uid, providerId, categoria) {
+export async function CreateAsset(
+  base64,
+  uid,
+  providerId,
+  categoria,
+  keyWords
+) {
   const res = await fetch(`${window.location.origin}/api/assets/upload`, {
     method: "POST",
     headers: {
@@ -147,6 +153,7 @@ export async function CreateAsset(base64, uid, providerId, categoria) {
       uid,
       user_providerId: providerId,
       categoria: categoria,
+      keyWords,
     }),
   });
   const data = await res.json();
