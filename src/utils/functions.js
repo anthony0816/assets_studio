@@ -241,18 +241,21 @@ export async function GetAssetsByCategoria(page, limit, categoria) {
 }
 
 export async function GetByParam(param, page, limit, freeAcces = false) {
-  const res = await fetch("/api/assets/get/getBasedOnParams", {
-    method: "POST",
-    headers: {
-      "Content-type": "Application/json",
-    },
-    body: JSON.stringify({
-      param,
-      page,
-      limit,
-      freeAcces,
-    }),
-  });
+  const res = await fetch(
+    `${window.location.origin}/api/assets/get/getBasedOnParams`,
+    {
+      method: "POST",
+      headers: {
+        "Content-type": "Application/json",
+      },
+      body: JSON.stringify({
+        param,
+        page,
+        limit,
+        freeAcces,
+      }),
+    }
+  );
   const data = res.json();
   return data;
 }
