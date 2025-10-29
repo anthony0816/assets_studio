@@ -69,6 +69,13 @@ model Asset{
   categoria String @default("other")
   public_id String 
   format String
+  tags AssetTag []
+}
+
+model AssetTag{
+  id Int @id @default(autoincrement())
+  name String @unique 
+  assets Asset []
 }
 
 model Report{
