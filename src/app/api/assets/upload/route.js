@@ -8,6 +8,12 @@ export async function POST(request) {
     const { base64, uid, user_providerId, categoria, keyWords } =
       await request.json();
 
+    if (keyWords.length < 3) {
+      const error = new Error("no se aceptan menos de 3 etiquetas ");
+      error.name = "keyWordError";
+      throw error;
+    }
+
     const folder = "assets-studio";
 
     const result = await cloudinary.uploader.upload(base64, {
@@ -23,6 +29,12 @@ export async function POST(request) {
         categoria: categoria,
         public_id: result.public_id,
         format: result.format,
+        tags: {
+          connectOrCreate: keyWords.map((tagName) => ({
+            where: { name: tagName },
+            create: { name: tagName },
+          })),
+        },
       },
     });
     return NextResponse.json({ url: result.secure_url }, { status: 200 });

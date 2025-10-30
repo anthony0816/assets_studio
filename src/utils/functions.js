@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import translate from "translate";
 
 export function DowloadCloudinaryAsset(url) {
   fetch(url)
@@ -548,4 +549,14 @@ export function UserToFirebaseFormatInfo(p_user) {
     },
   };
   return f_user;
+}
+
+export async function TranslateArrayString({ array = [], from = "", to = "" }) {
+  if (array == [] || from == "" || to == "")
+    return console.error("Error en los parametros para traducir");
+
+  const translated = await Promise.all(
+    array.map((d) => translate(d.title, { from: from, to: to }))
+  );
+  return translated;
 }

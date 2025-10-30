@@ -9,6 +9,7 @@ import CategorySelector from "@/Components/CategorySelector";
 import DeleteIcon from "@/Icons/DeleteIcon";
 import { keyWords } from "@/utils/consts";
 import { fileToBase64 } from "@/utils/functions";
+import { TranslateArrayString } from "@/utils/functions";
 
 export default function UploadAsset() {
   const { currentTheme } = useTheme();
@@ -24,6 +25,10 @@ export default function UploadAsset() {
 
   // Palabras clave que se van seleccionando
   const [selectedKeyWords, setSelectedKeyWords] = useState([]);
+  const lenguagues = [
+    { name: "English", leng: "en" },
+    { name: "Español", leng: "es" },
+  ];
 
   useEffect(() => {
     if (!file) return;
@@ -31,9 +36,16 @@ export default function UploadAsset() {
   }, [file]);
 
   async function handleSubmit(e) {
+    e.preventDefault();
+
+    if (selectedKeyWords.length < 3)
+      return alert(
+        "Elige al menos 3 palabras claves, Pick al least 3 keywords"
+      );
+
     if (isLoading) return;
     setIsLoading(true);
-    e.preventDefault();
+
     if (!categoria) return setIsLoading(false);
     const base64file = await fileToBase64(file);
     if (!user) {
@@ -48,10 +60,15 @@ export default function UploadAsset() {
       categoria,
       selectedKeyWords
     );
-    setFile(null);
     setIsLoading(false);
+    const { url, error } = data;
+    console.log("Backend Create Asset", url);
+    if (error) {
+      console.error("Error while uploading asset:", error);
+      return alert("Error while uploading asset");
+    }
+    setFile(null);
     setCategoria("");
-    console.log("BAckend Create Asset", data);
   }
 
   function VerifySelected(word) {
@@ -117,7 +134,10 @@ export default function UploadAsset() {
               {file && (
                 <div className="relative mx-auto ">
                   <div
-                    onClick={() => setFile(null)}
+                    onClick={() => {
+                      setFile(null);
+                      setSelectedKeyWords([]);
+                    }}
                     className="absolute right-2 bottom-2 bg-gray-800/90 p-4 hover:bg-gray-800 transition rounded-xl "
                   >
                     <DeleteIcon />
@@ -128,21 +148,23 @@ export default function UploadAsset() {
             </div>
 
             {/* Categoría */}
-            <div className="flex flex-col justify-center items-center">
-              <select
-                required
-                onChange={(e) => {
-                  if (e.target.value.startsWith("cat-")) {
-                    return setCategoria(e.target.value.split("-")[1]);
-                  }
-                  setCategoria(e.target.value);
-                }}
-                className={`w-[90%] whitespace-nowrap rounded-xl cursor-pointer p-1 px-3 font-bold ${color.primary} ${tcolor.secondary}`}
-              >
-                <option value="">Select a category</option>
-                <CategorySelector />
-              </select>
-            </div>
+            {file && (
+              <div className="flex flex-col justify-center items-center">
+                <select
+                  required
+                  onChange={(e) => {
+                    if (e.target.value.startsWith("cat-")) {
+                      return setCategoria(e.target.value.split("-")[1]);
+                    }
+                    setCategoria(e.target.value);
+                  }}
+                  className={`w-[90%] whitespace-nowrap rounded-xl cursor-pointer p-1 px-3 font-bold ${color.primary} ${tcolor.secondary}`}
+                >
+                  <option value="">Select a category</option>
+                  <CategorySelector />
+                </select>
+              </div>
+            )}
 
             {/* Palabras Clave */}
             {file && (
@@ -212,6 +234,17 @@ export default function UploadAsset() {
                     </button>
                   </div>
                 </div>
+                {/* Opciones de Traduccion */}
+                <div className="flex justify-center">
+                  <ul className={`flex space-x-3`}>
+                    {lenguagues.map((l) => (
+                      <li key={l.name} className={`    cursor-pointer`}>
+                        {l.name}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
                 {/* Keywords para seleccionar  */}
                 <div
                   className={`flex flex-wrap justify-center gap-2 md:gap-3 max-h-80 overflow-y-auto `}
