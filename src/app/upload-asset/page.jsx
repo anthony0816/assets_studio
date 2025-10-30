@@ -20,6 +20,7 @@ export default function UploadAsset() {
   const [preview, setPreview] = useState(null);
   const { user } = useAuth();
   const { router } = useLoadingRouter();
+  const [inputKeyWord, setInputKeyWord] = useState("");
 
   // Palabras clave que se van seleccionando
   const [selectedKeyWords, setSelectedKeyWords] = useState([]);
@@ -57,13 +58,33 @@ export default function UploadAsset() {
     return selectedKeyWords.some((key) => key == word);
   }
   function SelectKeyWord(word) {
+    if (!isValidWord(word)) return;
+    if (selectedKeyWords.length >= 10) return;
     if (selectedKeyWords.some((keyWords) => keyWords == word)) return;
     setSelectedKeyWords((prev) => [...prev, word]);
+    setInputKeyWord("");
   }
   function RemoveSelectedKeyWord(word) {
     setSelectedKeyWords((prev) => {
       return prev.filter((dato) => dato != word);
     });
+  }
+
+  // valida la palabra
+  function isValidWord(word) {
+    const maxLength = 50;
+
+    // Verificar SI TIENE espacios
+    if (/\s/.test(word)) return false;
+
+    // Verificar longitud
+    if (word.trim().length === 0 || word.trim().length > maxLength)
+      return false;
+
+    // Verificar caracteres prohibidos
+    if (/[<>{}[\]\\]/.test(word)) return false;
+
+    return true;
   }
 
   return (
@@ -124,56 +145,95 @@ export default function UploadAsset() {
             </div>
 
             {/* Palabras Clave */}
-            <div className="space-y-4">
-              <h2 className={`text-center border-b p-2 ${color.border}`}>
-                Key Words
-              </h2>
-              {/* Seleccionados */}
-              {selectedKeyWords.length > 0 && (
-                <div className={`border-b ${color.border}`}>
-                  <h3>Selected:</h3>
-                  <div className="flex flex-wrap gap-1 py-2 ">
-                    <>
-                      {selectedKeyWords.map((word) => (
-                        <div
-                          onClick={() => RemoveSelectedKeyWord(word)}
-                          key={word}
-                          className={` transition  border ${color.border} ${color.primary} p-2 rounded-xl hover:scale-95 cursor-pointer `}
-                        >
-                          {word}
-                        </div>
-                      ))}
+            {file && (
+              <div className="space-y-4">
+                <h2 className={`text-center border-b p-2 ${color.border}`}>
+                  Key Words
+                </h2>
+                <p className={`${tcolor.muted} text-center text-sm`}>
+                  These keywords help the asset appear in search results.
+                </p>
+                {/* Seleccionados */}
+                {selectedKeyWords.length > 0 && (
+                  <div className={`border-b ${color.border}`}>
+                    <header className="flex  items-center justify-between py-1">
+                      <h3 className="">Selected:</h3>
+
+                      {/* Options */}
+
                       <div
                         onClick={() => setSelectedKeyWords([])}
-                        className={`flex items-center transition p-2 bg-red-400/70 border ${color.border} hover:bg-red-400 rounded-xl cursor-pointer`}
+                        className={`flex items-center transition p-1 bg-red-400/70 border ${color.border} hover:bg-red-400 rounded-xl cursor-pointer`}
                       >
                         <p> Remove All</p>
                         <DeleteIcon />{" "}
                       </div>
-                    </>
+                    </header>
+
+                    <div className="flex flex-wrap gap-1 py-2 items-center">
+                      <>
+                        {selectedKeyWords.map((word, i) => (
+                          <div
+                            onClick={() => RemoveSelectedKeyWord(word)}
+                            key={word}
+                            className={` transition  border ${color.border} ${color.primary} p-2 rounded-xl hover:scale-95 cursor-pointer `}
+                          >
+                            {word}
+                          </div>
+                        ))}
+                        <div className=" ml-auto">
+                          {selectedKeyWords.length}/10
+                        </div>
+                      </>
+                    </div>
+                  </div>
+                )}
+                {/* Add a key word */}
+                <div className={`flex justify-center p-1 `}>
+                  <div
+                    className={` space-x-2 rounded-xl w-full flex justify-center p-1`}
+                  >
+                    <input
+                      value={inputKeyWord}
+                      onChange={(e) => setInputKeyWord(e.target.value)}
+                      type="text"
+                      className={`outline-none border ${color.border} rounded-xl px-2 `}
+                    />
+                    <button
+                      type="button"
+                      onClick={() =>
+                        selectedKeyWords.length < 10 &&
+                        inputKeyWord != "" &&
+                        SelectKeyWord(inputKeyWord)
+                      }
+                      className={`border ${color.border} ${color.buttonPrimary} ${color.buttonPrimaryHover} p-1 rounded-xl`}
+                    >
+                      ADD
+                    </button>
                   </div>
                 </div>
-              )}
-              <div
-                className={`flex flex-wrap justify-center gap-2 md:gap-3 max-h-50 overflow-y-auto `}
-              >
-                {keyWords.map((word) => (
-                  <div
-                    onClick={() => SelectKeyWord(word)}
-                    key={word}
-                    className={` transition duration-300 ${
-                      color.primary
-                    } border ${
-                      color.border
-                    }    p-2 hover:scale-95   rounded-xl cursor-pointer ${
-                      VerifySelected(word) ? "bg-green-500" : ""
-                    } `}
-                  >
-                    {word}
-                  </div>
-                ))}
+                {/* Keywords para seleccionar  */}
+                <div
+                  className={`flex flex-wrap justify-center gap-2 md:gap-3 max-h-80 overflow-y-auto `}
+                >
+                  {keyWords.map((word) => (
+                    <div
+                      onClick={() => SelectKeyWord(word)}
+                      key={word}
+                      className={` transition duration-300 ${
+                        color.primary
+                      } border ${
+                        color.border
+                      }    p-2 hover:scale-95   rounded-xl cursor-pointer ${
+                        VerifySelected(word) ? "bg-green-500" : ""
+                      } `}
+                    >
+                      {word}
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Botón */}
             <div className="pt-4">
