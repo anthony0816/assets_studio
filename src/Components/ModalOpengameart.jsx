@@ -79,19 +79,25 @@ export default function ModalOpengameart({
             setSavingAsset(false);
             return alert("No session active, can't save the asset ");
           }
-          CreateAsset(base64, user.uid, user.providerId, "opengameart").then(
-            ({ url, error }) => {
-              if (error) {
-                setSavingAsset(false);
-                setSavingAssetError(true);
-                return console.error("Error Creando Asset:", error);
-              }
-              if (url) {
-                setSavingAsset(false);
-                return console.log("Guardado con exito:", url);
-              }
+          // Pasarle las palabras del titulo como keyWords
+          const keyWords = initialData.title.split(" ");
+          CreateAsset(
+            base64,
+            user.uid,
+            user.providerId,
+            "opengameart",
+            keyWords
+          ).then(({ url, error }) => {
+            if (error) {
+              setSavingAsset(false);
+              setSavingAssetError(true);
+              return console.error("Error Creando Asset:", error);
             }
-          );
+            if (url) {
+              setSavingAsset(false);
+              return console.log("Guardado con exito:", url);
+            }
+          });
         }
         if (error) {
           setSavingAsset(false);

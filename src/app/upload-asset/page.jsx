@@ -7,7 +7,7 @@ import LoadingSpinner from "@/Components/LoadingSpiner";
 import { useLoadingRouter } from "@/Components/LoadingRouterProvider";
 import CategorySelector from "@/Components/CategorySelector";
 import DeleteIcon from "@/Icons/DeleteIcon";
-import { keyWords } from "@/utils/consts";
+import { keyWords as words } from "@/utils/consts";
 import { fileToBase64 } from "@/utils/functions";
 import { TranslateArrayString } from "@/utils/functions";
 
@@ -24,7 +24,10 @@ export default function UploadAsset() {
   const [inputKeyWord, setInputKeyWord] = useState("");
 
   // Palabras clave que se van seleccionando
+  const [keyWords, setKeyWords] = useState(words);
   const [selectedKeyWords, setSelectedKeyWords] = useState([]);
+
+  const [currentLenguage, setCurretLenguague] = useState("en");
   const lenguagues = [
     { name: "English", leng: "en" },
     { name: "Español", leng: "es" },
@@ -53,6 +56,7 @@ export default function UploadAsset() {
       router("/login");
       return;
     }
+
     const data = await CreateAsset(
       base64file,
       user?.uid,
@@ -69,6 +73,7 @@ export default function UploadAsset() {
     }
     setFile(null);
     setCategoria("");
+    setSelectedKeyWords([]);
   }
 
   function VerifySelected(word) {
@@ -91,9 +96,6 @@ export default function UploadAsset() {
   function isValidWord(word) {
     const maxLength = 50;
 
-    // Verificar SI TIENE espacios
-    if (/\s/.test(word)) return false;
-
     // Verificar longitud
     if (word.trim().length === 0 || word.trim().length > maxLength)
       return false;
@@ -102,6 +104,18 @@ export default function UploadAsset() {
     if (/[<>{}[\]\\]/.test(word)) return false;
 
     return true;
+  }
+
+  function translate(to) {
+    if (to == currentLenguage) return;
+    console.log("current:", currentLenguage, "to:", to);
+    TranslateArrayString({
+      array: keyWords,
+      from: currentLenguage,
+      to: to,
+    })
+      .then((data) => setKeyWords(data))
+      .then(setCurretLenguague(to));
   }
 
   return (
@@ -238,7 +252,15 @@ export default function UploadAsset() {
                 <div className="flex justify-center">
                   <ul className={`flex space-x-3`}>
                     {lenguagues.map((l) => (
-                      <li key={l.name} className={`    cursor-pointer`}>
+                      <li
+                        onClick={() => translate(l.leng)}
+                        key={l.name}
+                        className={` border-b-3 transition ${
+                          currentLenguage == l.leng
+                            ? ` ${color.border}`
+                            : `border-gray-600/0`
+                        } pb-2 cursor-pointer`}
+                      >
                         {l.name}
                       </li>
                     ))}

@@ -7,12 +7,23 @@ export async function POST(request) {
   try {
     const { base64, uid, user_providerId, categoria, keyWords } =
       await request.json();
-
-    if (keyWords.length < 3) {
-      const error = new Error("no se aceptan menos de 3 etiquetas ");
+    // Verificar cantidad de palabras
+    if (keyWords.length < 1 || keyWords > 20) {
+      const error = new Error(
+        "no se aceptan menos de 1 etiquetas ni mas de 10"
+      );
       error.name = "keyWordError";
       throw error;
     }
+
+    // verificar que sean validas
+    keyWords.forEach((word) => {
+      if (!isValidWord(word)) {
+        const error = new Error("entrada de palabras no valida");
+        error.name = "keyWordError";
+        throw error;
+      }
+    });
 
     const folder = "assets-studio";
 
@@ -45,4 +56,17 @@ export async function POST(request) {
       { status: 500 }
     );
   }
+}
+
+// Funcion para verificar que la palabra se avalida
+function isValidWord(word) {
+  const maxLength = 50;
+
+  // Verificar longitud
+  if (word.trim().length === 0 || word.trim().length > maxLength) return false;
+
+  // Verificar caracteres prohibidos
+  if (/[<>{}[\]\\]/.test(word)) return false;
+
+  return true;
 }
