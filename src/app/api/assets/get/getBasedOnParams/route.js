@@ -39,7 +39,14 @@ export async function POST(request) {
 
     // Tratar parametros de tipo search
     if (param.startsWith("search-")) {
-      const value = param.split("-")[1];
+      const query = param.split("-")[1];
+      // limpiar valores de busqueda repetidos
+      let values = query.split(" ");
+      values = [
+        ...new Map(
+          values.map((v) => [v.trim().toLowerCase(), v.trim()])
+        ).values(),
+      ];
       var results = [];
 
       // funcion para buscar por atributos
@@ -58,16 +65,18 @@ export async function POST(request) {
         return res;
       }
 
-      // buscar por categoria
-      results = await search("categoria", value);
+      for (const value of values) {
+        // buscar por categoria
+        const results_1 = await search("categoria", value);
+        results.push(...results_1);
 
-      // busca por el formato de la imagen
-      if (results.length == 0) {
-        results = await search("format", value);
-      }
+        // busca por el formato de la imagen
 
-      //buscar por nombre de usuario
-      if (results.length == 0) {
+        const results_2 = await search("format", value);
+        results.push(...results_2);
+
+        //buscar por nombre de usuario
+
         const uids = await prisma.user.findMany({
           where: {
             name: {
@@ -88,8 +97,32 @@ export async function POST(request) {
             results.push(...result); // Desempaca cada sub-array
           });
         }
+
+        const tags = await prisma.assetTag.findMany({
+          where: {
+            name: {
+              equals: value,
+              mode: "insensitive",
+            },
+          },
+          include: {
+            assets: {
+              include: {
+                likes: true,
+                reports: true,
+                _count: { select: { coments: true } },
+              },
+            },
+          },
+        });
+
+        const results_3 = tags.map((tag) => tag.assets).flat();
+        results.push(...results_3);
       }
 
+      // por ultimo filtrar por dublicados
+      console.log(results);
+      results = [...new Map(results.map((item) => [item.id, item])).values()];
       return NextResponse.json(results);
     }
 
