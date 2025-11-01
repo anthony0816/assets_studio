@@ -54,7 +54,7 @@ export async function POST(request) {
         const res = await prisma.asset.findMany({
           where: {
             [atribute]: {
-              equals: value,
+              contains: value,
               mode: "insensitive",
             },
           },
@@ -80,7 +80,7 @@ export async function POST(request) {
         const uids = await prisma.user.findMany({
           where: {
             name: {
-              equals: value,
+              contains: value,
               mode: "insensitive", // ignonar minusculas y mayusculas
             },
           },
@@ -101,7 +101,7 @@ export async function POST(request) {
         const tags = await prisma.assetTag.findMany({
           where: {
             name: {
-              equals: value,
+              contains: value,
               mode: "insensitive",
             },
           },
@@ -121,7 +121,7 @@ export async function POST(request) {
       }
 
       // por ultimo filtrar por dublicados
-      console.log(results);
+
       results = [...new Map(results.map((item) => [item.id, item])).values()];
       return NextResponse.json(results);
     }
