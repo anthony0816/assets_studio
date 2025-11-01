@@ -107,13 +107,11 @@ export async function POST(request) {
           },
           include: {
             assets: {
-              include: {
-                likes: true,
-                reports: true,
-                _count: { select: { coments: true } },
-              },
+              include: includeParams,
             },
           },
+          skip: page * limit,
+          take: limit,
         });
 
         const results_3 = tags.map((tag) => tag.assets).flat();
