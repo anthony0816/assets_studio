@@ -2,10 +2,12 @@ import { forwardRef, useImperativeHandle, useState } from "react";
 import { DownloadIcon } from "@/Icons/DownloadIcon";
 import { DowloadCloudinaryAsset } from "@/utils/functions";
 import Modal from "./Modal";
+import LoadingSpinner from "./LoadingSpiner";
 
 const ModalShowPicture = forwardRef((props, ref) => {
   const [isOpen, setIsOpen] = useState(false);
   const [asset, setAsset] = useState(null);
+  const [loading, setLoading] = useState(true);
   const { nextAsset, prevAsset } = props;
 
   useImperativeHandle(ref, () => ({
@@ -28,7 +30,7 @@ const ModalShowPicture = forwardRef((props, ref) => {
         {/* Contenedor del modal */}
         <div
           onClick={(e) => e.stopPropagation()}
-          className="relative bg-white dark:bg-gray-900 rounded-lg shadow-lg p-6 max-w-5xl w-full flex flex-col items-center"
+          className="relative  rounded-lg shadow-lg p-6 max-w-5xl w-full flex flex-col items-center"
         >
           {/* Boton Descargar Asset */}
           <button
@@ -41,24 +43,41 @@ const ModalShowPicture = forwardRef((props, ref) => {
           <div className="relative w-full flex items-center justify-center">
             {/* Flecha izquierda */}
             <button
-              onClick={prevAsset}
-              className="absolute left-0 top-1/2 -translate-y-1/2 p-3 text-4xl text-gray-700 dark:text-gray-200 hover:text-blue-500 transition"
+              onClick={() => {
+                setLoading(true);
+                prevAsset();
+              }}
+              className="absolute left-0 top-1/2 -translate-y-1/2 p-3 text-4xl text-gray-700 dark:text-gray-200 hover:text-blue-500 transition z-10"
             >
               ‹
             </button>
 
             {/* Imagen del asset */}
-            <div className="w-full h-[70vh] flex items-center justify-center overflow-hidden rounded-md bg-gray-100 dark:bg-gray-800">
-              <img
-                src={asset?.src}
-                alt="Asset"
-                className="max-w-full max-h-[70vh] object-contain"
-              />
+            <div className="  w-full h-[70vh] flex items-center justify-center overflow-hidden rounded-xl bg-black">
+              <div className="relative w-full h-[70vh]">
+                <div
+                  className={`absolute inset-0 flex justify-center items-center bg-black/70 transition duration-300 ${
+                    loading ? "opacity-100" : "opacity-0"
+                  } `}
+                >
+                  <LoadingSpinner />
+                </div>
+
+                <img
+                  src={asset?.src}
+                  alt="Asset"
+                  className=" w-full h-full object-contain"
+                  onLoad={() => setLoading(false)}
+                />
+              </div>
             </div>
 
             {/* Flecha derecha */}
             <button
-              onClick={nextAsset}
+              onClick={() => {
+                setLoading(true);
+                nextAsset();
+              }}
               className="absolute right-0 top-1/2 -translate-y-1/2 p-3 text-4xl text-gray-700 dark:text-gray-200 hover:text-blue-500 transition"
             >
               ›
