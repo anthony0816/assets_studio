@@ -7,6 +7,7 @@ export default function Modal({
   onClose,
   showButtomnClose = true,
   modalAbsolute,
+  backgroundOpacity = "80",
 }) {
   const modalRef = useRef(null);
   useClickOutside(modalRef, () => isOpen && onClose());
@@ -18,7 +19,7 @@ export default function Modal({
           onClick={onClose}
           className={`animate-[fadeIn_0.3s_ease-in-out] ${
             modalAbsolute ? "absolute" : "fixed"
-          } inset-0 flex items-center justify-center z-50 bg-black/80`}
+          } inset-0 flex items-center justify-center z-50  bg-black/${backgroundOpacity}`}
         >
           {showButtomnClose && (
             <button

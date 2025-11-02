@@ -3,6 +3,7 @@ import { DownloadIcon } from "@/Icons/DownloadIcon";
 import { DowloadCloudinaryAsset } from "@/utils/functions";
 import Modal from "./Modal";
 import LoadingSpinner from "./LoadingSpiner";
+import { useEventListener } from "@/hooks/useEventListener";
 
 const ModalShowPicture = forwardRef((props, ref) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,10 +24,24 @@ const ModalShowPicture = forwardRef((props, ref) => {
     },
     currentAsset: () => asset,
   }));
+
+  // navegacion por las flechas
+  useEventListener("keydown", (e) => {
+    if (isOpen) {
+      e.key === "ArrowRight" && nextAsset();
+      e.key === "ArrowLeft" && prevAsset();
+      e.key === "Escape" && setIsOpen(false);
+    }
+  });
+
   if (!isOpen) return null;
   return (
     <>
-      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
+      <Modal
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        backgroundOpacity={"50"}
+      >
         {/* Contenedor del modal */}
         <div
           onClick={(e) => e.stopPropagation()}
