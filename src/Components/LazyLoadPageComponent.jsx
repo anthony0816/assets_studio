@@ -40,7 +40,7 @@ export default function LazyLoadPage({
   const ModalShowPictueRef = useRef();
   const ModalAssetOptionsRef = useRef();
 
-  const loaderRef = useInfiniteScroll(LoadAssets, hasMore);
+  const loaderRef = useInfiniteScroll(LoadAssets, hasMore, { threshold: 0.1 });
 
   const { openModalAssetsDataWithAssetId, setOpenModalAssetsDataWithAssetId } =
     useInterface();
