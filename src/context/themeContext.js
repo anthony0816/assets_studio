@@ -9,6 +9,15 @@ export function ThemeContextProvider({ children }) {
   const [currentTheme, setCurrentTheme] = useState(CurrentTheme);
 
   useEffect(() => {
+    if (localStorage.getItem("isDark") === null) {
+      setIsBlackTheme(true);
+      localStorage.setItem("isDark", true);
+      return;
+    }
+    setIsBlackTheme(localStorage.getItem("isDark"));
+  }, []);
+
+  useEffect(() => {
     if (isBlackTheme) {
       setCurrentTheme(Theme.blackTheme);
       return;

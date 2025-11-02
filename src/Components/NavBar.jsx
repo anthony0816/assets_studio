@@ -14,18 +14,8 @@ import NotificationsModule from "./NotificationsModule";
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(true);
   const { router } = useLoadingRouter();
-  const [mobileStyle, setMobileStyle] = useState(true);
   const { isMobile } = useSize();
   const { currentTheme, setIsBlackTheme, isBlackTheme } = useTheme();
-
-  useEffect(() => {
-    console.log("Estadi de si es mobile", isMobile);
-    setMobileStyle(isMobile);
-  }, [isMobile]);
-
-  useEffect(() => {
-    setIsBlackTheme(localStorage.getItem("isDark"));
-  }, []);
 
   const items = [
     { name: "Discover Assets", route: "/allAssets", fl: "DA" },
@@ -40,7 +30,7 @@ export default function NavBar() {
     <>
       <aside
         className={
-          mobileStyle
+          isMobile
             ? `hidden`
             : `h-[100vh] ${currentTheme.colors.primary} ${
                 currentTheme.textColor.primary
@@ -74,7 +64,7 @@ export default function NavBar() {
         <LogoAssetsStudio isOpen={isOpen} onClick={() => router("/")} />
 
         {/* Menú para escritorio */}
-        {!mobileStyle && (
+        {!isMobile && (
           <nav className="mt-4">
             <div className="flex flex-col gap-3">
               {items.map((item, idx) => (
@@ -105,7 +95,7 @@ export default function NavBar() {
       </aside>
 
       {/* Menu para Mobiles */}
-      {mobileStyle && <MobileNavBar items={items} router={router} />}
+      {isMobile && <MobileNavBar items={items} router={router} />}
     </>
   );
 }
