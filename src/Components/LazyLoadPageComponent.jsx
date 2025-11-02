@@ -45,13 +45,13 @@ export default function LazyLoadPage({
   const { openModalAssetsDataWithAssetId, setOpenModalAssetsDataWithAssetId } =
     useInterface();
 
-  // Reiniciar estado si cambia el suaurio o los parametros
-  // useEffect(() => {
-  //   setHasMore(true);
-  //   setAssets([]);
-  //   setPage(0);
-  //   setIsLoading(true);
-  // }, [user, param]);
+  // Reiniciar estado si cambian los parametros de busqueda
+  useEffect(() => {
+    setHasMore(true);
+    setAssets([]);
+    setPage(0);
+    setIsLoading(true);
+  }, [param]);
 
   // Revisar El contexto de interfaz por si hay un asset que abrir en el ModalAssetData
   useEffect(() => {
