@@ -15,6 +15,8 @@ import ModalAssetData from "./ModalAssetData";
 import { useSize } from "@/context/resizeContext";
 import ModalDeleteAsset from "./ModalDeleteAsset";
 import { useInterface } from "@/context/intercomunicationContext";
+import SkeletonAnimationGrid from "@/skeletons/SkeletonAnimationGrid";
+import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 
 export default function LazyLoadPage({
   ByCurrentUser = false,
@@ -35,12 +37,21 @@ export default function LazyLoadPage({
   const [ModalAssetDataReady, setModalAssetDataReady] = useState(false);
   const [hideAssets, setHideAssets] = useState(false);
   const { isMobile } = useSize();
-  const loaderRef = useRef(null);
   const ModalShowPictueRef = useRef();
   const ModalAssetOptionsRef = useRef();
 
+  const loaderRef = useInfiniteScroll(LoadAssets, hasMore);
+
   const { openModalAssetsDataWithAssetId, setOpenModalAssetsDataWithAssetId } =
     useInterface();
+
+  // Reiniciar estado si cambia el suaurio o los parametros
+  useEffect(() => {
+    setHasMore(true);
+    setAssets([]);
+    setPage(0);
+    setIsLoading(true);
+  }, [user, param]);
 
   // Revisar El contexto de interfaz por si hay un asset que abrir en el ModalAssetData
   useEffect(() => {
@@ -121,7 +132,7 @@ export default function LazyLoadPage({
   {
     /* Funcion para obtener los assets */
   }
-  const Get = useCallback(async () => {
+  async function Get() {
     if (param != "") {
       console.log("Params from lazy:", param);
       const assets = await GetByParam(param, page, limit, freeAcces);
@@ -147,13 +158,13 @@ export default function LazyLoadPage({
     }
     const assets = await GetAssets(page, limit, freeAcces);
     return assets;
-  }, [page, limit, user, param, ByCurrentUser, category, freeAcces]);
+  }
 
   {
     /* Funcion para cargar las dependencias */
   }
 
-  const LoadAssets = useCallback(async () => {
+  async function LoadAssets() {
     setIsLoading(true);
     setError(false);
     const access = verifyAcces();
@@ -194,33 +205,7 @@ export default function LazyLoadPage({
       setIsLoading(false);
       router("/login");
     }
-  }, [Get]);
-
-  useEffect(() => {
-    setHasMore(true);
-    setAssets([]);
-    setPage(0);
-    setIsLoading(true);
-  }, [user, param]);
-
-  useEffect(() => {
-    if (page === 0 && hasMore && isLoading) {
-      LoadAssets();
-    }
-  }, [page, hasMore, isLoading, LoadAssets]);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !isLoading) {
-          if (hasMore) LoadAssets();
-        }
-      },
-      { threshold: 0.1 }
-    );
-    if (loaderRef.current) observer.observe(loaderRef.current);
-    return () => observer.disconnect();
-  }, [isLoading, hasMore, LoadAssets]);
+  }
 
   return (
     <>
@@ -268,10 +253,29 @@ export default function LazyLoadPage({
                 onClickComents={() => onClickComents(asset)}
               />
             ))}
+
+            {/* Observer para cargar assets y manejo de error al cargar  */}
+
+            {hasMore &&
+              !error &&
+              Array.from({ length: 8 }).map((_, i) => (
+                <div key={i} className="flex items-center ">
+                  <div
+                    className="w-full"
+                    ref={(node) => {
+                      if (i == 0) {
+                        loaderRef(node);
+                      }
+                    }}
+                  >
+                    <SkeletonAnimationGrid cellCount={1} h={250} />
+                  </div>
+                </div>
+              ))}
           </div>
 
-          {/* Observer para cargar assets y manejo de error al cargar  */}
-          {error ? (
+          {/* Manejo de error del fetch  */}
+          {error && (
             <div className="flex flex-col items-center justify-center gap-4 py-10">
               <p
                 className={`${currentTheme.colors.errorText} font-semibold text-lg`}
@@ -285,28 +289,8 @@ export default function LazyLoadPage({
                 Try Again
               </button>
             </div>
-          ) : (
-            <div
-              ref={loaderRef}
-              className="h-16 flex flex-col items-center justify-center gap-2"
-            >
-              {isLoading && (
-                <>
-                  {/* Spinner */}
-                  <div
-                    className={`w-6 h-6 border-4 ${currentTheme.colors.spinner} border-t-transparent rounded-full animate-spin`}
-                  ></div>
-                  {/* Texto */}
-                  <span
-                    className={`text-sm ${currentTheme.colors.subtleText} animate-pulse`}
-                  >
-                    Cargando más assets...
-                  </span>
-                </>
-              )}
-            </div>
           )}
-
+          {/* Mensaje cuando no hay mas assets  */}
           {!hasMore && (
             <div
               className={`py-6 text-center text-sm ${currentTheme.colors.mutedText}`}
