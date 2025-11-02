@@ -222,22 +222,6 @@ export default function LazyLoadPage({
     return () => observer.disconnect();
   }, [isLoading, hasMore, LoadAssets]);
 
-  if (error) {
-    return (
-      <div className="flex flex-col items-center justify-center gap-4 py-10">
-        <p className={`${currentTheme.colors.errorText} font-semibold text-lg`}>
-          Could not connect to the database.
-        </p>
-        <button
-          onClick={() => LoadAssets()}
-          className={`px-4 py-2 rounded transition ${currentTheme.colors.buttonPrimary} ${currentTheme.colors.buttonPrimaryHover} ${currentTheme.textColor.primary}`}
-        >
-          Try Again
-        </button>
-      </div>
-    );
-  }
-
   return (
     <>
       <ModalShowPicture
@@ -286,25 +270,42 @@ export default function LazyLoadPage({
             ))}
           </div>
 
-          <div
-            ref={loaderRef}
-            className="h-16 flex flex-col items-center justify-center gap-2"
-          >
-            {isLoading && (
-              <>
-                {/* Spinner */}
-                <div
-                  className={`w-6 h-6 border-4 ${currentTheme.colors.spinner} border-t-transparent rounded-full animate-spin`}
-                ></div>
-                {/* Texto */}
-                <span
-                  className={`text-sm ${currentTheme.colors.subtleText} animate-pulse`}
-                >
-                  Cargando más assets...
-                </span>
-              </>
-            )}
-          </div>
+          {/* Observer para cargar assets y manejo de error al cargar  */}
+          {error ? (
+            <div className="flex flex-col items-center justify-center gap-4 py-10">
+              <p
+                className={`${currentTheme.colors.errorText} font-semibold text-lg`}
+              >
+                Could not connect to the database.
+              </p>
+              <button
+                onClick={() => LoadAssets()}
+                className={`px-4 py-2 rounded transition ${currentTheme.colors.buttonPrimary} ${currentTheme.colors.buttonPrimaryHover} ${currentTheme.textColor.primary}`}
+              >
+                Try Again
+              </button>
+            </div>
+          ) : (
+            <div
+              ref={loaderRef}
+              className="h-16 flex flex-col items-center justify-center gap-2"
+            >
+              {isLoading && (
+                <>
+                  {/* Spinner */}
+                  <div
+                    className={`w-6 h-6 border-4 ${currentTheme.colors.spinner} border-t-transparent rounded-full animate-spin`}
+                  ></div>
+                  {/* Texto */}
+                  <span
+                    className={`text-sm ${currentTheme.colors.subtleText} animate-pulse`}
+                  >
+                    Cargando más assets...
+                  </span>
+                </>
+              )}
+            </div>
+          )}
 
           {!hasMore && (
             <div
