@@ -13,7 +13,6 @@ import Image from "next/image";
 
 export default function AssetsCard({
   asset,
-  currentUserId,
   onClickPhoto,
   onClickBar,
   onClickComents,
@@ -52,7 +51,7 @@ export default function AssetsCard({
   }
   useEffect(() => {
     asset.likes.forEach((like) => {
-      if (like.user_id == currentUserId) {
+      if (like.user_id == user?.uid) {
         setLiked(true);
         setIsStarting(false);
         return;
@@ -60,7 +59,7 @@ export default function AssetsCard({
     });
     setComents(asset?._count.coments);
     setIsStarting(false);
-  }, []);
+  }, [user]);
 
   function handleCreateComent(e) {
     e.stopPropagation();
@@ -75,7 +74,7 @@ export default function AssetsCard({
 
   async function handleGiveLike(e) {
     e.stopPropagation();
-    const res = await GiveLike(asset.id, liked, currentUserId);
+    const res = await GiveLike(asset.id, liked, user?.uid);
     if (!res.ok) {
       if (res.status == 401) {
         router("/login");

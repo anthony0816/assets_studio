@@ -340,7 +340,6 @@ export default function UserProfile() {
                     <AssetsCard
                       key={asset.id}
                       asset={asset}
-                      currentUserId={user?.uid}
                       onClickBar={() => handleOnClickBar(asset)}
                       onClickPhoto={handleOnClickPhoto}
                       onClickComents={() => handleOnClinkComent(asset)}

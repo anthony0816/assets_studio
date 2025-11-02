@@ -46,12 +46,12 @@ export default function LazyLoadPage({
     useInterface();
 
   // Reiniciar estado si cambia el suaurio o los parametros
-  useEffect(() => {
-    setHasMore(true);
-    setAssets([]);
-    setPage(0);
-    setIsLoading(true);
-  }, [user, param]);
+  // useEffect(() => {
+  //   setHasMore(true);
+  //   setAssets([]);
+  //   setPage(0);
+  //   setIsLoading(true);
+  // }, [user, param]);
 
   // Revisar El contexto de interfaz por si hay un asset que abrir en el ModalAssetData
   useEffect(() => {
@@ -247,7 +247,6 @@ export default function LazyLoadPage({
               <AssetsCard
                 key={asset.id}
                 asset={asset}
-                currentUserId={user?.uid}
                 onClickBar={() => onClickBar(asset)}
                 onClickPhoto={onClickPhoto}
                 onClickComents={() => onClickComents(asset)}
