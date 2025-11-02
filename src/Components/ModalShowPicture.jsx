@@ -48,7 +48,7 @@ const ModalShowPicture = forwardRef((props, ref) => {
             </button>
 
             {/* Imagen del asset */}
-            <div className="w-full max-h-[70vh] flex items-center justify-center overflow-hidden rounded-md bg-gray-100 dark:bg-gray-800">
+            <div className="w-full h-[70vh] flex items-center justify-center overflow-hidden rounded-md bg-gray-100 dark:bg-gray-800">
               <img
                 src={asset?.src}
                 alt="Asset"
