@@ -28,8 +28,14 @@ const ModalShowPicture = forwardRef((props, ref) => {
   // navegacion por las flechas
   useEventListener("keydown", (e) => {
     if (isOpen) {
-      e.key === "ArrowRight" && nextAsset();
-      e.key === "ArrowLeft" && prevAsset();
+      if (e.key === "ArrowRight") {
+        setLoading(true);
+        nextAsset();
+      }
+      if (e.key === "ArrowLeft") {
+        setLoading(true);
+        prevAsset();
+      }
       e.key === "Escape" && setIsOpen(false);
     }
   });
