@@ -41,87 +41,34 @@ export async function POST(request) {
     if (param.startsWith("search-")) {
       const query = param.split("-")[1];
       // limpiar valores de busqueda repetidos
-      let values = query.split(" ");
-      values = [
-        ...new Map(
-          values.map((v) => [v.trim().toLowerCase(), v.trim()])
-        ).values(),
+      const terms = query.split(" ").filter((term) => term.trim() != "");
+      const searchTermns = terms.map((term) => ({
+        name: {
+          contains: term,
+          mode: "insensitive",
+        },
+      }));
+
+      const tags = await prisma.assetTag.findMany({
+        where: {
+          OR: searchTermns,
+        },
+        include: {
+          assets: {
+            include: includeParams,
+          },
+        },
+        skip: page * limit,
+        take: limit,
+      });
+
+      const results = tags.map((tag) => tag.assets).flat();
+      console.log("length", results.length);
+      console.log("results", results);
+      const uniqueResults = [
+        ...new Map(results.map((item) => [item.id, item])).values(),
       ];
-      var results = [];
-
-      // funcion para buscar por atributos
-      async function search(atribute, value) {
-        const res = await prisma.asset.findMany({
-          where: {
-            [atribute]: {
-              contains: value,
-              mode: "insensitive",
-            },
-          },
-          include: includeParams,
-          skip: page * limit,
-          take: limit,
-        });
-        return res;
-      }
-
-      for (const value of values) {
-        // buscar por categoria
-        const results_1 = await search("categoria", value);
-        results.push(...results_1);
-
-        // busca por el formato de la imagen
-
-        const results_2 = await search("format", value);
-        results.push(...results_2);
-
-        //buscar por nombre de usuario
-
-        const uids = await prisma.user.findMany({
-          where: {
-            name: {
-              contains: value,
-              mode: "insensitive", // ignonar minusculas y mayusculas
-            },
-          },
-          select: {
-            uid: true,
-          },
-        });
-        console.log("resultados", uids);
-        if (uids.length > 0) {
-          const searchPromises = uids.map((uid) => search("user_id", uid.uid));
-          const searchResults = await Promise.all(searchPromises);
-
-          searchResults.forEach((result) => {
-            results.push(...result); // Desempaca cada sub-array
-          });
-        }
-
-        const tags = await prisma.assetTag.findMany({
-          where: {
-            name: {
-              contains: value,
-              mode: "insensitive",
-            },
-          },
-          include: {
-            assets: {
-              include: includeParams,
-            },
-          },
-          skip: page * limit,
-          take: limit,
-        });
-
-        const results_3 = tags.map((tag) => tag.assets).flat();
-        results.push(...results_3);
-      }
-
-      // por ultimo filtrar por dublicados
-
-      results = [...new Map(results.map((item) => [item.id, item])).values()];
-      return NextResponse.json(results);
+      return NextResponse.json(uniqueResults);
     }
 
     switch (param) {
