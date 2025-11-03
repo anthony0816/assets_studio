@@ -81,6 +81,20 @@ export function fileToBase64(file) {
   });
 }
 
+export function filesToBase64(files = []) {
+  return Promise.all(
+    files.map(
+      (file) =>
+        new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = (error) => reject(error);
+        })
+    )
+  );
+}
+
 export async function urlToBase64(imageUrl) {
   try {
     const response = await fetch(imageUrl);
@@ -554,8 +568,27 @@ export function UserToFirebaseFormatInfo(p_user) {
 export async function TranslateArrayString({ array = [], from = "", to = "" }) {
   if (array == [] || from == "" || to == "")
     return console.error("Error en los parametros para traducir");
+
+  // pop para quitar el objeto del final del idioma
+  array.pop();
   const translated = await Promise.all(
     array.map((word) => translate(word, { from: from, to: to }))
   );
+  translated.push({ lenguague: to });
   return translated;
+}
+
+export async function TranslateSelectedWords(words = []) {
+  const translated = await Promise.all(
+    words.map((row) => {
+      const { word, lenguague } = row;
+      return translate(
+        word,
+        lenguague == "es" ? { from: "es", to: "en" } : { from: "en", to: "es" }
+      );
+    })
+  );
+  const results = words.map((row) => row.word).concat(translated);
+
+  return results;
 }

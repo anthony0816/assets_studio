@@ -91,4 +91,5 @@ export const keyWords = [
   "horror",
   "adventure",
   "casual",
+  { lenguague: "en" },
 ];
