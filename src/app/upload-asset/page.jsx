@@ -127,7 +127,7 @@ export default function UploadAsset() {
   return (
     <div className="h-[100%] overflow-y-auto">
       <div
-        className={`min-h-screen  ${color.primary} ${tcolor.primary} flex items-center justify-center p-6`}
+        className={`min-h-screen  ${color.primary} ${tcolor.primary} flex items-center justify-center`}
       >
         <div
           className={`${color.third} rounded-lg shadow-lg w-full max-w-lg p-8 space-y-6`}
