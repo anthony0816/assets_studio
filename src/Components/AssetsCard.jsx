@@ -112,7 +112,7 @@ export default function AssetsCard({
   return (
     <>
       <div
-        className={` max-w-130  relative ${currentTheme.colors.secondary} rounded-lg shadow ${currentTheme.colors.hover} hover:shadow-lg transition overflow-hidden`}
+        className={` w-full max-w-130  relative ${currentTheme.colors.secondary} rounded-lg shadow ${currentTheme.colors.hover} hover:shadow-lg transition overflow-hidden`}
       >
         <div className="absolute right-2 top-2 z-10">
           <AssetCardOptionButton

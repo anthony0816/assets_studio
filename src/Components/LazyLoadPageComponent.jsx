@@ -244,13 +244,14 @@ export default function LazyLoadPage({
         >
           <div className="grid gap-6 p-4 [grid-template-columns:repeat(auto-fit,minmax(250px,1fr))]">
             {assets?.map((asset) => (
-              <AssetsCard
-                key={asset.id}
-                asset={asset}
-                onClickBar={() => onClickBar(asset)}
-                onClickPhoto={onClickPhoto}
-                onClickComents={() => onClickComents(asset)}
-              />
+              <div key={asset.id} className="w-full flex justify-center">
+                <AssetsCard
+                  asset={asset}
+                  onClickBar={() => onClickBar(asset)}
+                  onClickPhoto={onClickPhoto}
+                  onClickComents={() => onClickComents(asset)}
+                />
+              </div>
             ))}
 
             {/* Observer para cargar assets y manejo de error al cargar  */}
