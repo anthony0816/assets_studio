@@ -152,7 +152,7 @@ export default function UploadAsset() {
               )}
 
               {file && (
-                <div className="relative mx-auto ">
+                <div className="relative mx-auto min-w-50 min-h-50">
                   <div
                     onClick={() => {
                       setFile(null);
@@ -162,7 +162,10 @@ export default function UploadAsset() {
                   >
                     <DeleteIcon />
                   </div>
-                  <img src={preview} className="object-cover rounded"></img>
+                  <img
+                    src={preview}
+                    className="object-contain w-full h-full rounded"
+                  ></img>
                 </div>
               )}
             </div>
