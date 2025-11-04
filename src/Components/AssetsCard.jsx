@@ -111,72 +111,74 @@ export default function AssetsCard({
 
   return (
     <>
-      <div
-        className={` w-full max-w-130  relative ${currentTheme.colors.secondary} rounded-lg shadow ${currentTheme.colors.hover} hover:shadow-lg transition overflow-hidden`}
-      >
-        <div className="absolute right-2 top-2 z-10">
-          <AssetCardOptionButton
-            asset={asset}
-            onDelete={() => setDestroy(true)}
-            currentUser={user}
-            menuColor={currentTheme.colors.primary}
-            fontMenuColor={currentTheme.textColor.primary}
-          />
-        </div>
-
-        <div className="w-full h-48 relative">
-          <Image
-            onClick={() => onClickPhoto(asset)}
-            src={asset.src}
-            alt={`Asset ${asset.id}`}
-            fill
-            sizes="150px"
-            className="object-cover"
-            placeholder="blur" // Opcional: efecto mientras carga
-            blurDataURL="data:image/jpeg;base64,..." // Opcional
-          />
-        </div>
-        <div onClick={() => onClickBar()} className="p-3 flex flex-col gap-1">
-          <div className={`flex flex-row justify-between items-center   `}>
-            <div className="flex flex-row space-x-1 w-full ">
-              <span
-                onClick={async (e) => handleGiveLike(e)}
-                className="cursor-pointer flex flex-row  items-center px-2 rounded-xl  "
-              >
-                <LikeIcon liked={liked} />
-                <span
-                  className={`text-sm ml-2 ${currentTheme.textColor.primary}`}
-                >
-                  {likes}
-                </span>
-              </span>
-              {/* Comentarios */}
-              <span
-                onClick={(e) => handleCreateComent(e)}
-                className={`cursor-pointer ${currentTheme.textColor.primary}`}
-              >
-                <div className="flex flex-row  items-center">
-                  <ComentsIcon />
-                  <span className="ml-1">{coments} </span>
-                </div>
-              </span>
-            </div>
-            {/* Reportes */}
-            <div>
-              <span
-                onClick={(e) => handleReport(e)}
-                className={` flex flex-row items-center space-x-2 cursor-pointer ${currentTheme.textColor.secondary} `}
-              >
-                <ReportButton
-                  color={currentTheme.colors.buttonReport}
-                  strokeWidth="3"
-                />
-              </span>
-            </div>
+      <div className="w-full flex justify-center">
+        <div
+          className={` w-full max-w-130  relative ${currentTheme.colors.secondary} rounded-lg shadow ${currentTheme.colors.hover} hover:shadow-lg transition overflow-hidden`}
+        >
+          <div className="absolute right-2 top-2 z-10">
+            <AssetCardOptionButton
+              asset={asset}
+              onDelete={() => setDestroy(true)}
+              currentUser={user}
+              menuColor={currentTheme.colors.primary}
+              fontMenuColor={currentTheme.textColor.primary}
+            />
           </div>
-          <span className={`text-xs ${currentTheme.textColor.secondary}`}>
-            {new Date(asset.createdAt).toLocaleDateString()}
-          </span>
+
+          <div className="w-full h-48 relative">
+            <Image
+              onClick={() => onClickPhoto(asset)}
+              src={asset.src}
+              alt={`Asset ${asset.id}`}
+              fill
+              sizes="150px"
+              className="object-cover"
+              placeholder="blur" // Opcional: efecto mientras carga
+              blurDataURL="data:image/jpeg;base64,..." // Opcional
+            />
+          </div>
+          <div onClick={() => onClickBar()} className="p-3 flex flex-col gap-1">
+            <div className={`flex flex-row justify-between items-center   `}>
+              <div className="flex flex-row space-x-1 w-full ">
+                <span
+                  onClick={async (e) => handleGiveLike(e)}
+                  className="cursor-pointer flex flex-row  items-center px-2 rounded-xl  "
+                >
+                  <LikeIcon liked={liked} />
+                  <span
+                    className={`text-sm ml-2 ${currentTheme.textColor.primary}`}
+                  >
+                    {likes}
+                  </span>
+                </span>
+                {/* Comentarios */}
+                <span
+                  onClick={(e) => handleCreateComent(e)}
+                  className={`cursor-pointer ${currentTheme.textColor.primary}`}
+                >
+                  <div className="flex flex-row  items-center">
+                    <ComentsIcon />
+                    <span className="ml-1">{coments} </span>
+                  </div>
+                </span>
+              </div>
+              {/* Reportes */}
+              <div>
+                <span
+                  onClick={(e) => handleReport(e)}
+                  className={` flex flex-row items-center space-x-2 cursor-pointer ${currentTheme.textColor.secondary} `}
+                >
+                  <ReportButton
+                    color={currentTheme.colors.buttonReport}
+                    strokeWidth="3"
+                  />
+                </span>
+              </div>
+            </div>
+            <span className={`text-xs ${currentTheme.textColor.secondary}`}>
+              {new Date(asset.createdAt).toLocaleDateString()}
+            </span>
+          </div>
         </div>
       </div>
     </>
