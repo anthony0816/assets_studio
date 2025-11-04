@@ -565,15 +565,31 @@ export function UserToFirebaseFormatInfo(p_user) {
   return f_user;
 }
 
-export async function TranslateArrayString({ array = [], from = "", to = "" }) {
+export async function TranslateArrayString({
+  array = [],
+  from = "",
+  to = "",
+  signal,
+}) {
   if (array == [] || from == "" || to == "")
     return console.error("Error en los parametros para traducir");
+
+  // Verificar signal
+  if (signal?.aborted) throw new DOMException("Aborted", "AbortError");
 
   // pop para quitar el objeto del final del idioma
   array.pop();
   const translated = await Promise.all(
-    array.map((word) => translate(word, { from: from, to: to }))
+    array.map((word) => {
+      // Verificar signal
+      if (signal?.aborted) throw new DOMException("Aborted", "AbortError");
+      return translate(word, { from: from, to: to });
+    })
   );
+
+  // Verificar signal
+  if (signal?.aborted) throw new DOMException("Aborted", "AbortError");
+
   translated.push({ lenguague: to });
   return translated;
 }

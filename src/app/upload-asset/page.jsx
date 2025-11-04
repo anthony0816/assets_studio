@@ -1,6 +1,6 @@
 "use client";
 import { useTheme } from "@/context/themeContext";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CreateAsset, TranslateSelectedWords } from "@/utils/functions";
 import { useAuth } from "@/context/authContext";
 import LoadingSpinner from "@/Components/LoadingSpiner";
@@ -157,16 +157,35 @@ export default function UploadAsset() {
     return true;
   }
 
+  // Funcion para traducir con su AborterController
+  const AbortTranstateRef = useRef(null);
   function translate(to) {
     if (to == currentLenguage) return;
+
+    if (AbortTranstateRef.current) {
+      AbortTranstateRef.current.abort();
+    }
+    AbortTranstateRef.current = new AbortController();
+    const signal = AbortTranstateRef.current.signal;
+
     console.log("current:", currentLenguage, "to:", to);
     TranslateArrayString({
       array: keyWords,
       from: currentLenguage,
       to: to,
+      signal: signal,
     })
-      .then((data) => setKeyWords(data))
-      .then(setCurretLenguague(to));
+      .then((data) => {
+        if (!signal.aborted) {
+          setKeyWords(data);
+          setCurretLenguague(to);
+        }
+      })
+      .catch((error) => {
+        if (error.name !== "AbortError") {
+          console.error("Error en traducción:", error);
+        }
+      });
   }
 
   return (
