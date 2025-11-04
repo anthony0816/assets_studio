@@ -15,10 +15,10 @@ export default function UploadAsset() {
   const { currentTheme } = useTheme();
   const color = currentTheme.colors;
   const tcolor = currentTheme.textColor;
-  const [file, setFile] = useState(null);
+  const [files, setFiles] = useState([]); // Cambiado a array
   const [categoria, setCategoria] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [preview, setPreview] = useState(null);
+  const [previews, setPreviews] = useState([]); // Cambiado a array
   const { user } = useAuth();
   const { router } = useLoadingRouter();
   const [inputKeyWord, setInputKeyWord] = useState("");
@@ -34,9 +34,20 @@ export default function UploadAsset() {
   ];
 
   useEffect(() => {
-    if (!file) return;
-    setPreview(URL.createObjectURL(file));
-  }, [file]);
+    if (files.length === 0) {
+      setPreviews([]);
+      return;
+    }
+
+    // Crear previews para todos los archivos
+    const newPreviews = files.map((file) => URL.createObjectURL(file));
+    setPreviews(newPreviews);
+
+    // Cleanup function para revocar los URLs
+    return () => {
+      newPreviews.forEach((preview) => URL.revokeObjectURL(preview));
+    };
+  }, [files]);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -49,39 +60,64 @@ export default function UploadAsset() {
     if (isLoading) return;
     setIsLoading(true);
 
-    if (!categoria) return setIsLoading(false);
-    const base64file = await fileToBase64(file);
+    if (!categoria) {
+      setIsLoading(false);
+      return;
+    }
+
     if (!user) {
       setIsLoading(false);
       router("/login");
       return;
     }
-    const translatedSelectedKeyWords = await TranslateSelectedWords(
-      selectedKeyWords
-    );
 
-    const data = await CreateAsset(
-      base64file,
-      user?.uid,
-      user?.providerId,
-      categoria,
-      translatedSelectedKeyWords
-    );
-    setIsLoading(false);
-    const { url, error } = data;
-    console.log("Backend Create Asset", url);
-    if (error) {
-      console.error("Error while uploading asset:", error);
-      return alert("Error while uploading asset");
+    try {
+      // Convertir todos los archivos a base64
+      const base64Files = await Promise.all(
+        files.map((file) => fileToBase64(file))
+      );
+
+      const translatedSelectedKeyWords = await TranslateSelectedWords(
+        selectedKeyWords
+      );
+
+      // Crear assets para cada archivo
+      const uploadPromises = base64Files.map((base64file) =>
+        CreateAsset(
+          base64file,
+          user?.uid,
+          user?.providerId,
+          categoria,
+          translatedSelectedKeyWords
+        )
+      );
+
+      const results = await Promise.all(uploadPromises);
+
+      // Verificar si hubo errores
+      const errors = results.filter((result) => result.error);
+      if (errors.length > 0) {
+        console.error("Errors while uploading assets:", errors);
+        alert(`Error uploading ${errors.length} file(s)`);
+      } else {
+        console.log("All assets uploaded successfully:", results);
+        // Resetear el formulario
+        setFiles([]);
+        setCategoria("");
+        setSelectedKeyWords([]);
+      }
+    } catch (error) {
+      console.error("Error in upload process:", error);
+      alert("Error while uploading assets");
+    } finally {
+      setIsLoading(false);
     }
-    setFile(null);
-    setCategoria("");
-    setSelectedKeyWords([]);
   }
 
   function VerifySelected(word) {
     return selectedKeyWords.some((key) => key.word == word);
   }
+
   function SelectKeyWord(word) {
     if (!isValidWord(word)) return;
     if (selectedKeyWords.length >= 10) return;
@@ -92,10 +128,19 @@ export default function UploadAsset() {
     ]);
     setInputKeyWord("");
   }
+
   function RemoveSelectedKeyWord(word) {
     setSelectedKeyWords((prev) => {
       return prev.filter((dato) => dato != word);
     });
+  }
+
+  function RemoveFile(index) {
+    setFiles((prev) => prev.filter((_, i) => i !== index));
+  }
+
+  function RemoveAllFiles() {
+    setFiles([]);
   }
 
   // valida la palabra
@@ -132,46 +177,66 @@ export default function UploadAsset() {
         <div
           className={`${color.third} rounded-lg shadow-lg w-full max-w-lg p-8 space-y-6`}
         >
-          <h1 className="text-2xl font-bold text-center">Upload Asset</h1>
+          <h1 className="text-2xl font-bold text-center">Upload Assets</h1>
 
           <form onSubmit={(e) => handleSubmit(e)} className="space-y-4">
             {/* SRC */}
             <div className="w-full flex text-center">
-              {!file && (
+              {files.length === 0 && (
                 <label
                   className={`w-full border ${color.border} ${tcolor.primary} font-medium py-2 px-4 h-40 rounded-lg transition cursor-pointer flex items-center justify-center`}
                 >
-                  find your asset in local store
+                  Find your assets in local store (Multiple selection)
                   <input
-                    onChange={(e) => setFile(e.target.files[0])}
+                    onChange={(e) => setFiles(Array.from(e.target.files || []))}
                     type="file"
+                    multiple
                     placeholder="https://..."
                     className="hidden"
                   />
                 </label>
               )}
 
-              {file && (
-                <div className="relative mx-auto min-w-50 min-h-50">
-                  <div
-                    onClick={() => {
-                      setFile(null);
-                      setSelectedKeyWords([]);
-                    }}
-                    className="absolute right-2 bottom-2 bg-gray-800/90 p-4 hover:bg-gray-800 transition rounded-xl "
-                  >
-                    <DeleteIcon />
+              {files.length > 0 && (
+                <div className="w-full">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className={`${tcolor.muted} text-sm`}>
+                      {files.length} file(s) selected
+                    </span>
+                    <button
+                      type="button"
+                      onClick={RemoveAllFiles}
+                      className={`flex items-center transition p-2 bg-red-400/70 border ${color.border} hover:bg-red-400 rounded-xl cursor-pointer text-sm`}
+                    >
+                      Remove All
+                      <DeleteIcon />
+                    </button>
                   </div>
-                  <img
-                    src={preview}
-                    className="object-contain w-full h-full rounded"
-                  ></img>
+
+                  <div className="grid grid-cols-2 gap-2 max-h-60 overflow-y-auto">
+                    {files.map((file, index) => (
+                      <div key={index} className="relative">
+                        <div
+                          onClick={() => RemoveFile(index)}
+                          className="absolute right-1 top-1 bg-gray-800/90 p-2 hover:bg-gray-800 transition rounded-xl cursor-pointer z-10"
+                        >
+                          <DeleteIcon size={16} />
+                        </div>
+                        <img
+                          src={previews[index]}
+                          className="object-cover w-full h-32 rounded border"
+                          alt={`Preview ${index + 1}`}
+                        />
+                        <p className="text-xs truncate mt-1">{file.name}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
 
             {/* Categoría */}
-            {file && (
+            {files.length > 0 && (
               <div className="flex flex-col justify-center items-center">
                 <select
                   required
@@ -190,13 +255,13 @@ export default function UploadAsset() {
             )}
 
             {/* Palabras Clave */}
-            {file && (
+            {files.length > 0 && (
               <div className="space-y-4">
                 <h2 className={`text-center border-b p-2 ${color.border}`}>
                   Key Words
                 </h2>
                 <p className={`${tcolor.muted} text-center text-sm`}>
-                  These keywords help the asset appear in search results.
+                  These keywords help the assets appear in search results.
                 </p>
                 {/* Seleccionados */}
                 {selectedKeyWords.length > 0 && (
@@ -321,15 +386,19 @@ export default function UploadAsset() {
             {/* Botón */}
             <div className="pt-4">
               <button
-                disabled={file == null || isLoading}
+                disabled={files.length === 0 || isLoading}
                 type="submit"
                 className={`w-full ${color.buttonPrimary} ${
                   color.buttonPrimaryHover
                 } text-white font-medium py-2 px-4 rounded-lg transition ${
-                  !file && "opacity-50"
+                  files.length === 0 && "opacity-50"
                 }`}
               >
-                {isLoading ? <LoadingSpinner color="white" /> : "Upload Asset"}
+                {isLoading ? (
+                  <LoadingSpinner color="white" />
+                ) : (
+                  `Upload ${files.length} Asset(s)`
+                )}
               </button>
             </div>
           </form>
