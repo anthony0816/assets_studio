@@ -10,6 +10,7 @@ import { CreateAsset } from "@/utils/functions";
 import { useAuth } from "@/context/authContext";
 import { downloadImgFromBase64 } from "@/utils/functions";
 import { RetryIcon } from "@/Icons/RetryIcon";
+import ModalSelectKeyWordsAICreator from "@/Components/ModalSelectKeyWordsAICreator";
 
 export default function ImageGenerator() {
   const { user } = useAuth();
@@ -20,6 +21,8 @@ export default function ImageGenerator() {
   const [saveError, setSaveError] = useState(false);
   const [error, setError] = useState("");
   const { currentTheme } = useTheme();
+  const [modalOpen, setModalOpen] = useState(false);
+
   const buttomStyle = `px-6 py-2 rounded-md font-medium 
           ${
             loading
@@ -35,13 +38,22 @@ export default function ImageGenerator() {
     if (saving) return;
     setSaveError(false);
     setSaving(true);
-    const data = await CreateAsset(imageUrl, user?.uid, user?.providerId, "ia");
+    setModalOpen(true);
+  }
+
+  async function HandleCreate(keyWords) {
+    const data = await CreateAsset(
+      imageUrl,
+      user?.uid,
+      user?.providerId,
+      "ia",
+      keyWords
+    );
     const { error } = data;
     if (error) setSaveError(true);
-
-    console.log("res:", data);
     setSaving(false);
   }
+
   function handleDowload() {
     if (loading) return;
     downloadImgFromBase64(imageUrl, "asset.png");
@@ -78,8 +90,14 @@ export default function ImageGenerator() {
   };
 
   return (
-    <div className="h-[100%] overflow-y-auto">
-      <div className="flex items-center justify-center min-h-screen ">
+    <div className="  h-[100%] overflow-y-auto">
+      <div className=" relative flex items-center justify-center min-h-screen ">
+        {/* Modal para las palabras clave  */}
+        <ModalSelectKeyWordsAICreator
+          isOpen={modalOpen}
+          onClose={() => setModalOpen(false)}
+          onSucces={(keyWords) => HandleCreate(keyWords)}
+        />
         <div
           className={`p-8 max-w-[600px] w-full rounded-lg shadow-lg text-center 
       ${currentTheme.colors.primary} ${currentTheme.textColor.primary}`}

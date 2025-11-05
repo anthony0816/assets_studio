@@ -11,6 +11,18 @@ export async function POST(request) {
       );
 
     const { prompt } = await request.json();
+    const Style =
+      " full body, 2D vector design, flat colors, clean lines, no shading, isolated on a plain white background, fantasy illustration, character design sheet, vibrant colors, highly detailed";
+
+    const finalPromp = prompt + Style;
+
+    const modelos = {
+      base: "https://router.huggingface.co/hf-inference/models/stabilityai/stable-diffusion-xl-base-1.0",
+      refiner:
+        "https://router.huggingface.co/hf-inference/models/stabilityai/stable-diffusion-xl-refiner-1.0",
+      juger:
+        "https://router.huggingface.co/hf-inference/models/stabilityai/juggernaut-xl-v8",
+    };
 
     if (!prompt) {
       return NextResponse.json(
@@ -20,27 +32,22 @@ export async function POST(request) {
     }
 
     // URL CORREGIDA - usa el endpoint de inference API
-    const response = await fetch(
-      "https://router.huggingface.co/hf-inference/models/stabilityai/stable-diffusion-xl-base-1.0",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
-          "Content-Type": "application/json",
+    const response = await fetch(modelos.base, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        inputs: finalPromp,
+        parameters: {
+          width: 512,
+          height: 512,
+          num_inference_steps: 50,
+          guidance_scale: 7.5,
         },
-        body: JSON.stringify({
-          inputs: prompt,
-          parameters: {
-            width: 512,
-            height: 512,
-            num_inference_steps: 50,
-            guidance_scale: 7.5,
-          },
-        }),
-      }
-    );
-    console.log("respuesta de la IA", response);
-    console.log("Status:", response.status);
+      }),
+    });
 
     if (!response.ok) {
       let errorMsg = "Error en la generación";
