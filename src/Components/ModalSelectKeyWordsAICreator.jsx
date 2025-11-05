@@ -83,6 +83,12 @@ export default function ModalSelectKeyWordsAICreator({
   const handleAccept = async () => {
     if (isAccepting) return;
 
+    // Validar que se hayan seleccionado al menos 3 palabras
+    if (selectedWords.length < 3) {
+      alert("Please select at least 3 tags");
+      return;
+    }
+
     setIsAccepting(true);
     try {
       await onSucces(selectedWords);
@@ -143,7 +149,8 @@ export default function ModalSelectKeyWordsAICreator({
             <div className="flex justify-between items-center mb-2">
               <h3 className="text-sm font-medium">Selected tags:</h3>
               <span className={`text-xs ${tcolor.muted}`}>
-                {selectedWords.length}/10
+                {selectedWords.length}/10{" "}
+                {selectedWords.length < 3 && "(minimum 3 required)"}
               </span>
             </div>
             <div className="flex flex-wrap gap-2">

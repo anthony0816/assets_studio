@@ -17,7 +17,6 @@ export default function ImageGenerator() {
   const [prompt, setPrompt] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [loading, setLoading] = useState(false);
-  const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState(false);
   const [error, setError] = useState("");
   const { currentTheme } = useTheme();
@@ -35,9 +34,8 @@ export default function ImageGenerator() {
   async function handleSave() {
     if (loading) return;
     if (!user) return;
-    if (saving) return;
     setSaveError(false);
-    setSaving(true);
+
     setModalOpen(true);
   }
 
@@ -51,7 +49,6 @@ export default function ImageGenerator() {
     );
     const { error } = data;
     if (error) setSaveError(true);
-    setSaving(false);
   }
 
   function handleDowload() {
@@ -118,13 +115,7 @@ export default function ImageGenerator() {
             <div className="flex justify-around space-x-2">
               {imageUrl && (
                 <button onClick={handleSave} className={buttomStyle}>
-                  {saving ? (
-                    <LoadingSpinner color="white" />
-                  ) : saveError ? (
-                    <RetryIcon />
-                  ) : (
-                    <SaveIcon />
-                  )}
+                  {saveError ? <RetryIcon /> : <SaveIcon />}
                 </button>
               )}
               <button
