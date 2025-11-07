@@ -115,7 +115,7 @@ export async function urlToBase64(imageUrl) {
 export async function VerifySesion(request, adminAuth) {
   const session = request.cookies.get("session")?.value;
   if (!session) {
-    console.log("No hay cookie de sesión");
+    console.log("No hay cookie de sesión en firebase");
     return false;
   }
 
