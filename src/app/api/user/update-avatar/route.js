@@ -6,8 +6,6 @@ export async function POST(request) {
     const data = await request.json();
     const { old_avatar, new_avatar, user_id } = data;
     const old_avatar_public_id = getPublicId(old_avatar);
-    if (old_avatar_public_id == null)
-      throw new Error("error obteniendo el public id ");
 
     // subir la nueva imagen
     const result = await cloudinary.uploader.upload(new_avatar, {
@@ -15,13 +13,13 @@ export async function POST(request) {
       resource_type: "image",
     });
 
-    // eliminar la imagen vieja
-    const cloudinaryRes = await cloudinary.uploader.destroy(
-      old_avatar_public_id,
-      {
+    // eliminar la imagen vieja si existe la imagen en cloudinary
+    let cloudinaryRes;
+    if (old_avatar_public_id) {
+      cloudinaryRes = await cloudinary.uploader.destroy(old_avatar_public_id, {
         invalidate: true,
-      }
-    );
+      });
+    }
 
     const prismaRes = await prisma.user.update({
       where: {

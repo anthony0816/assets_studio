@@ -109,20 +109,3 @@ export default function ModalUserProfilePhoto({
     </Modal>
   );
 }
-return;
-
-<button
-  disabled={files.length === 0 || isLoading}
-  type="submit"
-  className={`w-full ${color.buttonPrimary} ${
-    color.buttonPrimaryHover
-  } text-white font-medium py-2 px-4 rounded-lg transition ${
-    files.length === 0 && "opacity-50"
-  }`}
->
-  {isLoading ? (
-    <LoadingSpinner color="white" />
-  ) : (
-    `Upload ${files.length} Asset(s)`
-  )}
-</button>;
