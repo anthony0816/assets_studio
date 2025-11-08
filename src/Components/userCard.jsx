@@ -119,8 +119,13 @@ export default function UserCard({ isOpen, OpenNavFunction = null }) {
                 : "pointer-events-none opacity-0"
             }`}
           >
-            <button className="whitespace-nowrap px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-medium shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-200">
-              Perfil
+            <button
+              onClick={() =>
+                router(`${window.location.origin}/user/${user.uid}`)
+              }
+              className="whitespace-nowrap px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-medium shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-200"
+            >
+              Profile
             </button>
             <button
               onClick={handleLogOut}

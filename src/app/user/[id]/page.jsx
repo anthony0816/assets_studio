@@ -222,7 +222,7 @@ export default function UserProfile() {
           <section
             className={`${color.third} ${tcolor.primary} mt-2 gap-3 flex flex-wrap items-center p-2 w-full max-w-[700px] mx-auto rounded-xl`}
           >
-            <div className=" border  w-full max-w-40 h-full max-h-40 mx-auto overflow-hidden rounded-full">
+            <div className=" border w-40 h-40  mx-auto overflow-hidden rounded-full">
               {user === undefined ? (
                 <>
                   <div className="w-full h-full">
@@ -241,7 +241,7 @@ export default function UserProfile() {
                       user.photoURL != "" ? `${user.photoURL}` : "/vercel.svg"
                     }
                     alt="Profile photo"
-                    className={` ${color.border} object-contain w-full h-full`}
+                    className={` ${color.border} object-cover w-full h-full`}
                   />
                 </>
               )}
