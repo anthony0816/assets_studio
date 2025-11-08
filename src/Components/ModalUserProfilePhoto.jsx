@@ -47,8 +47,6 @@ export default function ModalUserProfilePhoto({
       });
   }
 
-  console.log({ owner });
-
   return (
     <Modal
       isOpen={photo != null}
