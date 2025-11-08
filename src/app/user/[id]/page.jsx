@@ -13,6 +13,7 @@ import { UserToFirebaseFormatInfo } from "@/utils/functions";
 import ModalDeleteAsset from "@/Components/ModalDeleteAsset";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import SkeletonAnimationGrid from "@/skeletons/SkeletonAnimationGrid";
+import ModalUserProfilePhoto from "@/Components/ModalUserProfilePhoto";
 
 export default function UserProfile() {
   const { id } = useParams();
@@ -40,6 +41,8 @@ export default function UserProfile() {
 
   // Modales
   const [openModalAssetData, setOpenModalAssetData] = useState(false);
+  const [PhotoToModalUserProfilePhoto, setPhotoToModalUserProfilePhoto] =
+    useState(null);
 
   // Cargar los datos del usuario
   useEffect(() => {
@@ -99,6 +102,13 @@ export default function UserProfile() {
       setPage((prev) => prev + 1);
       if (data.length < limit) setHasMore(false);
     });
+  }
+
+  //Cambiar foto de perfil
+  function ChangeAvatar(url) {
+    const newUser = { ...user };
+    newUser.photoURL = url;
+    setUser(newUser);
   }
 
   // Logica de AssetCard y ModalAssetData
@@ -174,6 +184,13 @@ export default function UserProfile() {
 
   return (
     <>
+      {/* Modals */}
+      <ModalUserProfilePhoto
+        owner={user}
+        photo={PhotoToModalUserProfilePhoto}
+        onClose={() => setPhotoToModalUserProfilePhoto(null)}
+        onChangeAvatar={(url) => ChangeAvatar(url)}
+      />
       <ModalDeleteAsset />
       <ModalShowPicture
         ref={ModalShowPictueRef}
@@ -215,6 +232,11 @@ export default function UserProfile() {
               ) : (
                 <>
                   <img
+                    onClick={() =>
+                      setPhotoToModalUserProfilePhoto(
+                        user.photoURL != "" ? `${user.photoURL}` : "/vercel.svg"
+                      )
+                    }
                     src={
                       user.photoURL != "" ? `${user.photoURL}` : "/vercel.svg"
                     }
