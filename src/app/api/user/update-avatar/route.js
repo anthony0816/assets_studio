@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import cloudinary from "@/libs/cloudinary";
+import { prisma } from "@/libs/prisma";
 
 export async function POST(request) {
   try {
