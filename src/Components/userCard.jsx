@@ -4,10 +4,14 @@ import { useState, useRef } from "react";
 import { useTheme } from "@/context/themeContext";
 import { useLoadingRouter } from "./LoadingRouterProvider";
 import { useClickOutside } from "@/utils/hooks";
+import { usePathname } from "next/navigation";
 
 export default function UserCard({ isOpen, OpenNavFunction = null }) {
   const { user, loading, logout, logoutJWT } = useAuth();
   const { currentTheme } = useTheme();
+  const color = currentTheme.colors;
+  const tcolos = currentTheme.textColor;
+  const pathname = usePathname();
 
   // Estado de carga para la imagen
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -40,7 +44,7 @@ export default function UserCard({ isOpen, OpenNavFunction = null }) {
   if (loading) {
     return (
       <div
-        className={` flex p-2 rounded ${currentTheme.colors.hover} ${
+        className={` flex p-2 rounded ${color.hover} ${
           !isOpen && "justify-center"
         } transition  space-x-2 cursor-pointer`}
       >
@@ -56,7 +60,7 @@ export default function UserCard({ isOpen, OpenNavFunction = null }) {
         <div
           onClick={() => router("/login")}
           className={`p-2 rounded ${
-            currentTheme.colors.hover
+            color.hover
           } transition flex space-x-2 cursor-pointer ${
             !isOpen && "justify-center"
           }`}
@@ -74,14 +78,14 @@ export default function UserCard({ isOpen, OpenNavFunction = null }) {
           className={`relative ${!isOpen ? "flex justify-center" : ""}`}
         >
           <div
-            className={`p-2 rounded ${currentTheme.colors.hover} transition flex space-x-2 cursor-pointer`}
+            className={`p-2 rounded ${color.hover} transition flex space-x-2 cursor-pointer`}
           >
             <div className="relative">
               {user.avatar && !imageError ? (
                 <>
                   {!imageLoaded && (
                     <div
-                      className={`w-6 h-6 rounded-full ${currentTheme.colors.fourth} animate-pulse`}
+                      className={`w-6 h-6 rounded-full ${color.fourth} animate-pulse`}
                     ></div>
                   )}
                   <img
@@ -96,7 +100,7 @@ export default function UserCard({ isOpen, OpenNavFunction = null }) {
                 </>
               ) : (
                 <div
-                  className={`w-6 h-6 rounded-full ${currentTheme.colors.buttonPrimary} flex items-center justify-center`}
+                  className={`w-6 h-6 rounded-full ${color.buttonPrimary} flex items-center justify-center`}
                 >
                   <FiUser size={14} className="text-white" />
                 </div>
@@ -110,7 +114,7 @@ export default function UserCard({ isOpen, OpenNavFunction = null }) {
           {/* Menú desplegable */}
           <div
             className={`absolute overflow-hidden z-50 ${
-              currentTheme.colors.secondary
+              color.secondary
             } rounded-xl p-2 mx-auto w-full flex flex-col space-y-2 justify-center transition ${
               !isOpen
                 ? "opacity-0"
@@ -120,16 +124,17 @@ export default function UserCard({ isOpen, OpenNavFunction = null }) {
             }`}
           >
             <button
-              onClick={() =>
-                router(`${window.location.origin}/user/${user.uid}`)
-              }
-              className="whitespace-nowrap px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-medium shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-200"
+              onClick={() => {
+                if (pathname == `/user/${user.uid}`) return;
+                router(`${window.location.origin}/user/${user.uid}`);
+              }}
+              className={` transition ${color.primary}  border ${color.border} ${color.hover}  p-2 rounded-xl active:scale-95`}
             >
               Profile
             </button>
             <button
               onClick={handleLogOut}
-              className={`whitespace-nowrap px-4 py-2 rounded-lg ${currentTheme.colors.buttonGoogle} text-white font-medium shadow-md ${currentTheme.colors.buttonGoogleHover} hover:shadow-lg hover:scale-105 transition-transform duration-200`}
+              className={`transition font-bold ${color.errorText} ${color.primary} ${color.hover} p-2 rounded-xl active:scale-95`}
             >
               Log out
             </button>
