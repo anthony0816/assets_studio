@@ -47,6 +47,8 @@ export default function ModalUserProfilePhoto({
       });
   }
 
+  console.log({ owner });
+
   return (
     <Modal
       isOpen={photo != null}
@@ -75,35 +77,36 @@ export default function ModalUserProfilePhoto({
           />
         </div>
         <div onClick={(e) => e.stopPropagation()} className=" pt-4">
-          {user?.uid == owner?.uid && (
-            <>
-              {preview ? (
-                <div className="space-x-4">
-                  <button
-                    onClick={() => setPreview(null)}
-                    className={buttonStyle}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={() => handleUpdate()}
-                    className={buttonStyle}
-                  >
-                    Accept
-                  </button>
-                </div>
-              ) : (
-                <label className={buttonStyle}>
-                  Change
-                  <input
-                    onChange={(e) => handleChange(e.target.files[0])}
-                    type="file"
-                    className="hidden"
-                  />
-                </label>
-              )}
-            </>
-          )}
+          {user?.uid == owner?.uid &&
+            owner?.providerData[0].providerId === "Assets Studio" && (
+              <>
+                {preview ? (
+                  <div className="space-x-4">
+                    <button
+                      onClick={() => setPreview(null)}
+                      className={buttonStyle}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={() => handleUpdate()}
+                      className={buttonStyle}
+                    >
+                      Accept
+                    </button>
+                  </div>
+                ) : (
+                  <label className={buttonStyle}>
+                    Change
+                    <input
+                      onChange={(e) => handleChange(e.target.files[0])}
+                      type="file"
+                      className="hidden"
+                    />
+                  </label>
+                )}
+              </>
+            )}
         </div>
       </div>
     </Modal>
