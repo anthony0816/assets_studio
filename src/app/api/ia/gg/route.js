@@ -2,13 +2,14 @@ import { GoogleGenAI } from "@google/genai";
 import { NextResponse } from "next/server";
 export async function POST(request) {
   try {
-    const { propm } = await request.json();
+    const { promp } = await request.json();
+    console.log({ promp });
     const ai = new GoogleGenAI({});
 
     async function main() {
       const response = await ai.models.generateContent({
         model: "gemini-2.5-flash",
-        contents: propm,
+        contents: promp,
       });
       console.log(response.text);
       return response.text;

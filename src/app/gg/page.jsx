@@ -7,6 +7,8 @@ export default function Gemini() {
   const [res, setRes] = useState(null);
   const [promp, setPromp] = useState("");
 
+  console.log({ promp });
+
   async function main() {
     _POST_("api/ia/gg", { promp })
       .then((res) => res.json())
