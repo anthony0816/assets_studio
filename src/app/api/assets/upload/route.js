@@ -8,7 +8,7 @@ export async function POST(request) {
     const { base64, uid, user_providerId, categoria, keyWords } =
       await request.json();
     // Verificar cantidad de palabras
-    if (keyWords.length < 1 || keyWords > 20) {
+    if (keyWords.length < 1 || keyWords.length > 20) {
       const error = new Error(
         "no se aceptan menos de 1 etiquetas ni mas de 10"
       );

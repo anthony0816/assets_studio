@@ -16,6 +16,7 @@ export default function UploadAsset() {
   const color = currentTheme.colors;
   const tcolor = currentTheme.textColor;
   const [files, setFiles] = useState([]); // Cambiado a array
+  const [InProcessUpload, setInProcessUpload] = useState(1);
   const [categoria, setCategoria] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [previews, setPreviews] = useState([]); // Cambiado a array
@@ -82,17 +83,20 @@ export default function UploadAsset() {
       );
 
       // Crear assets para cada archivo
-      const uploadPromises = base64Files.map((base64file) =>
-        CreateAsset(
-          base64file,
-          user?.uid,
-          user?.providerId,
-          categoria,
-          translatedSelectedKeyWords
-        )
-      );
 
-      const results = await Promise.all(uploadPromises);
+      let results = [];
+      for (const base64 of base64Files) {
+        results.push(
+          await CreateAsset(
+            base64,
+            user?.uid,
+            user?.providerId,
+            categoria,
+            translatedSelectedKeyWords
+          )
+        );
+        setInProcessUpload((prev) => prev + 1);
+      }
 
       // Verificar si hubo errores
       const errors = results.filter((result) => result.error);
@@ -111,6 +115,7 @@ export default function UploadAsset() {
       alert("Error while uploading assets");
     } finally {
       setIsLoading(false);
+      setInProcessUpload(1);
     }
   }
 
@@ -414,7 +419,10 @@ export default function UploadAsset() {
                 }`}
               >
                 {isLoading ? (
-                  <LoadingSpinner color="white" />
+                  <LoadingSpinner
+                    color="white"
+                    text={`${InProcessUpload} / ${files.length} Uploading`}
+                  />
                 ) : (
                   `Upload ${files.length} Asset(s)`
                 )}
