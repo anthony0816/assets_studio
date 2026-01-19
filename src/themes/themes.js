@@ -32,6 +32,9 @@ export const Theme = {
       muted: "text-gray-400",
       link: "text-indigo-400",
     },
+    linkColor : {
+      primary : 'text-blue-300'
+    }
   },
 
   whiteTheme: {
@@ -65,6 +68,9 @@ export const Theme = {
       muted: "text-gray-500",
       link: "text-indigo-600",
     },
+    linkColor : {
+      primary : 'text-blue-600'
+    }
   },
 };
 
