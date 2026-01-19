@@ -4,6 +4,7 @@ import { useAuth } from "@/context/authContext";
 import { useLoadingRouter } from "@/Components/LoadingRouterProvider";
 import { useState } from "react";
 import LoadingSpinner from "@/Components/LoadingSpiner";
+import Link from "next/link";
 
 export default function Login() {
   const { currentTheme } = useTheme();
@@ -91,6 +92,14 @@ export default function Login() {
           >
             Create Account
           </button>
+          {/* Back UP password  */}
+
+          <div>
+            Have you forgot the password ?{" "}
+            <Link className={`${currentTheme.linkColor?.primary}`} href={`#`}>
+              Click here
+            </Link>
+          </div>
         </div>
       </div>
     </div>
