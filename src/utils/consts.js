@@ -17,6 +17,8 @@ export const ReportSelectorOptions = [
   { name: "Other", value: "other" },
 ];
 
+  export const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export const keyWords = [
   "character",
   "environment",

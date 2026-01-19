@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import translate from "translate";
+import { regexEmail } from "./consts";
 
 export function DowloadCloudinaryAsset(url) {
   fetch(url)
@@ -470,7 +471,6 @@ export async function VerifyUserCreationParameters(
   }
 
   // 5. Validar formato de email
-  const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!regexEmail.test(email)) {
     return { status: false, message: "El email no tiene un formato válido" };
   }
