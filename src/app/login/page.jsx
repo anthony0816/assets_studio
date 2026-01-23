@@ -96,7 +96,7 @@ export default function Login() {
 
           <div>
             Have you forgot the password ?{" "}
-            <Link className={`${currentTheme.linkColor?.primary}`} href={`#`}>
+            <Link className={`${currentTheme.linkColor?.primary}`} href={`/login/backupPassword`}>
               Click here
             </Link>
           </div>
