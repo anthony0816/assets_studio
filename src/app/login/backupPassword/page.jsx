@@ -92,6 +92,10 @@ export default function BackupPasswordPage() {
           return setErrorMessaje("The code has been already used");
         case "code not match":
           return setErrorMessaje("The code do not match");
+          case 'user not found': 
+          return setErrorMessaje("There is no user with that email");
+        default:
+          return setErrorMessaje("There was an error restarting the password");
       }
     }
   }
