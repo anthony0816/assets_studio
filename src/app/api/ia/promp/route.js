@@ -17,11 +17,11 @@ export async function POST(request) {
     const finalPromp = prompt + Style;
 
     const modelos = {
-      base: "https://router.huggingface.co/hf-inference/models/stabilityai/stable-diffusion-xl-base-1.0",
+      base: "https://router.huggingface.co/hf-inference/models/black-forest-labs/FLUX.1-schnell",
       refiner:
-        "https://router.huggingface.co/hf-inference/models/stabilityai/stable-diffusion-xl-refiner-1.0",
+        "https://router.huggingface.co/hf-inference/models/stabilityai/stable-diffusion-3-medium-diffusers",
       juger:
-        "https://router.huggingface.co/hf-inference/models/stabilityai/juggernaut-xl-v8",
+        "https://router.huggingface.co/hf-inference/models/black-forest-labs/FLUX.1-schnell",
     };
 
     if (!prompt) {
