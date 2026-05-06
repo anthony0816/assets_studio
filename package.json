@@ -7,7 +7,8 @@
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "eslint",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "test": "jest"
   },
   "dependencies": {
     "@google/genai": "^1.29.0",
@@ -32,6 +33,7 @@
     "@tailwindcss/postcss": "^4",
     "eslint": "^9",
     "eslint-config-next": "15.5.2",
+    "jest": "^30.3.0",
     "prisma": "^6.15.0",
     "tailwindcss": "^4"
   }
